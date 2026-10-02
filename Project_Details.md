@@ -1,0 +1,2 @@
+- We are developing a community focused hackathon project
+- Our current idea is focused on making an interactive navigation system for the campus map of NKU.
