@@ -1,0 +1,33 @@
+[
+  {
+    "id": "event-001",
+    "title": "NKU Club Fair",
+    "location": "Student Union",
+    "attendeeIds": [
+      "user-001",
+      "user-002"
+    ],
+    "comments": [
+      {
+        "id": "comment-001",
+        "author": "Alex",
+        "text": "Anyone else going?"
+      }
+    ]
+  },
+  {
+    "id": "event-002",
+    "title": "Computer Science Study Session",
+    "location": "Steely Library",
+    "attendeeIds": [
+      "user-003"
+    ],
+    "comments": [
+      {
+        "id": "comment-002",
+        "author": "Jordan",
+        "text": "I'll be there around 6."
+      }
+    ]
+  }
+]
