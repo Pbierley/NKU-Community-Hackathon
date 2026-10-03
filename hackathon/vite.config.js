@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/vite'
 import basicSsl from '@vitejs/plugin-basic-ssl'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
@@ -5,7 +6,7 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => ({
   // Phones only allow location and compass on HTTPS, so `npm run dev:phone` adds a self-signed cert.
-  plugins: [react(), mode === 'phone' && basicSsl()],
+  plugins: [react(), tailwindcss(), mode === 'phone' && basicSsl()],
   server: {
     // Buildings.json lives at the repo root, one level above this app.
     fs: { allow: ['..'] },

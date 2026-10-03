@@ -1,17 +1,28 @@
 import { useEffect, useRef } from 'react'
-import { Circle, MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
+import {
+  AttributionControl,
+  Circle,
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  useMap,
+} from 'react-leaflet'
 import L from './leaflet'
 import { getBuildingById, hasLocation } from './buildings'
 import { NKU_BOUNDS, NKU_CENTER } from './nkuMap'
 
+const USER_BLUE = '#2563EB'
+
 const ARROW_SVG = `
   <svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
-    <path d="M20 3 L33 35 L20 28 L7 35 Z" fill="#1a73e8" stroke="#fff" stroke-width="3" stroke-linejoin="round" />
+    <path d="M20 3 L33 35 L20 28 L7 35 Z" fill="${USER_BLUE}" stroke="#fff" stroke-width="3" stroke-linejoin="round" />
   </svg>`
 
 const DOT_SVG = `
-  <svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
-    <circle cx="20" cy="20" r="9" fill="#1a73e8" stroke="#fff" stroke-width="3" />
+  <svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true">
+    <circle cx="24" cy="24" r="24" fill="rgba(47,124,246,0.2)" />
+    <circle cx="24" cy="24" r="9" fill="${USER_BLUE}" stroke="#fff" stroke-width="3" />
   </svg>`
 
 function UserArrow({ position, heading }) {
@@ -20,11 +31,12 @@ function UserArrow({ position, heading }) {
   const hasHeading = heading !== null
 
   useEffect(() => {
+    const size = hasHeading ? 40 : 48
     const icon = L.divIcon({
       className: 'user-arrow',
       html: `<div class="user-arrow__inner">${hasHeading ? ARROW_SVG : DOT_SVG}</div>`,
-      iconSize: [40, 40],
-      iconAnchor: [20, 20],
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2],
     })
     const marker = L.marker(position, { icon, interactive: false, keyboard: false }).addTo(map)
     markerRef.current = marker
@@ -48,7 +60,7 @@ function UserArrow({ position, heading }) {
   return null
 }
 
-const PIN_SIZES = { normal: 26, selected: 40, dimmed: 10 }
+const PIN_SIZES = { normal: 28, selected: 40, dimmed: 12 }
 const buildingIcons = new Map()
 
 function buildingIcon(id, state) {
@@ -81,10 +93,12 @@ function BuildingMarkers({ buildings, selectedId }) {
         title={`${b.id}. ${b.name}`}
       >
         <Popup>
-          <strong>
+          <p className="text-[15px] font-bold leading-[1.5] text-ink">
             {b.id}. {b.name}
-          </strong>
-          {b.Alias.length > 0 && <div className="building-popup__alias">{b.Alias.join(' · ')}</div>}
+          </p>
+          {b.Alias.length > 0 && (
+            <p className="mt-1 text-[13px] text-muted leading-[1.5]">{b.Alias.join(' · ')}</p>
+          )}
         </Popup>
       </Marker>
     )
@@ -116,15 +130,72 @@ function LimitZoomToCampus() {
   return null
 }
 
-function FollowUser({ position, follow }) {
+function FollowUser({ position, follow, onUserPan }) {
   const map = useMap()
   useEffect(() => {
     if (follow && position) map.panTo(position)
   }, [map, position, follow])
+  useEffect(() => {
+    map.on('dragstart', onUserPan)
+    return () => map.off('dragstart', onUserPan)
+  }, [map, onUserPan])
   return null
 }
 
-export default function CampusMap({ buildings, position, accuracy, heading, follow, selectedId }) {
+function MapControls({ onLocate }) {
+  const map = useMap()
+  const ref = useRef(null)
+
+  // Without this, taps on the buttons also reach the map and trigger double-tap zoom.
+  useEffect(() => {
+    L.DomEvent.disableClickPropagation(ref.current)
+    L.DomEvent.disableScrollPropagation(ref.current)
+  }, [])
+
+  return (
+    <div ref={ref} className="absolute right-4 bottom-4 z-[1000] flex flex-col gap-2">
+      <button
+        type="button"
+        onClick={() => map.zoomIn()}
+        aria-label="Zoom in"
+        className="w-12 h-12 bg-white border border-line rounded-lg font-bold text-[16px] text-ink shadow-card"
+      >
+        +
+      </button>
+      <button
+        type="button"
+        onClick={() => map.zoomOut()}
+        aria-label="Zoom out"
+        className="w-12 h-12 bg-white border border-line rounded-lg font-bold text-[16px] text-ink shadow-card"
+      >
+        −
+      </button>
+      <button
+        type="button"
+        onClick={onLocate}
+        aria-label="Locate me"
+        className="w-12 h-12 bg-nku hover:bg-nkuDeep rounded-lg shadow-card flex items-center justify-center"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="1.8">
+          <circle cx="12" cy="12" r="6.5" />
+          <circle cx="12" cy="12" r="1.6" fill="#111827" />
+          <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3" strokeLinecap="round" />
+        </svg>
+      </button>
+    </div>
+  )
+}
+
+export default function CampusMap({
+  buildings,
+  position,
+  accuracy,
+  heading,
+  follow,
+  onUserPan,
+  onLocate,
+  selectedId,
+}) {
   return (
     <MapContainer
       center={NKU_CENTER}
@@ -132,13 +203,16 @@ export default function CampusMap({ buildings, position, accuracy, heading, foll
       maxZoom={19}
       maxBounds={NKU_BOUNDS}
       maxBoundsViscosity={1}
-      className="campus-map"
+      zoomControl={false}
+      attributionControl={false}
+      className="campus-map h-full w-full"
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         maxZoom={19}
       />
+      <AttributionControl position="bottomleft" prefix={false} />
       <LimitZoomToCampus />
       <BuildingMarkers buildings={buildings} selectedId={selectedId} />
       <FlyToBuilding buildings={buildings} selectedId={selectedId} />
@@ -146,12 +220,13 @@ export default function CampusMap({ buildings, position, accuracy, heading, foll
         <Circle
           center={position}
           radius={accuracy}
-          pathOptions={{ color: '#1a73e8', weight: 1, fillOpacity: 0.12 }}
+          pathOptions={{ color: USER_BLUE, weight: 1, fillOpacity: 0.12 }}
           interactive={false}
         />
       )}
       {position && <UserArrow position={position} heading={heading} />}
-      <FollowUser position={position} follow={follow} />
+      <FollowUser position={position} follow={follow} onUserPan={onUserPan} />
+      <MapControls onLocate={onLocate} />
     </MapContainer>
   )
 }
