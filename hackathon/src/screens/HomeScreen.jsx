@@ -32,10 +32,10 @@ export default function HomeScreen({ onNavigate }) {
   }
 
   return (
-    <div className="screen h-full flex flex-col bg-canvas">
+    <div className="screen h-full grid grid-rows-[auto_minmax(0,1fr)_auto] bg-canvas">
       <AppHeader onNavigate={onNavigate} />
 
-      <main className="relative isolate flex-1 min-h-0 mx-4 my-4 rounded-xl border border-line overflow-hidden text-left">
+      <main className="relative isolate min-h-0 mx-4 mt-4 rounded-xl border border-line overflow-hidden text-left">
         <CampusMap
           buildings={buildings}
           position={position}

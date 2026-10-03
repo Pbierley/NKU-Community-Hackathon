@@ -1,73 +1,44 @@
-function Event({ event, onAttend }) {
-  const attendeeCount = event.attendeeIds.length;
+import { categoryTint, isRegistered } from './useEvents'
+
+export default function Event({ event, onRegister }) {
+  const registered = isRegistered(event)
+  const venue = event.description
+    ? `${event.location} • ${event.description}`
+    : event.location
 
   return (
-    <article className="event-card">
-
-      <div className="event-card-header">
-        <div className="event-card-heading">
-          <h2 className="event-title">
-            {event.title}
-          </h2>
-
-          <p className="event-location">
-            {event.location}
-          </p>
-        </div>
-
-        <span className="event-badge">
-          Event
-        </span>
-      </div>
-
-      <div className="event-card-body">
-
-        {event.description && (
-          <p className="event-description">
-            {event.description}
-          </p>
-        )}
-
-        <div className="event-meta">
-          <span>
-            {attendeeCount} attending
-          </span>
-
-          <span>
-            {event.comments.length} comments
+    <article className="border border-line rounded-xl p-6 shadow-card bg-white">
+      {event.category && (
+        <div className="flex items-center gap-2">
+          <span className={`text-[12px] font-semibold border rounded-md px-3 py-2 ${categoryTint(event.category)}`}>
+            {event.category}
           </span>
         </div>
-
+      )}
+      <h3 className="mt-4 text-base font-bold leading-[1.4]">{event.title}</h3>
+      <p className="mt-2 text-[15px] text-body leading-[1.6] max-w-[65ch]">{venue}</p>
+      <div className="mt-4 pt-4 border-t border-line flex items-center justify-between gap-4">
+        <span className="text-[13px] text-muted leading-[1.5] tnum">{event.when ?? 'Upcoming'}</span>
         <button
-          className="event-attend-button"
           type="button"
-          onClick={() => onAttend(event.id)}
+          onClick={() => onRegister(event.id)}
+          className={`text-[13px] font-bold rounded-md px-4 py-2 ${
+            registered ? 'bg-nku text-ink' : 'bg-ink text-white'
+          }`}
         >
-          Attend
+          {registered ? 'Registered ✓' : 'Register'}
         </button>
       </div>
-
-      {event.comments.length > 0 && (
-        <div className="event-comments">
+      {event.comments?.length > 0 && (
+        <div className="mt-4 space-y-2">
           {event.comments.map((comment) => (
-            <div
-              className="event-comment"
-              key={comment.id}
-            >
-              <strong>
-                {comment.author}
-              </strong>
-
-              <span>
-                {comment.text}
-              </span>
-            </div>
+            <p key={comment.id} className="text-[13px] text-muted leading-[1.5]">
+              <span className="font-semibold text-body">{comment.author}</span>
+              {` ${comment.text}`}
+            </p>
           ))}
         </div>
       )}
-
     </article>
-  );
+  )
 }
-
-export default Event;
