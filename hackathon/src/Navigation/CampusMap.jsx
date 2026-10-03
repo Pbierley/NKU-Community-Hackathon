@@ -89,7 +89,7 @@ function buildingIcon(id, state, label) {
   return buildingIcons.get(key)
 }
 
-function BuildingMarkers({ buildings, selectedId }) {
+function BuildingMarkers({ buildings, selectedId, onSelect }) {
   return buildings.filter(hasLocation).map((b) => {
     const state = selectedId == null ? 'normal' : b.id === selectedId ? 'selected' : 'dimmed'
     const label = mapLabel(b)
@@ -100,6 +100,7 @@ function BuildingMarkers({ buildings, selectedId }) {
         icon={buildingIcon(b.id, state, label)}
         zIndexOffset={state === 'selected' ? 1000 : 0}
         title={`${label}. ${b.name}`}
+        eventHandlers={{ click: () => onSelect?.(b.id) }}
       >
         <Popup>
           <p className="text-[15px] font-bold leading-[1.5] text-ink">
@@ -216,6 +217,7 @@ export default function CampusMap({
   onUserPan,
   onLocate,
   selectedId,
+  onSelect,
   full,
   route,
 }) {
@@ -238,7 +240,7 @@ export default function CampusMap({
       <AttributionControl position="bottomleft" prefix={false} />
       <FitMap full={full} />
       <LimitZoomToCampus />
-      <BuildingMarkers buildings={buildings} selectedId={selectedId} />
+      <BuildingMarkers buildings={buildings} selectedId={selectedId} onSelect={onSelect} />
       <FlyToBuilding buildings={buildings} selectedId={selectedId} route={route} />
       {route?.length > 1 && (
         <Polyline

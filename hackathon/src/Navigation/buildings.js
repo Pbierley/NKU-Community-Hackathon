@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+export { isParkingPlace } from './parkingPlaces.js'
+
 export function useBuildings() {
   const [state, setState] = useState({ buildings: [], loading: true, error: null })
 
