@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { attendeeCount, commentAuthor, eventWhen, isEventCreator, isRegistered } from './useEvents'
+import { attendeeCount, commentAuthor, eventWhen, canDeleteEvent, canEditEvent, isEventCreator, isRegistered } from './useEvents'
 
 export default function EventDetailsModal({ event, user, onClose, onAddComment, onEdit, onDelete, onRegister, onShare, onShowOnMap }) {
   const [commentText, setCommentText] = useState('')
@@ -7,7 +7,9 @@ export default function EventDetailsModal({ event, user, onClose, onAddComment, 
   const [error, setError] = useState('')
   const [isRegistering, setIsRegistering] = useState(false)
   const [registerError, setRegisterError] = useState('')
-  const canModify = isEventCreator(event, user)
+  const canEdit = canEditEvent(event, user)
+  const canRemove = canDeleteEvent(event, user)
+  const removeLabel = isEventCreator(event, user) ? 'Delete event' : 'Take down'
   const currentUserId = user?.id
   const registered = event ? isRegistered(event, currentUserId) : false
   const totalAttendees = attendeeCount(event)
@@ -122,22 +124,26 @@ export default function EventDetailsModal({ event, user, onClose, onAddComment, 
         </div>
         {registerError && <p className="mt-2 text-[13px] text-red-700" role="alert">{registerError}</p>}
 
-        {canModify && (
+        {(canEdit || canRemove) && (
           <div className="mt-5 flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => onEdit?.(event)}
-              className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-4 py-2 text-[13px] font-semibold text-body hover:bg-wash"
-            >
-              Edit event
-            </button>
-            <button
-              type="button"
-              onClick={() => onDelete?.(event)}
-              className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-4 py-2 text-[13px] font-semibold text-red-700 hover:bg-red-50"
-            >
-              Delete event
-            </button>
+            {canEdit && (
+              <button
+                type="button"
+                onClick={() => onEdit?.(event)}
+                className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-4 py-2 text-[13px] font-semibold text-body hover:bg-wash"
+              >
+                Edit event
+              </button>
+            )}
+            {canRemove && (
+              <button
+                type="button"
+                onClick={() => onDelete?.(event)}
+                className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-4 py-2 text-[13px] font-semibold text-red-700 hover:bg-red-50"
+              >
+                {removeLabel}
+              </button>
+            )}
           </div>
         )}
 

@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { mapLabel } from './buildings'
 
 export const FULLNESS_LEVELS = [
-  { value: 1, label: 'Not full' },
+  { value: 1, label: 'Empty' },
   { value: 2, label: 'Fairly open' },
   { value: 3, label: 'Filling up' },
   { value: 4, label: 'Almost full' },
-  { value: 5, label: 'Full' },
+  { value: 5, label: 'Very full' },
 ]
 
 export function formatReportedAt(iso) {
@@ -56,7 +56,7 @@ export default function ParkingFullness({ place, user, summary, onRate, onSignIn
       </p>
       <p className="mt-0.5 text-[13px] text-muted leading-[1.4]">How full is it? {today}</p>
       {user ? (
-        <div className="mt-2 flex gap-1.5" role="group" aria-label="Fullness from 1, not full, to 5, full">
+        <div className="mt-2 flex gap-1.5" role="group" aria-label="Fullness from 1, empty, to 5, very full">
           {FULLNESS_LEVELS.map((level) => {
             const selected = mine === level.value
             return (
@@ -88,7 +88,7 @@ export default function ParkingFullness({ place, user, summary, onRate, onSignIn
         </button>
       )}
       <p className="mt-1.5 text-[12px] text-muted leading-[1.4]">
-        {user ? '1 is not full, 5 is full. ' : ''}
+        {user ? '1 means empty and 5 means very full. ' : ''}
         Rankings reset each day.
         {error ? ` ${error}` : ''}
       </p>

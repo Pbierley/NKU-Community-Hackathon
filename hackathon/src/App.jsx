@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
+import { canInviteAdmins } from './auth/accountTypes'
 import { useAuth } from './auth/useAuth'
 import NavDrawer from './components/NavDrawer'
 import { parseEventHash } from './Communication/useEvents'
 import AccountScreen from './screens/AccountScreen'
+import AdminScreen from './screens/AdminScreen'
 import EventsScreen from './screens/EventsScreen'
 import HomeScreen from './screens/HomeScreen'
 import LoginScreen from './screens/LoginScreen'
@@ -10,12 +12,19 @@ import ParkingScreen from './screens/ParkingScreen'
 import RegisterScreen from './screens/RegisterScreen'
 import './App.css'
 
-// Home (map) is public; events and account require a signed-in user and
-// redirect to login when logged out.
-const PROTECTED = new Set(['events', 'account'])
+// Home (map) and parking are public. Events, account, and admin
+// redirect to login when logged out. Admin stays hidden unless the
+// signed-in account is an admin or developer.
+const PROTECTED = new Set(['events', 'account', 'admin'])
+
+const AUTH_NOTICE = {
+  events: 'To view events, sign in',
+  account: 'To view your account, sign in',
+  admin: 'To open admin, sign in',
+}
 
 function App() {
-  const { user, loading, login, register, logout, updateProfile } = useAuth()
+  const { user, loading, login, register, logout, updateProfile, inviteAdmin, removeRole } = useAuth()
   // A shared event link boots straight into events so the event can open.
   const [screen, setScreen] = useState(() => (parseEventHash() ? 'events' : 'home'))
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -39,7 +48,7 @@ function App() {
     // Remember why a logged-out user was sent to login so the login
     // screen can explain (e.g. "To view events, sign in").
     if (PROTECTED.has(id)) {
-      setAuthNotice(id === 'events' ? 'To view events, sign in' : 'To view your account, sign in')
+      setAuthNotice(AUTH_NOTICE[id] ?? 'Sign in to continue')
       setPendingScreen(id)
     } else if (id === 'home') {
       setAuthNotice(null)
@@ -85,7 +94,9 @@ function App() {
       ? 'login'
       : user && (screen === 'login' || screen === 'register')
         ? 'home'
-        : screen
+        : screen === 'admin' && !canInviteAdmins(user)
+          ? 'home'
+          : screen
 
   useEffect(() => {
     const onKeyDown = (e) => {
@@ -153,6 +164,9 @@ function App() {
             onSharedEventOpened={handleSharedEventOpened}
             onShowOnMap={showEventOnMap}
           />
+        )}
+        {visibleScreen === 'admin' && (
+          <AdminScreen key="admin" onNavigate={navigateTo} user={user} onInvite={inviteAdmin} onRemove={removeRole} />
         )}
         {visibleScreen === 'account' && (
           <AccountScreen

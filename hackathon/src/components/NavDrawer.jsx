@@ -1,3 +1,4 @@
+import { accountTypeLabel, canInviteAdmins } from '../auth/accountTypes'
 import { useEvents } from '../Communication/useEvents'
 
 function initials(name) {
@@ -39,7 +40,7 @@ export default function NavDrawer({ open, user, onNavigate, onClose, onLogout })
             <h2 className="text-xl font-bold tracking-tight leading-[1.3] truncate">{name}</h2>
             <p className="text-[13px] text-muted leading-[1.5] break-all">{email}</p>
             <span className="inline-block mt-2 text-[12px] font-semibold text-body bg-wash border border-line rounded-md px-3 py-2">
-              {meta}
+              {user ? `${accountTypeLabel(user)}${meta ? ` · ${meta}` : ''}` : meta}
             </span>
           </div>
         </header>
@@ -90,6 +91,24 @@ export default function NavDrawer({ open, user, onNavigate, onClose, onLogout })
             </span>
           </button>
 
+          {canInviteAdmins(user) && (
+            <button
+              type="button"
+              onClick={() => onNavigate('admin')}
+              className="w-full flex items-center gap-4 px-4 h-12 rounded-lg hover:bg-canvas text-left font-semibold text-[15px] leading-[1.6]"
+            >
+              <span className="w-8 h-8 rounded-lg bg-wash flex items-center justify-center shrink-0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="9" cy="8" r="2.4" />
+                  <path d="M4.5 17.5c.8-2.2 2.4-3.3 4.5-3.3s3.7 1.1 4.5 3.3" />
+                  <path d="M17 8v6M14 11h6" />
+                </svg>
+              </span>
+              Admin
+              <span className="ml-auto text-faint">›</span>
+            </button>
+          )}
+
           <a
             href="https://myengagement.nku.edu/home_login"
             target="_blank"
@@ -109,15 +128,6 @@ export default function NavDrawer({ open, user, onNavigate, onClose, onLogout })
             </span>
           </a>
 
-          <p className="px-4 pt-6 pb-2 text-[11px] font-bold tracking-[0.06em] uppercase text-muted">
-            Campus resources
-          </p>
-          <button type="button" className="w-full flex items-center gap-4 px-4 h-12 rounded-lg hover:bg-canvas text-left text-[15px] leading-[1.6]">
-            Norse Shuttle Tracker
-          </button>
-          <button type="button" className="w-full flex items-center gap-4 px-4 h-12 rounded-lg hover:bg-canvas text-left text-[15px] leading-[1.6]">
-            Campus Safety &amp; Escort
-          </button>
           <button
             type="button"
             onClick={() => onNavigate('account')}

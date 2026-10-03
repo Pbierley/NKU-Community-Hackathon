@@ -23,6 +23,7 @@ export default function ParkingScreen({ onNavigate, user }) {
   const { buildings, loading, error: buildingsError } = useBuildings()
   const { summary, error: fullnessError, rate } = useParkingFullness()
   const [busyId, setBusyId] = useState(null)
+  const [editingId, setEditingId] = useState(null)
   const [rateError, setRateError] = useState(null)
   const places = useMemo(
     () => sortByFullness(buildings.filter((building) => isParkingPlace(building) && hasLocation(building)), summary),
@@ -35,6 +36,7 @@ export default function ParkingScreen({ onNavigate, user }) {
     setRateError(null)
     try {
       await rate(placeId, rating)
+      setEditingId(null)
     } catch (err) {
       setRateError(err.message || 'Could not save your rating.')
     } finally {
@@ -50,6 +52,9 @@ export default function ParkingScreen({ onNavigate, user }) {
           <h1 className="text-xl font-bold tracking-tight leading-[1.3]">Parking</h1>
           <p className="mt-1 text-[14px] text-muted leading-[1.5]">
             Least full first, using the latest report. Lots and garages with no reports today are listed last.
+          </p>
+          <p className="mt-1 text-[14px] text-muted leading-[1.5]">
+            Scores run from 1 to 5: 1 means empty and 5 means very full.
           </p>
           {!user && (
             <button
@@ -90,36 +95,52 @@ export default function ParkingScreen({ onNavigate, user }) {
                             : 'Not rated today'}
                         </span>
                       </span>
-                      <span className="shrink-0 text-right">
-                        {report ? (
-                          <span className="text-[15px] font-bold tnum">{report.rating}<span className="text-[12px] font-semibold text-muted"> / 5</span></span>
-                        ) : (
-                          <span className="text-[13px] font-semibold text-muted">—</span>
+                      <span className="shrink-0 flex items-center gap-2">
+                        <span className="text-right">
+                          {report ? (
+                            <span className="text-[15px] font-bold tnum">{report.rating}<span className="text-[12px] font-semibold text-muted"> / 5</span></span>
+                          ) : (
+                            <span className="text-[13px] font-semibold text-muted">—</span>
+                          )}
+                        </span>
+                        {user && (
+                          <button
+                            type="button"
+                            onClick={() => setEditingId((current) => (current === place.id ? null : place.id))}
+                            className="h-8 px-3 rounded-md border border-line bg-white text-[13px] font-bold text-ink"
+                          >
+                            {editingId === place.id ? 'Cancel' : 'Update'}
+                          </button>
                         )}
                       </span>
                     </div>
-                    {user && (
-                      <div className="mt-3 flex gap-1.5" role="group" aria-label={`Fullness for ${place.name}`}>
-                        {FULLNESS_LEVELS.map((level) => {
-                          const selected = mine === level.value
-                          return (
-                            <button
-                              key={level.value}
-                              type="button"
-                              disabled={busyId === place.id}
-                              aria-pressed={selected}
-                              aria-label={`${level.value}, ${level.label}`}
-                              onClick={() => choose(place.id, level.value)}
-                              className={`h-10 flex-1 rounded-md border text-[14px] font-bold ${
-                                selected
-                                  ? 'bg-nku border-nku text-ink'
-                                  : 'bg-white border-line text-ink'
-                              }`}
-                            >
-                              {level.value}
-                            </button>
-                          )
-                        })}
+                    {user && editingId === place.id && (
+                      <div className="mt-3">
+                        <p className="mb-1.5 text-[12px] text-muted leading-[1.4]">
+                          1 means empty and 5 means very full.
+                        </p>
+                        <div className="flex gap-1.5" role="group" aria-label={`Fullness for ${place.name}, from 1 empty to 5 very full`}>
+                          {FULLNESS_LEVELS.map((level) => {
+                            const selected = mine === level.value
+                            return (
+                              <button
+                                key={level.value}
+                                type="button"
+                                disabled={busyId === place.id}
+                                aria-pressed={selected}
+                                aria-label={`${level.value}, ${level.label}`}
+                                onClick={() => choose(place.id, level.value)}
+                                className={`h-10 flex-1 rounded-md border text-[14px] font-bold ${
+                                  selected
+                                    ? 'bg-nku border-nku text-ink'
+                                    : 'bg-white border-line text-ink'
+                                }`}
+                              >
+                                {level.value}
+                              </button>
+                            )
+                          })}
+                        </div>
                       </div>
                     )}
                   </li>

@@ -3,7 +3,8 @@ import Event from '../Communication/Event'
 import EventCalendar from '../Communication/EventCalendar'
 import EventDetailsModal from '../Communication/EventDetailsModal'
 import EventModal from '../Communication/EventModal'
-import { buildEventShareUrl, eventDayKey, formatDayKey, isPastEvent, isRegistered, parseEventHash, searchEvents, sortEventsByDate, useEvents } from '../Communication/useEvents'
+import { buildEventShareUrl, eventDayKey, formatDayKey, isPastEvent, isRegistered, parseEventHash, searchEvents, sortEventsByDate, useEvents, isEventCreator } from '../Communication/useEvents'
+import { canCreateEvents } from '../auth/accountTypes'
 import { findBuildingForLocation, useBuildings } from '../Navigation/buildings'
 import AppHeader from '../components/AppHeader'
 import Toast from '../components/Toast'
@@ -133,8 +134,8 @@ export default function EventsScreen({ onNavigate, user, sharedEventId, onShared
       await addEvent(newEvent)
       setIsModalOpen(false)
       setToast('Event posted')
-    } catch {
-      setToast('Could not post event.')
+    } catch (err) {
+      setToast(err.message || 'Could not post event.')
     }
   }
 
@@ -144,17 +145,19 @@ export default function EventsScreen({ onNavigate, user, sharedEventId, onShared
       setIsModalOpen(false)
       setEventToEdit(null)
       setToast('Event updated')
-    } catch {
-      setToast('Could not update event.')
+    } catch (err) {
+      setToast(err.message || 'Could not update event.')
     }
   }
 
   async function handleDelete(eventToDelete) {
-    if (!window.confirm(`Delete "${eventToDelete.title}"? This cannot be undone.`)) return
+    const owned = isEventCreator(eventToDelete, user)
+    const action = owned ? 'Delete' : 'Take down'
+    if (!window.confirm(`${action} "${eventToDelete.title}"? This cannot be undone.`)) return
     try {
       await deleteEvent(eventToDelete.id)
       if (selectedEventId === eventToDelete.id) closeDetails()
-      setToast('Event deleted')
+      setToast(owned ? 'Event deleted' : 'Event taken down')
     } catch (err) {
       setToast(err.message || 'Could not delete event.')
     }
@@ -322,16 +325,22 @@ export default function EventsScreen({ onNavigate, user, sharedEventId, onShared
 
       <footer className="shrink-0 bg-white border-t border-line p-4 sm:p-6 text-left">
         <div className="w-full max-w-2xl mx-auto">
-          <button
-            type="button"
-            onClick={() => {
-              setEventToEdit(null)
-              setIsModalOpen(true)
-            }}
-            className="w-full h-14 px-8 rounded-lg bg-nku hover:bg-nkuDeep font-bold text-[15px] text-ink shadow-card active:scale-[0.99] transition"
-          >
-            + MAKE POST
-          </button>
+          {canCreateEvents(user) ? (
+            <button
+              type="button"
+              onClick={() => {
+                setEventToEdit(null)
+                setIsModalOpen(true)
+              }}
+              className="w-full h-14 px-8 rounded-lg bg-nku hover:bg-nkuDeep font-bold text-[15px] text-ink shadow-card active:scale-[0.99] transition"
+            >
+              + MAKE POST
+            </button>
+          ) : (
+            <p className="text-[14px] text-muted leading-[1.5]">
+              An @nku.edu email is required to post an event.
+            </p>
+          )}
         </div>
       </footer>
 

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { accountTypeLabel } from '../auth/accountTypes'
 import InterestsEditor from './InterestsEditor'
 
 function initials(name) {
@@ -116,7 +117,7 @@ export default function AccountScreen({ onNavigate, user, onLogout, onUpdateProf
               <h2 className="text-xl font-bold tracking-tight leading-[1.3] break-words">{name || user?.name}</h2>
               <p className="text-[13px] text-muted leading-[1.5] break-all">{email}</p>
               <span className="inline-block mt-2 text-[12px] font-semibold bg-ink text-white rounded-md px-3 py-2">
-                {year || '—'}
+                {accountTypeLabel(user)}
               </span>
             </div>
           </div>

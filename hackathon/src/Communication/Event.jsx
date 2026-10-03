@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { attendeeCount, categoryTint, eventCategory, eventWhen, isEventCreator, isRegistered } from './useEvents'
+import { attendeeCount, categoryTint, eventCategory, eventWhen, canDeleteEvent, canEditEvent, isEventCreator, isRegistered } from './useEvents'
 
 function eventPhotos(event) {
   if (!Array.isArray(event?.images)) return []
@@ -51,7 +51,9 @@ function EventPhotos({ event, onOpen }) {
 export default function Event({ event, onRegister, onOpen, onShare, onShowOnMap, userId, user, onEdit, onDelete }) {
   const currentUserId = user?.id ?? userId
   const registered = isRegistered(event, currentUserId)
-  const canModify = isEventCreator(event, currentUserId)
+  const canEdit = canEditEvent(event, user)
+  const canRemove = canDeleteEvent(event, user)
+  const removeLabel = isEventCreator(event, user) ? 'Delete' : 'Take down'
   const totalAttendees = attendeeCount(event)
 
   const category = eventCategory(event)
@@ -63,34 +65,38 @@ export default function Event({ event, onRegister, onOpen, onShare, onShowOnMap,
     <article className="relative flex flex-col overflow-hidden border border-line rounded-xl shadow-card bg-white">
       <EventPhotos event={event} onOpen={onOpen} />
       <div className="relative flex flex-col p-4 sm:p-6">
-      {canModify && (
+      {(canEdit || canRemove) && (
         <div className="self-end flex flex-wrap items-center justify-end gap-2 sm:absolute sm:top-4 sm:right-4">
-          <button
-            type="button"
-            onClick={() => onEdit?.(event)}
-            aria-label={`Edit ${event.title}`}
-            className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-2.5 py-1.5 sm:px-3 sm:py-2 text-[12px] font-semibold text-body hover:bg-wash focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nku"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="m16 4 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z" />
-            </svg>
-            Edit
-          </button>
-          <button
-            type="button"
-            onClick={() => onDelete?.(event)}
-            aria-label={`Delete ${event.title}`}
-            className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-2.5 py-1.5 sm:px-3 sm:py-2 text-[12px] font-semibold text-red-700 hover:bg-red-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-9 0 1 13h10l1-13" />
-            </svg>
-            Delete
-          </button>
+          {canEdit && (
+            <button
+              type="button"
+              onClick={() => onEdit?.(event)}
+              aria-label={`Edit ${event.title}`}
+              className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-2.5 py-1.5 sm:px-3 sm:py-2 text-[12px] font-semibold text-body hover:bg-wash focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nku"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="m16 4 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z" />
+              </svg>
+              Edit
+            </button>
+          )}
+          {canRemove && (
+            <button
+              type="button"
+              onClick={() => onDelete?.(event)}
+              aria-label={`${removeLabel} ${event.title}`}
+              className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-2.5 py-1.5 sm:px-3 sm:py-2 text-[12px] font-semibold text-red-700 hover:bg-red-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-9 0 1 13h10l1-13" />
+              </svg>
+              {removeLabel}
+            </button>
+          )}
         </div>
       )}
       {(category || event.location) && (
-        <div className={`flex flex-wrap items-center gap-2 ${canModify ? 'mt-3 sm:mt-0 sm:pr-40' : ''}`}>
+        <div className={`flex flex-wrap items-center gap-2 ${canEdit || canRemove ? 'mt-3 sm:mt-0 sm:pr-40' : ''}`}>
           {category && (
             <span className={`text-[12px] font-semibold border rounded-md px-3 py-2 ${categoryTint(category)}`}>
               {category}

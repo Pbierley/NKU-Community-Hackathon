@@ -5,6 +5,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
+import { accountTypeOf, canCreateEvents, canGrantElevatedRoles, canInviteAdmins, canManageLocations, canModerateEvents, canRemoveAdmins, isDeveloper } from '../src/auth/accountTypes.js'
 import { isParkingPlace } from '../src/Navigation/parkingPlaces.js'
 
 const scrypt = promisify(_scrypt)
@@ -27,6 +28,7 @@ const DATA_DIR = join(__dirname, 'data')
 const USERS_JSON = join(DATA_DIR, 'users.json')
 const EVENTS_JSON = join(DATA_DIR, 'events.json')
 const SESSIONS_JSON = join(DATA_DIR, 'sessions.json')
+const ADMIN_INVITES_JSON = join(DATA_DIR, 'admin-invites.json')
 const SEED_EVENTS_JSON = join(__dirname, '..', 'src', 'Communication', 'events.json')
 const SEED_BUILDINGS_JSON = join(__dirname, '..', '..', 'Buildings.json')
 
@@ -34,7 +36,7 @@ let db = null
 let usersColl = null
 let eventsColl = null
 let sessionsColl = null
-// Fullness reports live in their own database, separate from app users and events.
+let adminInvitesColl = null
 let parkingRankings = null
 
 if (MONGO_URI) {
@@ -45,18 +47,21 @@ if (MONGO_URI) {
     usersColl = db.collection('users')
     eventsColl = db.collection('Events')
     sessionsColl = db.collection('sessions')
+    adminInvitesColl = db.collection('adminInvites')
     await usersColl.createIndex({ email: 1 }, { unique: true })
     await sessionsColl.createIndex({ token: 1 }, { unique: true })
-    parkingRankings = mongoClient.db('parking').collection('rankings')
+    await adminInvitesColl.createIndex({ email: 1 }, { unique: true })
+    parkingRankings = db.collection('rankings')
     await parkingRankings.createIndex({ placeId: 1, userId: 1, date: 1 }, { unique: true })
     await parkingRankings.createIndex({ date: 1 })
-    console.log(`Connected to MongoDB (${dbName}, parking).`)
+    console.log(`Connected to MongoDB (${dbName}).`)
   } catch (err) {
     console.error('MongoDB connect failed, falling back to JSON files:', err.message)
     db = null
     usersColl = null
     eventsColl = null
     sessionsColl = null
+    adminInvitesColl = null
     parkingRankings = null
   }
 } else {
@@ -87,6 +92,8 @@ async function ensureJsonStores() {
   if (!Array.isArray(users)) await writeJson(USERS_JSON, [])
   const sessions = await readJson(SESSIONS_JSON, null)
   if (sessions === null || typeof sessions !== 'object') await writeJson(SESSIONS_JSON, {})
+  const invites = await readJson(ADMIN_INVITES_JSON, null)
+  if (!Array.isArray(invites)) await writeJson(ADMIN_INVITES_JSON, [])
   const events = await readJson(EVENTS_JSON, null)
   if (!Array.isArray(events)) {
     const seed = await readJson(SEED_EVENTS_JSON, [])
@@ -121,7 +128,28 @@ function publicUser(doc) {
     year: doc.year ?? '',
     major: doc.major ?? '',
     interests: Array.isArray(doc.interests) ? doc.interests : [],
+    accountType: accountTypeOf(doc),
   }
+}
+
+function developerEmails() {
+  return String(process.env.DEVELOPER_EMAILS ?? '')
+    .split(',')
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean)
+}
+
+function resolvedAccountType(user) {
+  if (developerEmails().includes(String(user?.email ?? '').toLowerCase())) return 'developer'
+  return accountTypeOf(user)
+}
+
+async function ensureAccountType(user) {
+  if (!user) return null
+  const accountType = resolvedAccountType(user)
+  if (user.accountType === accountType) return user
+  const updated = await updateUser(user.id, { accountType })
+  return updated ?? { ...user, accountType }
 }
 
 async function findUserByEmail(email) {
@@ -163,6 +191,42 @@ async function updateUser(id, patch) {
   users[idx] = { ...users[idx], ...patch }
   await writeJson(USERS_JSON, users)
   return users[idx]
+}
+
+async function findAdminInvite(email) {
+  const key = email.toLowerCase()
+  if (mongoActive()) return adminInvitesColl.findOne({ email: key })
+  const invites = await readJson(ADMIN_INVITES_JSON, [])
+  return invites.find((invite) => invite.email === key) ?? null
+}
+
+async function saveAdminInvite(email, invitedBy, accountType) {
+  const doc = {
+    email: email.toLowerCase(),
+    invitedBy,
+    accountType: accountType === 'developer' || accountType === 'superadmin' ? accountType : 'admin',
+    createdAt: new Date().toISOString(),
+  }
+  if (mongoActive()) {
+    await adminInvitesColl.updateOne({ email: doc.email }, { $set: doc }, { upsert: true })
+    return doc
+  }
+  const invites = await readJson(ADMIN_INVITES_JSON, [])
+  const idx = invites.findIndex((invite) => invite.email === doc.email)
+  if (idx === -1) invites.push(doc)
+  else invites[idx] = doc
+  await writeJson(ADMIN_INVITES_JSON, invites)
+  return doc
+}
+
+async function deleteAdminInvite(email) {
+  const key = email.toLowerCase()
+  if (mongoActive()) {
+    await adminInvitesColl.deleteOne({ email: key })
+    return
+  }
+  const invites = await readJson(ADMIN_INVITES_JSON, [])
+  await writeJson(ADMIN_INVITES_JSON, invites.filter((invite) => invite.email !== key))
 }
 
 async function createSession(userId) {
@@ -242,13 +306,21 @@ function eventCreatorId(event) {
   return event?.creatorId ?? event?.createdBy ?? event?.authorId ?? event?.userId ?? null
 }
 
-function canModifyEvent(event, requesterId) {
-  // Legacy seed events carry no creator info — leave them modifiable so
-  // older clients keep working. Once an event has a creator, only that
-  // creator may edit/delete it.
+function isEventOwner(event, user) {
   const creatorId = eventCreatorId(event)
-  if (!creatorId) return true
-  return Boolean(requesterId) && creatorId === requesterId
+  return Boolean(user?.id && creatorId && creatorId === user.id)
+}
+
+function canEditEvent(event, user) {
+  if (!user) return false
+  if (isDeveloper(user)) return true
+  return isEventOwner(event, user)
+}
+
+function canDeleteEvent(event, user) {
+  if (!user) return false
+  if (canModerateEvents(user)) return true
+  return isEventOwner(event, user)
 }
 
 async function updateEventDoc(id, update) {
@@ -302,6 +374,15 @@ async function appendEventComment(id, comment) {
   return true
 }
 
+async function readSeedBuildings() {
+  try {
+    const raw = JSON.parse(await readFile(SEED_BUILDINGS_JSON, 'utf8'))
+    return raw.buildings ?? raw ?? []
+  } catch {
+    return []
+  }
+}
+
 async function listBuildings() {
   if (mongoActive()) {
     try {
@@ -312,12 +393,46 @@ async function listBuildings() {
       console.error(err)
     }
   }
-  try {
-    const raw = JSON.parse(await readFile(SEED_BUILDINGS_JSON, 'utf8'))
-    return raw.buildings ?? raw ?? []
-  } catch {
-    return []
+  return readSeedBuildings()
+}
+
+function buildingNameKey(name) {
+  return String(name ?? '').trim().toLowerCase()
+}
+
+// Copies the seed file into Mongo the first time a location is added,
+// so the new row does not replace the existing campus list.
+async function addBuilding(building) {
+  if (!mongoActive()) {
+    const error = new Error('Locations are stored in MongoDB, and the database is not connected.')
+    error.status = 503
+    throw error
   }
+  const coll = db.collection('buildings')
+  await coll.createIndex({ id: 1 }, { unique: true })
+  let existing = await coll.find({}, { projection: { _id: 0 } }).toArray()
+  if (existing.length === 0) {
+    const seed = await readSeedBuildings()
+    if (seed.length > 0) {
+      await coll.insertMany(seed.map((doc) => ({ ...doc })))
+      existing = seed
+    }
+  }
+  if (existing.some((doc) => buildingNameKey(doc.name) === buildingNameKey(building.name))) {
+    const error = new Error('A location with that name already exists.')
+    error.status = 409
+    throw error
+  }
+  const nextId = existing.reduce((max, doc) => Math.max(max, Number(doc.id) || 0), 0) + 1
+  const saved = {
+    id: nextId,
+    name: building.name,
+    Alias: building.Alias,
+    Location: building.Location,
+    parking: building.parking,
+  }
+  await coll.insertOne({ ...saved })
+  return saved
 }
 
 // ─── App ────────────────────────────────────────────────────────────
@@ -373,6 +488,14 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(409).json({ error: 'An account with that email already exists.' })
     }
 
+    // Signup never accepts an account type. Developer emails come from
+    // server config. Everyone else is basic unless an invite is waiting.
+    const invited = await findAdminInvite(email)
+    const invitedType = invited?.accountType === 'developer' || invited?.accountType === 'superadmin'
+      ? invited.accountType
+      : invited
+        ? 'admin'
+        : 'basic'
     const doc = {
       id: req.body.id || `user-${Date.now().toString(36)}-${randomBytes(4).toString('hex')}`,
       name,
@@ -382,8 +505,10 @@ app.post('/api/auth/register', async (req, res) => {
       major,
       interests,
       createdAt: new Date().toISOString(),
+      accountType: developerEmails().includes(email) ? 'developer' : invitedType,
     }
     await insertUser(doc)
+    if (invited) await deleteAdminInvite(email)
     const token = await createSession(doc.id)
     res.status(201).json({ token, user: publicUser(doc) })
   } catch (err) {
@@ -400,7 +525,7 @@ app.post('/api/auth/login', async (req, res) => {
     if (!emailIsValid(email) || !password) {
       return res.status(400).json({ error: 'Enter your email and password.' })
     }
-    const user = await findUserByEmail(email)
+    const user = await ensureAccountType(await findUserByEmail(email))
     if (!user || !(await verifyPassword(password, user.passwordHash))) {
       return res.status(401).json({ error: 'Invalid email or password.' })
     }
@@ -418,7 +543,8 @@ async function authUser(req) {
   const token = header.startsWith('Bearer ') ? header.slice(7) : null
   const userId = await userIdForToken(token)
   if (!userId) return null
-  return findUserById(userId)
+  const user = await findUserById(userId)
+  return ensureAccountType(user)
 }
 
 app.get('/api/auth/me', async (req, res) => {
@@ -458,6 +584,134 @@ app.patch('/api/auth/me', async (req, res) => {
   }
 })
 
+app.post('/api/auth/admin-invites', async (req, res) => {
+  try {
+    const actor = await authUser(req)
+    if (!actor) {
+      res.status(401).json({ error: 'Sign in to invite an admin.' })
+      return
+    }
+    if (!canInviteAdmins(actor)) {
+      res.status(403).json({ error: 'Only an admin or developer can invite an admin.' })
+      return
+    }
+    const email = String(req.body.email ?? '').trim().toLowerCase()
+    const role = String(req.body.accountType ?? 'admin').trim().toLowerCase()
+    if (!emailIsValid(email)) {
+      res.status(400).json({ error: 'Enter the email to invite.' })
+      return
+    }
+    if (role !== 'admin' && role !== 'developer' && role !== 'superadmin') {
+      res.status(400).json({ error: 'Choose admin, superadmin, or developer.' })
+      return
+    }
+    if ((role === 'developer' || role === 'superadmin') && !canGrantElevatedRoles(actor)) {
+      res.status(403).json({ error: 'Only a developer can invite a developer or superadmin.' })
+      return
+    }
+    if (developerEmails().includes(email) && role !== 'developer') {
+      res.status(400).json({ error: 'That email is already a developer.' })
+      return
+    }
+    const target = await findUserByEmail(email)
+    if (target) {
+      const type = resolvedAccountType(target)
+      if (type === role) {
+        res.json({ status: 'already', user: publicUser(target) })
+        return
+      }
+      if (!canGrantElevatedRoles(actor) && type !== 'basic') {
+        res.status(400).json({ error: 'That account already has a higher role.' })
+        return
+      }
+      const updated = await updateUser(target.id, { accountType: role })
+      if (!updated) {
+        res.status(404).json({ error: 'No account with that email.' })
+        return
+      }
+      res.json({ status: 'granted', user: publicUser(updated) })
+      return
+    }
+    const pending = await findAdminInvite(email)
+    const pendingElevated = pending?.accountType === 'developer' || pending?.accountType === 'superadmin'
+    if (pendingElevated && !canGrantElevatedRoles(actor)) {
+      res.status(400).json({ error: 'That email is already invited with a higher role.' })
+      return
+    }
+    await saveAdminInvite(email, actor.id, role)
+    res.status(201).json({ status: 'invited', email, accountType: role })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Could not invite that admin.' })
+  }
+})
+
+app.post('/api/auth/role-removals', async (req, res) => {
+  try {
+    const actor = await authUser(req)
+    if (!actor) {
+      res.status(401).json({ error: 'Sign in to remove a role.' })
+      return
+    }
+    if (!canRemoveAdmins(actor)) {
+      res.status(403).json({ error: 'Only a superadmin or developer can remove a role.' })
+      return
+    }
+    const email = String(req.body.email ?? '').trim().toLowerCase()
+    if (!emailIsValid(email)) {
+      res.status(400).json({ error: 'Enter the email to remove.' })
+      return
+    }
+    if (email === String(actor.email ?? '').toLowerCase()) {
+      res.status(400).json({ error: 'You cannot remove your own role.' })
+      return
+    }
+    if (developerEmails().includes(email)) {
+      res.status(400).json({ error: 'That email stays a developer from the server configuration.' })
+      return
+    }
+    const target = await findUserByEmail(email)
+    if (target) {
+      const type = resolvedAccountType(target)
+      const developerCanRemove = isDeveloper(actor) && (type === 'admin' || type === 'superadmin' || type === 'developer')
+      const superadminCanRemove = accountTypeOf(actor) === 'superadmin' && type === 'admin'
+      if (!developerCanRemove && !superadminCanRemove) {
+        res.status(403).json({
+          error: type === 'basic'
+            ? 'That account is not an admin, superadmin, or developer.'
+            : 'You cannot remove that role.',
+        })
+        return
+      }
+      const updated = await updateUser(target.id, { accountType: 'basic' })
+      await deleteAdminInvite(email)
+      if (!updated) {
+        res.status(404).json({ error: 'No account with that email.' })
+        return
+      }
+      res.json({ status: 'removed', user: publicUser(updated) })
+      return
+    }
+    const pending = await findAdminInvite(email)
+    if (!pending) {
+      res.status(404).json({ error: 'No account with that email.' })
+      return
+    }
+    const pendingType = pending.accountType === 'developer' || pending.accountType === 'superadmin' ? pending.accountType : 'admin'
+    const developerCanRemove = isDeveloper(actor)
+    const superadminCanRemove = accountTypeOf(actor) === 'superadmin' && pendingType === 'admin'
+    if (!developerCanRemove && !superadminCanRemove) {
+      res.status(403).json({ error: 'You cannot remove that role.' })
+      return
+    }
+    await deleteAdminInvite(email)
+    res.json({ status: 'removed', email })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Could not remove that role.' })
+  }
+})
+
 app.post('/api/auth/logout', async (req, res) => {
   try {
     const header = String(req.headers.authorization ?? '')
@@ -477,6 +731,56 @@ app.get('/api/buildings', async (req, res) => {
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Could not load buildings.' })
+  }
+})
+
+app.post('/api/buildings', async (req, res) => {
+  try {
+    const actor = await authUser(req)
+    if (!actor) {
+      res.status(401).json({ error: 'Sign in to add a location.' })
+      return
+    }
+    if (!canManageLocations(actor)) {
+      res.status(403).json({ error: 'Only an admin or developer can add a location.' })
+      return
+    }
+
+    const name = String(req.body.name ?? '').trim()
+    if (!name || name.length > 120) {
+      res.status(400).json({ error: 'Enter a full name (120 characters or fewer).' })
+      return
+    }
+
+    const aliasRaw = req.body.alias ?? req.body.Alias ?? ''
+    const aliases = (Array.isArray(aliasRaw) ? aliasRaw : String(aliasRaw).split(','))
+      .map((alias) => String(alias).trim())
+      .filter(Boolean)
+    if (aliases.length > 20 || aliases.some((alias) => alias.length > 80)) {
+      res.status(400).json({ error: 'Use up to 20 aliases, each 80 characters or fewer.' })
+      return
+    }
+
+    const lat = Number(req.body.lat)
+    const lng = Number(req.body.lng)
+    if (!Number.isFinite(lat) || lat < -90 || lat > 90 || !Number.isFinite(lng) || lng < -180 || lng > 180) {
+      res.status(400).json({ error: 'Enter latitude and longitude as numbers.' })
+      return
+    }
+
+    const saved = await addBuilding({
+      name,
+      Alias: [...new Set(aliases)],
+      Location: { lat, lng },
+      parking: req.body.parking === true,
+    })
+    res.status(201).json(saved)
+  } catch (err) {
+    console.error(err)
+    const status = Number(err.status) || 500
+    res.status(status).json({
+      error: status === 500 ? 'Could not add the location.' : err.message,
+    })
   }
 })
 
@@ -501,6 +805,14 @@ app.post('/api/events', async (req, res) => {
     // The server derives this from the session token — never trust a
     // client-supplied creator id.
     const creator = await authUser(req)
+    if (!creator) {
+      res.status(401).json({ error: 'Sign in to post an event.' })
+      return
+    }
+    if (!canCreateEvents(creator)) {
+      res.status(403).json({ error: 'An @nku.edu email is required to post an event.' })
+      return
+    }
     const doc = {
       id: req.body.id || `event-${Date.now()}`,
       title,
@@ -513,7 +825,7 @@ app.post('/api/events', async (req, res) => {
       attendeeIds: [],
       reactions: { like: 0, love: 0, interested: 0 },
       comments: [],
-      creatorId: creator?.id ?? req.body.creatorId ?? null,
+      creatorId: creator.id,
       creatorName: creator?.name ?? null,
       creatorEmail: creator?.email ?? null,
       createdAt: new Date().toISOString(),
@@ -544,7 +856,7 @@ app.patch('/api/events/:id', async (req, res) => {
       return
     }
     const requester = await authUser(req)
-    if (!canModifyEvent(existing, requester?.id)) {
+    if (!canEditEvent(existing, requester)) {
       res.status(403).json({ error: 'Only the creator of this event can edit it.' })
       return
     }
@@ -581,8 +893,8 @@ app.delete('/api/events/:id', async (req, res) => {
       return
     }
     const requester = await authUser(req)
-    if (!canModifyEvent(existing, requester?.id)) {
-      res.status(403).json({ error: 'Only the creator of this event can delete it.' })
+    if (!canDeleteEvent(existing, requester)) {
+      res.status(403).json({ error: 'Only the creator, an admin, or a developer can remove this event.' })
       return
     }
     const deleted = await deleteEventDoc(req.params.id)

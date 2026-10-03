@@ -126,5 +126,35 @@ export function useAuth() {
     [],
   )
 
-  return { user, token, loading, login, register, logout, updateProfile, authFetch: request }
+  const inviteAdmin = useCallback(async (email, accountType = 'admin') => {
+    const result = await request('/api/auth/admin-invites', {
+      method: 'POST',
+      body: JSON.stringify({ email, accountType }),
+    })
+    if (result.user) {
+      setUser((current) => {
+        if (!current || current.id !== result.user.id) return current
+        localStorage.setItem(USER_KEY, JSON.stringify(result.user))
+        return result.user
+      })
+    }
+    return result
+  }, [])
+
+  const removeRole = useCallback(async (email) => {
+    const result = await request('/api/auth/role-removals', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    })
+    if (result.user) {
+      setUser((current) => {
+        if (!current || current.id !== result.user.id) return current
+        localStorage.setItem(USER_KEY, JSON.stringify(result.user))
+        return result.user
+      })
+    }
+    return result
+  }, [])
+
+  return { user, token, loading, login, register, logout, updateProfile, inviteAdmin, removeRole, authFetch: request }
 }

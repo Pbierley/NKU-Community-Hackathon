@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { apiUrl } from '../api'
+import { canModerateEvents, isDeveloper } from '../auth/accountTypes'
 import { getAuthToken } from '../auth/useAuth'
 
 const CATEGORY_TINTS = {
@@ -61,6 +62,16 @@ export function isEventCreator(event, userOrId) {
   return eventCreatorId(event) === userId
 }
 
+export function canEditEvent(event, user) {
+  if (isDeveloper(user)) return true
+  return isEventCreator(event, user)
+}
+
+export function canDeleteEvent(event, user) {
+  if (canModerateEvents(user)) return true
+  return isEventCreator(event, user)
+}
+
 // Display name for a comment, tolerant of older shapes that stored the
 // author under different keys.
 export function commentAuthor(comment) {
@@ -107,7 +118,10 @@ export function useEvents() {
       headers: authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(newEvent),
     })
-    if (!res.ok) throw new Error('Could not post event.')
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      throw new Error(body.error || 'Could not post event.')
+    }
     const saved = await res.json()
     setEvents((current) => [saved, ...current])
     return saved
@@ -119,7 +133,10 @@ export function useEvents() {
       headers: authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(updatedEvent),
     })
-    if (!res.ok) throw new Error('Could not update event.')
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      throw new Error(body.error || 'Could not update event.')
+    }
     const saved = await res.json()
     setEvents((current) => current.map((event) => (event.id === saved.id ? saved : event)))
     return saved
