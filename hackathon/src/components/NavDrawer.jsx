@@ -76,9 +76,10 @@ export default function NavDrawer({ open, user, onNavigate, onClose, onLogout })
             </span>
           </button>
 
-          <button
-            type="button"
-            onClick={() => onNavigate('events')}
+          <a
+            href="https://myengagement.nku.edu/home_login"
+            target="_blank"
+            rel="noreferrer"
             className="w-full flex items-center gap-4 px-4 py-4 rounded-lg border border-dashed border-line text-left"
           >
             <span className="w-8 h-8 rounded-lg bg-ink text-white flex items-center justify-center shrink-0">
@@ -92,7 +93,7 @@ export default function NavDrawer({ open, user, onNavigate, onClose, onLogout })
               <br />
               <span className="text-[13px] font-normal text-muted">Student Portal &amp; Clubs</span>
             </span>
-          </button>
+          </a>
 
           <p className="px-4 pt-6 pb-2 text-[11px] font-bold tracking-[0.06em] uppercase text-muted">
             Campus resources

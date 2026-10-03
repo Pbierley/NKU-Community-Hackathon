@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function LoginScreen({ onNavigate, onLogin, notice }) {
+export default function LoginScreen({ onNavigate, onLogin, notice, next }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPw, setShowPw] = useState(false)
@@ -13,7 +13,7 @@ export default function LoginScreen({ onNavigate, onLogin, notice }) {
     setBusy(true)
     try {
       await onLogin(email.trim(), password)
-      onNavigate('home')
+      onNavigate(next ?? 'home')
     } catch (err) {
       setError(err.message || 'Could not log in.')
     } finally {

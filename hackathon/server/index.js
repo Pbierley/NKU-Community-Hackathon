@@ -141,6 +141,23 @@ async function insertUser(doc) {
   return doc
 }
 
+async function updateUser(id, patch) {
+  if (mongoActive()) {
+    const result = await usersColl.findOneAndUpdate(
+      { id },
+      { $set: patch },
+      { returnDocument: 'after' },
+    )
+    return result ?? null
+  }
+  const users = await readJson(USERS_JSON, [])
+  const idx = users.findIndex((u) => u.id === id)
+  if (idx === -1) return null
+  users[idx] = { ...users[idx], ...patch }
+  await writeJson(USERS_JSON, users)
+  return users[idx]
+}
+
 async function createSession(userId) {
   const token = randomBytes(32).toString('hex')
   if (mongoActive()) {
@@ -381,6 +398,32 @@ app.get('/api/auth/me', async (req, res) => {
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Could not load account.' })
+  }
+})
+
+// ─── Auth: update profile (name, year, major, interests) ─────────────
+app.patch('/api/auth/me', async (req, res) => {
+  try {
+    const user = await authUser(req)
+    if (!user) return res.status(401).json({ error: 'Not signed in.' })
+
+    const name = String(req.body.name ?? '').trim()
+    if (!name) return res.status(400).json({ error: 'Name is required.' })
+
+    const patch = {
+      name,
+      year: String(req.body.year ?? '').trim(),
+      major: String(req.body.major ?? '').trim(),
+      interests: Array.isArray(req.body.interests)
+        ? req.body.interests.map((i) => String(i).trim()).filter(Boolean).slice(0, 50)
+        : [],
+    }
+    const updated = await updateUser(user.id, patch)
+    if (!updated) return res.status(404).json({ error: 'Account not found.' })
+    res.json({ user: publicUser(updated) })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Could not save account.' })
   }
 })
 

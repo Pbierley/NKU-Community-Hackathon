@@ -1,13 +1,5 @@
 import { useMemo, useState } from 'react'
-
-const INTEREST_PALETTE = [
-  'bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]',
-  'bg-[#F5F3FF] text-[#5B21B6] border-[#DDD6FE]',
-  'bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]',
-  'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]',
-  'bg-[#FEF2F2] text-[#B91C1C] border-[#FECACA]',
-  'bg-[#FDF4FF] text-[#A21CAF] border-[#F0ABFC]',
-]
+import InterestsEditor from './InterestsEditor'
 
 const DEFAULT_INTERESTS = [
   { name: 'Sports', on: true },
@@ -16,14 +8,13 @@ const DEFAULT_INTERESTS = [
   { name: 'Tech', on: false },
 ]
 
-export default function RegisterScreen({ onNavigate, onRegister }) {
-  const [name, setName] = useState('Jordan Taylor')
+export default function RegisterScreen({ onNavigate, onRegister, next }) {
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [year, setYear] = useState('Junior')
   const [major, setMajor] = useState('Cybersecurity')
   const [interests, setInterests] = useState(DEFAULT_INTERESTS)
-  const [custom, setCustom] = useState('')
   const [error, setError] = useState(null)
   const [busy, setBusy] = useState(false)
 
@@ -33,16 +24,15 @@ export default function RegisterScreen({ onNavigate, onRegister }) {
     setInterests((current) => current.map((item, i) => (i === idx ? { ...item, on: !item.on } : item)))
   }
 
-  function addInterest() {
-    const cleaned = custom.trim().replace(/[✓+]/g, '').trim()
-    if (!cleaned) return
-    const label = cleaned.charAt(0).toUpperCase() + cleaned.slice(1)
-    if (interests.some((i) => i.name.toLowerCase() === label.toLowerCase())) {
-      setCustom('')
-      return
-    }
-    setInterests((current) => [...current, { name: label, on: true }])
-    setCustom('')
+  function addInterest(label) {
+    if (!label) return
+    if (interests.some((i) => i.name.toLowerCase() === label.toLowerCase())) return
+    // No cap on the number of interests — custom tags are welcome.
+    setInterests((current) => [...current, { name: label, on: true, custom: true }])
+  }
+
+  function removeInterest(idx) {
+    setInterests((current) => current.filter((_, i) => i !== idx))
   }
 
   async function handleSubmit(e) {
@@ -62,7 +52,7 @@ export default function RegisterScreen({ onNavigate, onRegister }) {
         major: major.trim(),
         interests: interests.filter((i) => i.on).map((i) => i.name),
       })
-      onNavigate('home')
+      onNavigate(next ?? 'home')
     } catch (err) {
       setError(err.message || 'Could not create account.')
     } finally {
@@ -91,7 +81,7 @@ export default function RegisterScreen({ onNavigate, onRegister }) {
         </span>
       </header>
 
-      <main className="flex-1 overflow-y-auto no-scrollbar p-4 sm:p-6 pb-32 space-y-6 text-left flex flex-col items-center">
+      <main className="flex-1 min-h-0 overflow-y-auto no-scrollbar p-4 sm:p-6 pb-8 space-y-6 text-left flex flex-col items-center">
         {error && (
           <p role="alert" className="w-full max-w-2xl bg-[#FEF2F2] border border-[#FECACA] rounded-lg px-4 py-4 text-[14px] font-semibold text-[#B91C1C] leading-[1.5]">
             {error}
@@ -113,7 +103,8 @@ export default function RegisterScreen({ onNavigate, onRegister }) {
                 onChange={(e) => setName(e.target.value)}
                 required
                 autoComplete="name"
-                className="text-right text-[15px] font-medium leading-[1.6] text-ink w-2/3 bg-transparent"
+                placeholder="Name"
+                className="text-right text-[15px] font-medium leading-[1.6] text-ink w-2/3 bg-transparent placeholder:text-faint"
                 aria-label="Full name"
               />
             </label>
@@ -182,55 +173,17 @@ export default function RegisterScreen({ onNavigate, onRegister }) {
                 className="text-[15px] font-medium bg-transparent text-right w-2/3 text-ink placeholder:text-faint"
               />
             </div>
-            <div className="border border-line rounded-lg p-4">
-              <p className="text-[11px] font-bold tracking-[0.06em] uppercase text-body">
-                Interests selected: <span className="tnum">{selectedCount}</span>
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {interests.map((item, idx) => (
-                  <button
-                    key={item.name}
-                    type="button"
-                    onClick={() => toggleInterest(idx)}
-                    className={`text-[12px] font-semibold rounded-md px-3 py-2 border ${
-                      item.on
-                        ? INTEREST_PALETTE[idx % INTEREST_PALETTE.length]
-                        : 'bg-wash text-body border-line'
-                    }`}
-                  >
-                    {item.name} {item.on ? '✓' : '+'}
-                  </button>
-                ))}
-              </div>
-              <div className="mt-4 flex items-center gap-2">
-                <input
-                  value={custom}
-                  onChange={(e) => setCustom(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault()
-                      addInterest()
-                    }
-                  }}
-                  type="text"
-                  placeholder="Type an interest, e.g. Chess"
-                  maxLength={24}
-                  className="h-12 px-4 flex-1 min-w-0 bg-white border border-line rounded-lg text-[15px] leading-[1.6] text-ink"
-                />
-                <button
-                  type="button"
-                  onClick={addInterest}
-                  className="h-12 px-4 rounded-lg bg-ink text-white font-semibold text-[14px] shrink-0"
-                >
-                  Add
-                </button>
-              </div>
-            </div>
+            <InterestsEditor
+              interests={interests}
+              onToggle={toggleInterest}
+              onAdd={addInterest}
+              onRemove={removeInterest}
+            />
           </div>
         </section>
       </main>
 
-      <footer className="absolute bottom-0 inset-x-0 p-6 pt-8 bg-gradient-to-t from-white via-white to-transparent text-left">
+      <footer className="shrink-0 bg-white border-t border-line p-4 sm:p-6 text-left">
         <div className="w-full max-w-2xl mx-auto">
           <button
             type="button"

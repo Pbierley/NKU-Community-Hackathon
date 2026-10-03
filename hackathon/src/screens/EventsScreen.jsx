@@ -124,7 +124,7 @@ export default function EventsScreen({ onNavigate, user }) {
         </div>
       </div>
 
-      <main className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-4 space-y-4 pb-32 text-left w-full max-w-2xl md:mx-auto">
+      <main className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-4 space-y-4 pb-8 text-left w-full max-w-2xl md:mx-auto">
         {view === 'calendar' && (
           <EventCalendar events={results} selectedDay={selectedDay} onSelectDay={setSelectedDay} />
         )}
@@ -176,7 +176,7 @@ export default function EventsScreen({ onNavigate, user }) {
         ))}
       </main>
 
-      <footer className="absolute bottom-0 inset-x-0 p-6 pt-8 bg-gradient-to-t from-white via-white to-transparent text-left">
+      <footer className="shrink-0 bg-white border-t border-line p-4 sm:p-6 text-left">
         <div className="w-full max-w-2xl mx-auto">
           <button
             type="button"
@@ -189,7 +189,6 @@ export default function EventsScreen({ onNavigate, user }) {
             + MAKE POST
           </button>
         </div>
-        <div className="mx-auto mt-4 w-8 h-1 rounded-full bg-line" />
       </footer>
 
       <EventModal

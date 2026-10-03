@@ -112,5 +112,18 @@ export function useAuth() {
     localStorage.removeItem(USER_KEY)
   }, [])
 
-  return { user, token, loading, login, register, logout, authFetch: request }
+  const updateProfile = useCallback(
+    async (patch) => {
+      const { user: nextUser } = await request('/api/auth/me', {
+        method: 'PATCH',
+        body: JSON.stringify(patch),
+      })
+      setUser(nextUser)
+      localStorage.setItem(USER_KEY, JSON.stringify(nextUser))
+      return nextUser
+    },
+    [],
+  )
+
+  return { user, token, loading, login, register, logout, updateProfile, authFetch: request }
 }

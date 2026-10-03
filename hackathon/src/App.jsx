@@ -13,10 +13,13 @@ import './App.css'
 const PROTECTED = new Set(['events', 'account'])
 
 function App() {
-  const { user, loading, login, register, logout } = useAuth()
+  const { user, loading, login, register, logout, updateProfile } = useAuth()
   const [screen, setScreen] = useState('home')
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [authNotice, setAuthNotice] = useState(null)
+  // Where a logged-out user was headed when they hit a protected screen,
+  // so login/register can send them there afterwards instead of home.
+  const [pendingScreen, setPendingScreen] = useState(null)
 
   // 'drawer' opens the overlay on top of the current screen instead of replacing it.
   const navigateTo = useCallback((id) => {
@@ -29,9 +32,11 @@ function App() {
     // Remember why a logged-out user was sent to login so the login
     // screen can explain (e.g. "To view events, sign in").
     if (PROTECTED.has(id)) {
-      setAuthNotice(id === 'events' ? 'To view events, sign in' : 'Sign in to continue')
+      setAuthNotice(id === 'events' ? 'To view events, sign in' : 'To view your account, sign in')
+      setPendingScreen(id)
     } else if (id === 'home') {
       setAuthNotice(null)
+      setPendingScreen(null)
     }
   }, [])
 
@@ -59,6 +64,7 @@ function App() {
     await logout()
     setDrawerOpen(false)
     setAuthNotice(null)
+    setPendingScreen(null)
     setScreen('home')
   }
 
@@ -84,15 +90,22 @@ function App() {
             onNavigate={navigateTo}
             onLogin={login}
             notice={!user ? authNotice : null}
+            next={pendingScreen}
           />
         )}
         {visibleScreen === 'register' && (
-          <RegisterScreen key="register" onNavigate={navigateTo} onRegister={register} />
+          <RegisterScreen key="register" onNavigate={navigateTo} onRegister={register} next={pendingScreen} />
         )}
         {visibleScreen === 'home' && <HomeScreen key="home" onNavigate={navigateTo} user={user} />}
         {visibleScreen === 'events' && <EventsScreen key="events" onNavigate={navigateTo} user={user} />}
         {visibleScreen === 'account' && (
-          <AccountScreen key="account" onNavigate={navigateTo} user={user} onLogout={handleLogout} />
+          <AccountScreen
+            key={`account-${user?.id}`}
+            onNavigate={navigateTo}
+            user={user}
+            onLogout={handleLogout}
+            onUpdateProfile={updateProfile}
+          />
         )}
         <NavDrawer
           open={drawerOpen}
