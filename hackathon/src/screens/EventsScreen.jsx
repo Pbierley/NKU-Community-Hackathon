@@ -5,7 +5,7 @@ import { searchEvents, useEvents } from '../Communication/useEvents'
 import AppHeader from '../components/AppHeader'
 import Toast from '../components/Toast'
 
-export default function EventsScreen({ onNavigate }) {
+export default function EventsScreen({ onNavigate, user }) {
   const { events, addEvent, toggleRegister } = useEvents()
   const [query, setQuery] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -47,7 +47,7 @@ export default function EventsScreen({ onNavigate }) {
           <p className="text-[15px] text-muted leading-[1.6]">No events found</p>
         )}
         {results.map((event) => (
-          <Event key={event.id} event={event} onRegister={toggleRegister} />
+          <Event key={event.id} event={event} onRegister={toggleRegister} userId={user?.id} />
         ))}
       </main>
 

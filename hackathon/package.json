@@ -9,8 +9,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "node --env-file=../.env --watch server/index.js",
-    "seed:buildings": "node --env-file=../.env scripts/seedBuildings.js",
+    "server": "node --env-file-if-exists=../.env --watch server/index.js",
+    "seed:buildings": "node --env-file-if-exists=../.env scripts/seedBuildings.js",
     "fetch:walkways": "node scripts/fetchWalkways.js"
   },
   "dependencies": {

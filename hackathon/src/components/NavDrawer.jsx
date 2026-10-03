@@ -1,7 +1,21 @@
 import { useEvents } from '../Communication/useEvents'
 
-export default function NavDrawer({ open, onNavigate, onClose }) {
+function initials(name) {
+  return (
+    String(name ?? '')
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0].toUpperCase())
+      .join('') || 'NK'
+  )
+}
+
+export default function NavDrawer({ open, user, onNavigate, onClose, onLogout }) {
   const { events } = useEvents()
+  const name = user?.name ?? 'Norse Student'
+  const email = user?.email ?? ''
+  const meta = [user?.year, user?.major].filter(Boolean).join(' • ') || 'NKU Student'
 
   return (
     <div
@@ -19,13 +33,13 @@ export default function NavDrawer({ open, onNavigate, onClose }) {
       >
         <header className="px-6 pt-8 pb-6 flex items-center gap-4 border-b border-line text-left">
           <div className="w-12 h-12 rounded-full bg-ink text-white font-bold text-[15px] flex items-center justify-center shrink-0">
-            AM
+            {initials(name)}
           </div>
           <div className="min-w-0 text-left">
-            <h2 className="text-xl font-bold tracking-tight leading-[1.3]">Alex Morgan</h2>
-            <p className="text-[13px] text-muted leading-[1.5]">alex.morgan@nku.edu</p>
+            <h2 className="text-xl font-bold tracking-tight leading-[1.3] truncate">{name}</h2>
+            <p className="text-[13px] text-muted leading-[1.5] break-all">{email}</p>
             <span className="inline-block mt-2 text-[12px] font-semibold text-body bg-wash border border-line rounded-md px-3 py-2">
-              Sophomore • Informatics
+              {meta}
             </span>
           </div>
         </header>
@@ -101,10 +115,10 @@ export default function NavDrawer({ open, onNavigate, onClose }) {
         <footer className="p-6 pt-2 text-left">
           <button
             type="button"
-            onClick={() => onNavigate('login')}
+            onClick={onLogout}
             className="w-full h-14 px-8 rounded-lg bg-[#FEF2F2] text-[#B91C1C] border border-[#FECACA] font-semibold text-[15px]"
           >
-            Sign Out (Alex M.)
+            {user ? `Sign Out (${user.name.split(' ')[0]})` : 'Sign Out'}
           </button>
         </footer>
       </aside>

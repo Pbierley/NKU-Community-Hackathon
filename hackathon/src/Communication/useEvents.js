@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-
-const CURRENT_USER = 'current-user'
+import { getAuthToken } from '../auth/useAuth'
 
 const CATEGORY_TINTS = {
   Athletics: 'bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]',
@@ -33,8 +32,10 @@ export function categoryTint(category) {
   return CATEGORY_TINTS[category] ?? 'bg-wash text-body border-line'
 }
 
-export function isRegistered(event) {
-  return event.attendeeIds?.includes(CURRENT_USER)
+export function isRegistered(event, userId) {
+  if (userId) return event.attendeeIds?.includes(userId)
+  // Logged-out fallback: match legacy demo ids so the UI still toggles.
+  return event.attendeeIds?.includes('current-user')
 }
 
 export function useEvents() {
@@ -72,7 +73,11 @@ export function useEvents() {
   }
 
   async function toggleRegister(eventId) {
-    const res = await fetch(`/api/events/${encodeURIComponent(eventId)}/register`, { method: 'PATCH' })
+    const token = getAuthToken()
+    const res = await fetch(`/api/events/${encodeURIComponent(eventId)}/register`, {
+      method: 'PATCH',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
     if (!res.ok) throw new Error('Could not update registration.')
     const saved = await res.json()
     setEvents((current) => current.map((event) => (event.id === saved.id ? saved : event)))

@@ -1,7 +1,7 @@
 import { categoryTint, eventCategory, eventWhen, isRegistered } from './useEvents'
 
-export default function Event({ event, onRegister }) {
-  const registered = isRegistered(event)
+export default function Event({ event, onRegister, userId }) {
+  const registered = isRegistered(event, userId)
   const category = eventCategory(event)
   const venue = event.description
     ? `${event.location} • ${event.description}`

@@ -12,6 +12,13 @@ dist
 dist-ssr
 *.local
 
+# Env / secrets — copy .env.example to ../.env and replace KEYTIME
+.env
+.env.local
+server/data/users.json
+server/data/sessions.json
+server/data/events.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
