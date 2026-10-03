@@ -63,29 +63,17 @@ export default function NavDrawer({ open, user, onNavigate, onClose, onLogout })
           <button
             type="button"
             onClick={() => onNavigate('parking')}
-            className="w-full flex items-center gap-4 px-4 h-12 rounded-lg hover:bg-canvas text-left font-semibold text-[15px] leading-[1.6]"
+            className="w-full flex items-center gap-4 px-4 py-2 min-h-12 rounded-lg hover:bg-canvas text-left font-semibold text-[15px] leading-[1.6]"
           >
             <span className="w-8 h-8 rounded-lg bg-wash flex items-center justify-center shrink-0">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 20V4h8a5 5 0 0 1 0 10H5" />
               </svg>
             </span>
-            Parking
-            <span className="ml-auto text-faint">›</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => onNavigate('rec')}
-            className="w-full flex items-center gap-4 px-4 h-12 rounded-lg hover:bg-canvas text-left font-semibold text-[15px] leading-[1.6]"
-          >
-            <span className="w-8 h-8 rounded-lg bg-wash flex items-center justify-center shrink-0">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 20V9l8-5 8 5v11" />
-                <path d="M9 20v-6h6v6" />
-              </svg>
+            <span className="min-w-0 leading-[1.3]">
+              Parking &amp; Rec
+              <span className="block text-[12px] font-normal text-muted">Availability</span>
             </span>
-            Campus Rec
             <span className="ml-auto text-faint">›</span>
           </button>
 
