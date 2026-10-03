@@ -23,7 +23,7 @@ function groupByDay(events) {
 }
 
 export default function EventsScreen({ onNavigate, user }) {
-  const { events, addEvent, updateEvent, toggleRegister, addComment } = useEvents()
+  const { events, addEvent, updateEvent, deleteEvent, toggleRegister, addComment } = useEvents()
   const [query, setQuery] = useState('')
   const [view, setView] = useState('list')
   const [selectedDay, setSelectedDay] = useState(null)
@@ -58,6 +58,17 @@ export default function EventsScreen({ onNavigate, user }) {
       setToast('Event updated')
     } catch {
       setToast('Could not update event.')
+    }
+  }
+
+  async function handleDelete(eventToDelete) {
+    if (!window.confirm(`Delete "${eventToDelete.title}"? This cannot be undone.`)) return
+    try {
+      await deleteEvent(eventToDelete.id)
+      if (selectedEventId === eventToDelete.id) setSelectedEventId(null)
+      setToast('Event deleted')
+    } catch (err) {
+      setToast(err.message || 'Could not delete event.')
     }
   }
 
@@ -147,6 +158,7 @@ export default function EventsScreen({ onNavigate, user }) {
                 <Event
                   key={event.id}
                   event={event}
+                  user={user}
                   userId={user?.id}
                   onRegister={toggleRegister}
                   onOpen={(openedEvent) => setSelectedEventId(openedEvent.id)}
@@ -154,6 +166,7 @@ export default function EventsScreen({ onNavigate, user }) {
                     setEventToEdit(eventToUpdate)
                     setIsModalOpen(true)
                   }}
+                  onDelete={handleDelete}
                 />
               ))}
             </div>
@@ -187,8 +200,16 @@ export default function EventsScreen({ onNavigate, user }) {
       />
       <EventDetailsModal
         event={selectedEvent}
+        user={user}
         onClose={() => setSelectedEventId(null)}
         onAddComment={addComment}
+        onRegister={toggleRegister}
+        onEdit={(eventToUpdate) => {
+          setSelectedEventId(null)
+          setEventToEdit(eventToUpdate)
+          setIsModalOpen(true)
+        }}
+        onDelete={handleDelete}
       />
       <Toast message={toast} onDone={() => setToast(null)} />
     </div>
