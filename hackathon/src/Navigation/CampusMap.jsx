@@ -10,7 +10,7 @@ import {
   useMap,
 } from 'react-leaflet'
 import L from './leaflet'
-import { getBuildingById, hasLocation } from './buildings'
+import { getBuildingById, hasLocation, mapLabel } from './buildings'
 import { NKU_BOUNDS, NKU_CENTER } from './nkuMap'
 
 const USER_BLUE = '#2563EB'
@@ -64,38 +64,47 @@ function UserArrow({ position, heading }) {
 const PIN_SIZES = { normal: 28, selected: 40, dimmed: 12 }
 const buildingIcons = new Map()
 
-function buildingIcon(id, state) {
-  const key = `${id}-${state}`
+function pinBox(label, state) {
+  if (state === 'dimmed') return [12, 12]
+  const height = PIN_SIZES[state]
+  const width = height + Math.max(0, String(label).length - 2) * (state === 'selected' ? 11 : 9)
+  return [width, height]
+}
+
+function buildingIcon(id, state, label) {
+  const key = `${id}-${state}-${label}`
   if (!buildingIcons.has(key)) {
-    const size = PIN_SIZES[state]
+    const [width, height] = pinBox(label, state)
     buildingIcons.set(
       key,
       L.divIcon({
         className: `building-pin building-pin--${state}`,
-        html: state === 'dimmed' ? '' : `<span>${id}</span>`,
-        iconSize: [size, size],
-        iconAnchor: [size / 2, size / 2],
-        popupAnchor: [0, -size / 2],
+        html: state === 'dimmed' ? '' : `<span>${label}</span>`,
+        iconSize: [width, height],
+        iconAnchor: [width / 2, height / 2],
+        popupAnchor: [0, -height / 2],
       }),
     )
   }
   return buildingIcons.get(key)
 }
 
-function BuildingMarkers({ buildings, selectedId }) {
+function BuildingMarkers({ buildings, selectedId, onSelect }) {
   return buildings.filter(hasLocation).map((b) => {
     const state = selectedId == null ? 'normal' : b.id === selectedId ? 'selected' : 'dimmed'
+    const label = mapLabel(b)
     return (
       <Marker
         key={b.id}
         position={[b.Location.lat, b.Location.lng]}
-        icon={buildingIcon(b.id, state)}
+        icon={buildingIcon(b.id, state, label)}
         zIndexOffset={state === 'selected' ? 1000 : 0}
-        title={`${b.id}. ${b.name}`}
+        title={`${label}. ${b.name}`}
+        eventHandlers={{ click: () => onSelect?.(b.id) }}
       >
         <Popup>
           <p className="text-[15px] font-bold leading-[1.5] text-ink">
-            {b.id}. {b.name}
+            {label}. {b.name}
           </p>
           {b.Alias.length > 0 && (
             <p className="mt-1 text-[13px] text-muted leading-[1.5]">{b.Alias.join(' · ')}</p>
@@ -106,40 +115,107 @@ function BuildingMarkers({ buildings, selectedId }) {
   })
 }
 
-function FlyToBuilding({ buildings, selectedId, route }) {
+// Pixel room around a route so the line and pins sit clear of the search chip,
+// the zoom controls, and the parking card. Capped so a short phone map still
+// has space left for the path itself.
+function routeFrame(map, bottomInset) {
+  const size = map.getSize()
+  const short = size.y < 640
+  const pin = 24
+  const top = Math.min((short ? 72 : 64) + pin, size.y * 0.3)
+  let bottom = (bottomInset > 0 ? bottomInset : short ? 72 : 56) + pin
+  bottom = Math.min(bottom, size.y * 0.5)
+  // Keep the search chip and parking card clear. Only give up comfort padding
+  // once the path itself would have too little of the screen left.
+  const minRoute = Math.max(96, size.y * 0.32)
+  if (top + bottom > size.y - minRoute) {
+    bottom = Math.max(bottomInset, bottom - (top + bottom - (size.y - minRoute)))
+  }
+  return {
+    paddingTopLeft: [Math.min(short ? 36 : 48, size.x * 0.12), Math.round(top)],
+    paddingBottomRight: [Math.min(short ? 64 : 72, size.x * 0.18), Math.round(Math.max(bottom, 0))],
+    maxZoom: short ? 16 : 17,
+    animate: true,
+  }
+}
+
+function routeIsFramed(map, route, frame) {
+  const size = map.getSize()
+  if (size.x < 40 || size.y < 40) return false
+  const [left, top] = frame.paddingTopLeft
+  const [right, bottom] = frame.paddingBottomRight
+  if (left + right >= size.x || top + bottom >= size.y) return false
+  const northWest = map.containerPointToLatLng([left, top])
+  const southEast = map.containerPointToLatLng([size.x - right, size.y - bottom])
+  return L.latLngBounds(northWest, southEast).contains(L.latLngBounds(route))
+}
+
+function FlyToBuilding({ buildings, selectedId, route, bottomInset }) {
   const map = useMap()
+  const framed = useRef('')
+
   useEffect(() => {
-    if (route?.length > 1) {
-      map.fitBounds(route, { padding: [48, 48], maxZoom: 18 })
-      return
+    function fit(force) {
+      if (!route || route.length < 2) return
+      map.invalidateSize({ pan: false, animate: false })
+      const size = map.getSize()
+      if (size.x < 40 || size.y < 40) return
+      const end = route[route.length - 1]
+      const key = `${end[0].toFixed(5)},${end[1].toFixed(5)}|${Math.round(size.x)}x${Math.round(size.y)}|${bottomInset}`
+      const frame = routeFrame(map, bottomInset)
+      const bounds = L.latLngBounds(route)
+      // Campus min zoom and max bounds are what keep an empty map filled with
+      // campus. Both stop a padded route from fitting on a short phone map.
+      map.setMaxBounds(null)
+      map.setMinZoom(12)
+      const campusMin = map.getBoundsZoom(L.latLngBounds(NKU_BOUNDS), true)
+      map.setMinZoom(Math.max(12, campusMin - 3))
+      // A new destination or a resized phone map always reframes. Later location
+      // ticks only reframe once the path would leave the padded screen.
+      if (!force && framed.current === key && routeIsFramed(map, route, frame)) return
+      map.fitBounds(bounds, frame)
+      framed.current = key
     }
+
+    if (route?.length > 1) {
+      fit(false)
+      map.on('resize', fit)
+      return () => map.off('resize', fit)
+    }
+
+    framed.current = ''
     const b = selectedId != null ? getBuildingById(buildings, selectedId) : null
-    if (b && hasLocation(b)) map.flyTo([b.Location.lat, b.Location.lng], Math.max(map.getZoom(), 18))
-  }, [map, buildings, selectedId, route])
+    if (b && hasLocation(b)) map.flyTo([b.Location.lat, b.Location.lng], Math.max(map.getZoom(), 17))
+    return undefined
+  }, [map, buildings, selectedId, route, bottomInset])
   return null
 }
 
 // Stops zooming out past the point where the campus bounds no longer fill the screen.
-function LimitZoomToCampus() {
+// While a route is on screen the fit is allowed to zoom out a step further so the
+// whole path stays visible on a short phone map.
+function LimitZoomToCampus({ routeActive }) {
   const map = useMap()
   useEffect(() => {
     const bounds = L.latLngBounds(NKU_BOUNDS)
     const update = () => {
+      if (routeActive) return
+      map.setMaxBounds(NKU_BOUNDS)
       map.setMinZoom(map.getBoundsZoom(bounds, true))
       map.panInsideBounds(bounds, { animate: false })
     }
     update()
     map.on('resize', update)
     return () => map.off('resize', update)
-  }, [map])
+  }, [map, routeActive])
   return null
 }
 
-function FollowUser({ position, follow, onUserPan }) {
+function FollowUser({ position, follow, onUserPan, routeActive }) {
   const map = useMap()
   useEffect(() => {
-    if (follow && position) map.panTo(position)
-  }, [map, position, follow])
+    if (follow && position && !routeActive) map.panTo(position)
+  }, [map, position, follow, routeActive])
   useEffect(() => {
     map.on('dragstart', onUserPan)
     return () => map.off('dragstart', onUserPan)
@@ -150,8 +226,18 @@ function FollowUser({ position, follow, onUserPan }) {
 function FitMap({ full }) {
   const map = useMap()
   useEffect(() => {
-    map.invalidateSize()
+    map.invalidateSize({ pan: false, animate: false })
   }, [map, full])
+  // The map row shrinks once featured events load, without a window resize.
+  // Leaflet would keep fitting the route to the old taller size and clip the end.
+  useEffect(() => {
+    const container = map.getContainer()
+    const observer = new ResizeObserver(() => {
+      map.invalidateSize({ pan: false, animate: false })
+    })
+    observer.observe(container)
+    return () => observer.disconnect()
+  }, [map])
   return null
 }
 
@@ -208,8 +294,10 @@ export default function CampusMap({
   onUserPan,
   onLocate,
   selectedId,
+  onSelect,
   full,
   route,
+  bottomInset = 0,
 }) {
   return (
     <MapContainer
@@ -229,9 +317,9 @@ export default function CampusMap({
       />
       <AttributionControl position="bottomleft" prefix={false} />
       <FitMap full={full} />
-      <LimitZoomToCampus />
-      <BuildingMarkers buildings={buildings} selectedId={selectedId} />
-      <FlyToBuilding buildings={buildings} selectedId={selectedId} route={route} />
+      <LimitZoomToCampus routeActive={route?.length > 1} />
+      <BuildingMarkers buildings={buildings} selectedId={selectedId} onSelect={onSelect} />
+      <FlyToBuilding buildings={buildings} selectedId={selectedId} route={route} bottomInset={bottomInset} />
       {route?.length > 1 && (
         <Polyline
           positions={route}
@@ -247,7 +335,7 @@ export default function CampusMap({
         />
       )}
       {position && <UserArrow position={position} heading={heading} />}
-      <FollowUser position={position} follow={follow} onUserPan={onUserPan} />
+      <FollowUser position={position} follow={follow} onUserPan={onUserPan} routeActive={route?.length > 1} />
       <MapControls onLocate={onLocate} />
     </MapContainer>
   )

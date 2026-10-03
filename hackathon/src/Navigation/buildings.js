@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+export { isParkingPlace } from './parkingPlaces.js'
+
 export function useBuildings() {
   const [state, setState] = useState({ buildings: [], loading: true, error: null })
 
@@ -56,4 +58,10 @@ export function searchBuildings(buildings, query, limit = 8) {
 // Codes are the short all-caps aliases from the campus map legend, e.g. "GH".
 export function buildingCode(building) {
   return building.Alias.find((a) => /^[A-Z]{2,4}$/.test(a)) ?? null
+}
+
+// Lot letters and building codes. Falls back to the map number when there is no code.
+export function mapLabel(building) {
+  const letter = building.Alias.find((a) => /^[A-Z]$/.test(a))
+  return letter ?? buildingCode(building) ?? String(building.id)
 }

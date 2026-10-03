@@ -40,6 +40,21 @@
         { "id": 38, "name": "Intramural Field Complex", "Alias": ["IM", "Intramural Fields"], "Location": { "lat": 39.037921, "lng": -84.467109 } },
         { "id": 39, "name": "Outdoor Space", "Alias": ["OD"], "Location": null },
         { "id": 40, "name": "Opportunity House", "Alias": ["OH"], "Location": null },
-        { "id": 41, "name": "Welcome Center Garage", "Alias": ["WG"], "Location": null }
+        { "id": 41, "name": "Welcome Center Garage", "Alias": ["WG"], "Location": null },
+        { "id": 42, "name": "Lot K", "Alias": ["K", "Permit Parking"], "Location": { "lat": 39.031472, "lng": -84.467819 } },
+        { "id": 43, "name": "Lot D", "Alias": ["D", "Faculty/Staff Parking"], "Location": { "lat": 39.032119, "lng": -84.461718 } },
+        { "id": 44, "name": "Lot E", "Alias": ["E", "Faculty/Staff Parking"], "Location": { "lat": 39.033773, "lng": -84.46492 } },
+        { "id": 45, "name": "Lot F", "Alias": ["F", "Student Parking"], "Location": { "lat": 39.03471, "lng": -84.463721 } },
+        { "id": 46, "name": "Lot I", "Alias": ["I", "Student Parking"], "Location": { "lat": 39.033481, "lng": -84.463474 } },
+        { "id": 47, "name": "Lot L", "Alias": ["L", "Permit Parking"], "Location": { "lat": 39.032735, "lng": -84.467809 } },
+        { "id": 48, "name": "Lot M", "Alias": ["M", "Student Parking"], "Location": { "lat": 39.033699, "lng": -84.466844 } },
+        { "id": 49, "name": "Lot P", "Alias": ["P", "Student Parking"], "Location": { "lat": 39.034573, "lng": -84.467363 } },
+        { "id": 50, "name": "Lot Q", "Alias": ["Q", "Student Parking"], "Location": { "lat": 39.036792, "lng": -84.466663 } },
+        { "id": 51, "name": "Lot O", "Alias": ["O", "Permit Parking"], "Location": { "lat": 39.030757, "lng": -84.458976 } },
+        { "id": 52, "name": "Lot H", "Alias": ["H", "Permit Parking"], "Location": { "lat": 39.02796, "lng": -84.461359 } },
+        { "id": 53, "name": "Lot T", "Alias": ["T", "Open Parking"], "Location": { "lat": 39.028808, "lng": -84.461771 } },
+        { "id": 54, "name": "Lot V", "Alias": ["V", "Faculty/Staff Parking"], "Location": { "lat": 39.028604, "lng": -84.463806 } },
+        { "id": 55, "name": "Lot G", "Alias": ["G", "Permit Parking", "EV Charging Stations"], "Location": { "lat": 39.02839, "lng": -84.467456 } },
+        { "id": 56, "name": "Lot J", "Alias": ["J", "Faculty/Staff Parking"], "Location": { "lat": 39.030235, "lng": -84.461365 } }
     ]
 }

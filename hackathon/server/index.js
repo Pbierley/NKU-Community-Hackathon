@@ -5,6 +5,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
+import { isParkingPlace } from '../src/Navigation/parkingPlaces.js'
 
 const scrypt = promisify(_scrypt)
 
@@ -33,6 +34,8 @@ let db = null
 let usersColl = null
 let eventsColl = null
 let sessionsColl = null
+// Fullness reports live in their own database, separate from app users and events.
+let parkingRankings = null
 
 if (MONGO_URI) {
   try {
@@ -44,13 +47,17 @@ if (MONGO_URI) {
     sessionsColl = db.collection('sessions')
     await usersColl.createIndex({ email: 1 }, { unique: true })
     await sessionsColl.createIndex({ token: 1 }, { unique: true })
-    console.log(`Connected to MongoDB (${dbName}).`)
+    parkingRankings = mongoClient.db('parking').collection('rankings')
+    await parkingRankings.createIndex({ placeId: 1, userId: 1, date: 1 }, { unique: true })
+    await parkingRankings.createIndex({ date: 1 })
+    console.log(`Connected to MongoDB (${dbName}, parking).`)
   } catch (err) {
     console.error('MongoDB connect failed, falling back to JSON files:', err.message)
     db = null
     usersColl = null
     eventsColl = null
     sessionsColl = null
+    parkingRankings = null
   }
 } else {
   console.log('MongoURI is "KEYTIME" or unset — using local JSON files in server/data/.')
@@ -590,6 +597,92 @@ app.post('/api/events/:id/comments', async (req, res) => {
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Could not add comment.' })
+  }
+})
+
+// Campus day in Eastern Time, so fullness resets at midnight in Highland Heights.
+function campusDate(now = new Date()) {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/New_York',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(now)
+}
+
+async function parkingSummary(date, userId) {
+  const grouped = await parkingRankings.aggregate([
+    { $match: { date } },
+    { $group: { _id: '$placeId', average: { $avg: '$rating' }, count: { $sum: 1 } } },
+  ]).toArray()
+  const mineDocs = userId
+    ? await parkingRankings.find({ date, userId }, { projection: { _id: 0, placeId: 1, rating: 1 } }).toArray()
+    : []
+  const mineByPlace = new Map(mineDocs.map((doc) => [doc.placeId, doc.rating]))
+  return {
+    date,
+    places: grouped.map((row) => ({
+      placeId: row._id,
+      average: Math.round(row.average * 10) / 10,
+      count: row.count,
+      mine: mineByPlace.get(row._id) ?? null,
+    })),
+  }
+}
+
+app.get('/api/parking/fullness', async (req, res) => {
+  try {
+    if (!parkingRankings) {
+      res.status(503).json({ error: 'Parking ratings are unavailable.' })
+      return
+    }
+    const user = await authUser(req)
+    res.json(await parkingSummary(campusDate(), user?.id ?? null))
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Could not load parking fullness.' })
+  }
+})
+
+app.post('/api/parking/fullness', async (req, res) => {
+  try {
+    if (!parkingRankings) {
+      res.status(503).json({ error: 'Parking ratings are unavailable.' })
+      return
+    }
+    const user = await authUser(req)
+    if (!user) {
+      res.status(401).json({ error: 'Sign in to rate parking.' })
+      return
+    }
+    const rating = Number(req.body.rating)
+    const placeId = Number(req.body.placeId)
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      res.status(400).json({ error: 'Choose a fullness from 1 to 5.' })
+      return
+    }
+    if (!Number.isInteger(placeId)) {
+      res.status(400).json({ error: 'Choose a parking lot or garage.' })
+      return
+    }
+    const place = (await listBuildings()).find((building) => building.id === placeId)
+    if (!place || !isParkingPlace(place)) {
+      res.status(400).json({ error: 'Choose a parking lot or garage.' })
+      return
+    }
+    const date = campusDate()
+    await parkingRankings.updateOne(
+      { placeId, userId: user.id, date },
+      {
+        $set: { rating, updatedAt: new Date().toISOString() },
+        $setOnInsert: { placeId, userId: user.id, date },
+      },
+      { upsert: true },
+    )
+    res.json(await parkingSummary(date, user.id))
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Could not save parking fullness.' })
   }
 })
 

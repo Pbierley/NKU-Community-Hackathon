@@ -5,6 +5,7 @@ import AccountScreen from './screens/AccountScreen'
 import EventsScreen from './screens/EventsScreen'
 import HomeScreen from './screens/HomeScreen'
 import LoginScreen from './screens/LoginScreen'
+import ParkingScreen from './screens/ParkingScreen'
 import RegisterScreen from './screens/RegisterScreen'
 import './App.css'
 
@@ -97,6 +98,7 @@ function App() {
           <RegisterScreen key="register" onNavigate={navigateTo} onRegister={register} next={pendingScreen} />
         )}
         {visibleScreen === 'home' && <HomeScreen key="home" onNavigate={navigateTo} user={user} />}
+        {visibleScreen === 'parking' && <ParkingScreen key="parking" onNavigate={navigateTo} />}
         {visibleScreen === 'events' && <EventsScreen key="events" onNavigate={navigateTo} user={user} />}
         {visibleScreen === 'account' && (
           <AccountScreen

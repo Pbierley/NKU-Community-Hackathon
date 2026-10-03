@@ -3,13 +3,16 @@ import AppHeader from '../components/AppHeader'
 import FeaturedEvents from '../components/FeaturedEvents'
 import Toast from '../components/Toast'
 import BuildingSearch from '../Navigation/BuildingSearch'
-import { getBuildingById, hasLocation, useBuildings } from '../Navigation/buildings'
 import CampusMap from '../Navigation/CampusMap'
+import ParkingFullness from '../Navigation/ParkingFullness'
+import { getBuildingById, hasLocation, isParkingPlace, useBuildings } from '../Navigation/buildings'
+import { useParkingFullness } from '../Navigation/useParkingFullness'
 import { useUserLocation } from '../Navigation/useUserLocation'
 import { useWalkingRoute } from '../Navigation/useWalkingRoute'
 
-export default function HomeScreen({ onNavigate }) {
+export default function HomeScreen({ onNavigate, user }) {
   const { buildings, error: buildingsError } = useBuildings()
+  const { summary, rate } = useParkingFullness()
   const { position, accuracy, heading, error: locationError, compassEnabled, enableCompass } =
     useUserLocation()
   const [follow, setFollow] = useState(true)
@@ -73,8 +76,13 @@ export default function HomeScreen({ onNavigate }) {
           onUserPan={stopFollowing}
           onLocate={locate}
           selectedId={selectedId}
+          onSelect={(id) => {
+            setSelectedId(id)
+            setFollow(false)
+          }}
           full={mapFull}
           route={route}
+          bottomInset={destination && isParkingPlace(destination) ? 176 : 0}
         />
         <button
           type="button"
@@ -101,6 +109,15 @@ export default function HomeScreen({ onNavigate }) {
           }}
           onClear={() => setSelectedId(null)}
         />
+        {destination && isParkingPlace(destination) && (
+          <ParkingFullness
+            place={destination}
+            user={user}
+            summary={summary}
+            onRate={(rating) => rate(destination.id, rating)}
+            onSignIn={() => onNavigate('login')}
+          />
+        )}
       </main>
 
       {!mapFull && <FeaturedEvents onNavigate={onNavigate} />}
