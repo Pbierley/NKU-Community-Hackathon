@@ -24,7 +24,7 @@
         { "id": 22, "name": "University Center", "Alias": ["UC", "Welcome Center", "WC", "Otto M. Budig Theater"], "Location": { "lat": 39.030127, "lng": -84.464003 } },
         { "id": 23, "name": "Votruba Student Union", "Alias": ["SU", "Student Union"], "Location": { "lat": 39.030183, "lng": -84.465297 } },
         { "id": 24, "name": "Parking Services", "Alias": [], "Location": { "lat": 39.032098, "lng": -84.460681 } },
-        { "id": 25, "name": "Vines and Branches", "Alias": ["15 Clearview Dr"], "Location": {"lat": 39.029577, "long": -84.459993} },
+        { "id": 25, "name": "Vines and Branches", "Alias": ["15 Clearview Dr"], "Location": { "lat": 39.029577, "lng": -84.459993 } },
         { "id": 26, "name": "University Police", "Alias": ["UP"], "Location": { "lat": 39.033975, "lng": -84.461015 } },
         { "id": 27, "name": "Commonwealth Hall", "Alias": ["CW"], "Location": { "lat": 39.035616, "lng": -84.467487 } },
         { "id": 28, "name": "Kentucky Hall", "Alias": ["KY"], "Location": { "lat": 39.035059, "lng": -84.466540 } },

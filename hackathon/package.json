@@ -8,10 +8,14 @@
     "dev:phone": "vite --host --mode phone",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server": "node --env-file=../.env --watch server/index.js",
+    "seed:buildings": "node --env-file=../.env scripts/seedBuildings.js"
   },
   "dependencies": {
+    "express": "^5.2.1",
     "leaflet": "^1.9.4",
+    "mongodb": "^7.7.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-leaflet": "^5.0.0"

@@ -11,5 +11,7 @@ export default defineConfig(({ mode }) => ({
     fs: { allow: ['..'] },
     // Lets a Cloudflare quick tunnel reach the dev server for phone testing.
     allowedHosts: ['.trycloudflare.com'],
+    // The API runs separately (`npm run server`) so MongoDB credentials stay off the client.
+    proxy: { '/api': 'http://localhost:3001' },
   },
 }))

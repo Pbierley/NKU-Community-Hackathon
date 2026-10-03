@@ -1,17 +1,17 @@
 import { useId, useMemo, useState } from 'react'
-import { buildingCode, getBuildingById, searchBuildings } from './buildings'
+import { buildingCode, getBuildingById, hasLocation, searchBuildings } from './buildings'
 
-export default function BuildingSearch({ selectedId, onSelect, onClear }) {
+export default function BuildingSearch({ buildings, selectedId, onSelect, onClear }) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(0)
   const listId = useId()
 
-  const selected = selectedId != null ? getBuildingById(selectedId) : null
-  const results = useMemo(() => searchBuildings(query), [query])
+  const selected = selectedId != null ? getBuildingById(buildings, selectedId) : null
+  const results = useMemo(() => searchBuildings(buildings, query), [buildings, query])
 
   function choose(building) {
-    if (!building.Location) return
+    if (!hasLocation(building)) return
     onSelect(building.id)
     setQuery('')
     setOpen(false)
@@ -99,7 +99,7 @@ export default function BuildingSearch({ selectedId, onSelect, onClear }) {
           {results.length === 0 && <li className="building-search__empty">No buildings found</li>}
           {results.map((b, i) => {
             const code = buildingCode(b)
-            const disabled = !b.Location
+            const disabled = !hasLocation(b)
             return (
               <li
                 key={b.id}

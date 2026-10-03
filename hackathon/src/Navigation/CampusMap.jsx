@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Circle, MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
 import L from './leaflet'
-import { getBuildingById, MAPPED_BUILDINGS } from './buildings'
+import { getBuildingById, hasLocation } from './buildings'
 import { NKU_BOUNDS, NKU_CENTER } from './nkuMap'
 
 const ARROW_SVG = `
@@ -69,8 +69,8 @@ function buildingIcon(id, state) {
   return buildingIcons.get(key)
 }
 
-function BuildingMarkers({ selectedId }) {
-  return MAPPED_BUILDINGS.map((b) => {
+function BuildingMarkers({ buildings, selectedId }) {
+  return buildings.filter(hasLocation).map((b) => {
     const state = selectedId == null ? 'normal' : b.id === selectedId ? 'selected' : 'dimmed'
     return (
       <Marker
@@ -91,12 +91,12 @@ function BuildingMarkers({ selectedId }) {
   })
 }
 
-function FlyToBuilding({ selectedId }) {
+function FlyToBuilding({ buildings, selectedId }) {
   const map = useMap()
   useEffect(() => {
-    const b = selectedId != null ? getBuildingById(selectedId) : null
-    if (b?.Location) map.flyTo([b.Location.lat, b.Location.lng], Math.max(map.getZoom(), 18))
-  }, [map, selectedId])
+    const b = selectedId != null ? getBuildingById(buildings, selectedId) : null
+    if (b && hasLocation(b)) map.flyTo([b.Location.lat, b.Location.lng], Math.max(map.getZoom(), 18))
+  }, [map, buildings, selectedId])
   return null
 }
 
@@ -124,7 +124,7 @@ function FollowUser({ position, follow }) {
   return null
 }
 
-export default function CampusMap({ position, accuracy, heading, follow, selectedId }) {
+export default function CampusMap({ buildings, position, accuracy, heading, follow, selectedId }) {
   return (
     <MapContainer
       center={NKU_CENTER}
@@ -140,8 +140,8 @@ export default function CampusMap({ position, accuracy, heading, follow, selecte
         maxZoom={19}
       />
       <LimitZoomToCampus />
-      <BuildingMarkers selectedId={selectedId} />
-      <FlyToBuilding selectedId={selectedId} />
+      <BuildingMarkers buildings={buildings} selectedId={selectedId} />
+      <FlyToBuilding buildings={buildings} selectedId={selectedId} />
       {position && accuracy && (
         <Circle
           center={position}

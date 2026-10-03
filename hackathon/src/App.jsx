@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import BuildingSearch from './Navigation/BuildingSearch'
+import { useBuildings } from './Navigation/buildings'
 import CampusMap from './Navigation/CampusMap'
 import { useUserLocation } from './Navigation/useUserLocation'
 import './App.css'
 
 function App() {
+  const { buildings, loading: buildingsLoading, error: buildingsError } = useBuildings()
   const { position, accuracy, heading, error, compassEnabled, enableCompass } = useUserLocation()
   const [follow, setFollow] = useState(true)
   const [selectedId, setSelectedId] = useState(null)
@@ -12,6 +14,7 @@ function App() {
   return (
     <div className="app">
       <CampusMap
+        buildings={buildings}
         position={position}
         accuracy={accuracy}
         heading={heading}
@@ -20,6 +23,7 @@ function App() {
       />
 
       <BuildingSearch
+        buildings={buildings}
         selectedId={selectedId}
         onSelect={(id) => {
           setSelectedId(id)
@@ -38,6 +42,9 @@ function App() {
           <input type="checkbox" checked={follow} onChange={(e) => setFollow(e.target.checked)} />
           Follow me
         </label>
+        {(buildingsLoading || buildingsError) && (
+          <p className="map-panel__status">{buildingsError ?? 'Loading buildings…'}</p>
+        )}
         <p className="map-panel__status">
           {error
             ? error

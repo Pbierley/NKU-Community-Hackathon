@@ -1,11 +1,33 @@
-import data from '../../../Buildings.json'
+import { useEffect, useState } from 'react'
 
-export const BUILDINGS = data.buildings
+export function useBuildings() {
+  const [state, setState] = useState({ buildings: [], loading: true, error: null })
 
-export const MAPPED_BUILDINGS = BUILDINGS.filter((b) => b.Location)
+  useEffect(() => {
+    const controller = new AbortController()
+    fetch('/api/buildings', { signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) throw new Error(`Server responded ${res.status}`)
+        return res.json()
+      })
+      .then((buildings) => setState({ buildings, loading: false, error: null }))
+      .catch((err) => {
+        if (err.name === 'AbortError') return
+        setState({ buildings: [], loading: false, error: `Could not load buildings: ${err.message}` })
+      })
+    return () => controller.abort()
+  }, [])
 
-export function getBuildingById(id) {
-  return BUILDINGS.find((b) => b.id === id) ?? null
+  return state
+}
+
+// Leaflet throws on a non-numeric lat/lng, which blanks the whole app.
+export function hasLocation(building) {
+  return Number.isFinite(building.Location?.lat) && Number.isFinite(building.Location?.lng)
+}
+
+export function getBuildingById(buildings, id) {
+  return buildings.find((b) => b.id === id) ?? null
 }
 
 function matchRank(building, q) {
@@ -20,10 +42,11 @@ function matchRank(building, q) {
 }
 
 // Matches map number, building code, name, or any alias, best matches first.
-export function searchBuildings(query, limit = 8) {
+export function searchBuildings(buildings, query, limit = 8) {
   const q = query.trim().toLowerCase()
   if (!q) return []
-  return BUILDINGS.map((b) => ({ b, rank: matchRank(b, q) }))
+  return buildings
+    .map((b) => ({ b, rank: matchRank(b, q) }))
     .filter((r) => r.rank >= 0)
     .sort((x, y) => x.rank - y.rank || x.b.id - y.b.id)
     .slice(0, limit)
