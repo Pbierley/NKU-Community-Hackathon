@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { mapLabel } from './buildings'
 
 export const FULLNESS_LEVELS = [
@@ -46,17 +46,25 @@ export default function ParkingFullness({
   scaleHint = '1 means empty and 5 means very full.',
   groupLabel = 'Fullness from 1, empty, to 5, very full',
   levels = FULLNESS_LEVELS,
+  confirmUpdate = false,
 }) {
   const [busy, setBusy] = useState(false)
+  const [editing, setEditing] = useState(false)
   const [error, setError] = useState(null)
   const report = placeReport(summary, place.id)
   const mine = report?.mine ?? null
+  const showScale = user && (!confirmUpdate || editing)
+
+  useEffect(() => {
+    setEditing(false)
+  }, [place.id])
 
   async function choose(rating) {
     setBusy(true)
     setError(null)
     try {
       await onRate(rating)
+      if (confirmUpdate) setEditing(false)
     } catch (err) {
       setError(err.message || 'Could not save your rating.')
     } finally {
@@ -75,29 +83,48 @@ export default function ParkingFullness({
         {mapLabel(place)} · {place.name}
       </p>
       <p className="mt-0.5 text-[13px] text-muted leading-[1.4]">{prompt} {today}</p>
-      {user ? (
-        <div className="mt-2 flex gap-1.5" role="group" aria-label={groupLabel}>
-          {levels.map((level) => {
-            const selected = mine === level.value
-            return (
-              <button
-                key={level.value}
-                type="button"
-                disabled={busy}
-                aria-pressed={selected}
-                aria-label={`${level.value}, ${level.label}`}
-                onClick={() => choose(level.value)}
-                className={`h-10 flex-1 rounded-md border text-[14px] font-bold ${
-                  selected
-                    ? 'bg-nku border-nku text-ink'
-                    : 'bg-white border-line text-ink'
-                }`}
-              >
-                {level.value}
-              </button>
-            )
-          })}
+      {showScale ? (
+        <div className="mt-2">
+          {confirmUpdate && (
+            <button
+              type="button"
+              onClick={() => setEditing(false)}
+              className="mb-1.5 h-8 px-3 rounded-md border border-line bg-white text-[13px] font-bold text-ink"
+            >
+              Cancel
+            </button>
+          )}
+          <div className="flex gap-1.5" role="group" aria-label={groupLabel}>
+            {levels.map((level) => {
+              const selected = mine === level.value
+              return (
+                <button
+                  key={level.value}
+                  type="button"
+                  disabled={busy}
+                  aria-pressed={selected}
+                  aria-label={`${level.value}, ${level.label}`}
+                  onClick={() => choose(level.value)}
+                  className={`h-10 flex-1 rounded-md border text-[14px] font-bold ${
+                    selected
+                      ? 'bg-nku border-nku text-ink'
+                      : 'bg-white border-line text-ink'
+                  }`}
+                >
+                  {level.value}
+                </button>
+              )
+            })}
+          </div>
         </div>
+      ) : user ? (
+        <button
+          type="button"
+          onClick={() => setEditing(true)}
+          className="mt-2 h-8 px-3 rounded-md border border-line bg-white text-[13px] font-bold text-ink"
+        >
+          Update
+        </button>
       ) : (
         <button
           type="button"
@@ -108,7 +135,7 @@ export default function ParkingFullness({
         </button>
       )}
       <p className="mt-1.5 text-[12px] text-muted leading-[1.4]">
-        {user ? `${scaleHint} ` : ''}
+        {showScale ? `${scaleHint} ` : ''}
         Rankings reset each day.
         {error ? ` ${error}` : ''}
       </p>

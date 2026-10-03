@@ -183,6 +183,7 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
             summary={summary}
             onRate={(rating) => rate(destination.id, rating)}
             onSignIn={() => onNavigate('login')}
+            confirmUpdate
           />
         )}
         {destination && isRecreationCenter(destination) && (
@@ -197,6 +198,7 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
             scaleHint="1 means empty and 5 means packed."
             groupLabel="Busyness from 1, empty, to 5, packed"
             levels={BUSYNESS_LEVELS}
+            confirmUpdate
           />
         )}
       </main>
