@@ -10,13 +10,13 @@ import { useParkingFullness } from '../Navigation/useParkingFullness'
 import { useUserLocation } from '../Navigation/useUserLocation'
 import { useWalkingRoute } from '../Navigation/useWalkingRoute'
 
-export default function HomeScreen({ onNavigate, user }) {
+export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFocusHandled }) {
   const { buildings, error: buildingsError } = useBuildings()
   const { summary, rate } = useParkingFullness()
   const { position, accuracy, heading, error: locationError, compassEnabled, enableCompass } =
     useUserLocation()
-  const [follow, setFollow] = useState(true)
-  const [selectedId, setSelectedId] = useState(null)
+  const [follow, setFollow] = useState(focusBuildingId == null)
+  const [selectedId, setSelectedId] = useState(focusBuildingId ?? null)
   const [notice, setNotice] = useState(null)
   const [dismissedError, setDismissedError] = useState(null)
   const [mapFull, setMapFull] = useState(false)
@@ -33,6 +33,13 @@ export default function HomeScreen({ onNavigate, user }) {
   }, [notice, error])
   const stopFollowing = useCallback(() => setFollow(false), [])
   const toggleMapFull = useCallback(() => setMapFull((v) => !v), [])
+
+  useEffect(() => {
+    if (focusBuildingId == null) return
+    setSelectedId(focusBuildingId)
+    setFollow(false)
+    onMapFocusHandled?.()
+  }, [focusBuildingId, onMapFocusHandled])
 
   useEffect(() => {
     if (!mapFull) return

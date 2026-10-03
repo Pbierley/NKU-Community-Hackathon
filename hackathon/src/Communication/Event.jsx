@@ -48,7 +48,7 @@ function EventPhotos({ event, onOpen }) {
   )
 }
 
-export default function Event({ event, onRegister, onOpen, onShare, userId, user, onEdit, onDelete }) {
+export default function Event({ event, onRegister, onOpen, onShare, onShowOnMap, userId, user, onEdit, onDelete }) {
   const currentUserId = user?.id ?? userId
   const registered = isRegistered(event, currentUserId)
   const canModify = isEventCreator(event, currentUserId)
@@ -89,11 +89,24 @@ export default function Event({ event, onRegister, onOpen, onShare, userId, user
           </button>
         </div>
       )}
-      {category && (
-        <div className={`flex items-center gap-2 ${canModify ? 'mt-3 sm:mt-0 sm:pr-40' : ''}`}>
-          <span className={`text-[12px] font-semibold border rounded-md px-3 py-2 ${categoryTint(category)}`}>
-            {category}
-          </span>
+      {(category || event.location) && (
+        <div className={`flex flex-wrap items-center gap-2 ${canModify ? 'mt-3 sm:mt-0 sm:pr-40' : ''}`}>
+          {category && (
+            <span className={`text-[12px] font-semibold border rounded-md px-3 py-2 ${categoryTint(category)}`}>
+              {category}
+            </span>
+          )}
+          {event.location && (
+            <button
+              type="button"
+              onClick={() => onShowOnMap?.(event)}
+              title={`Show ${event.location} on the map`}
+              className="min-w-0 text-left text-[12px] font-semibold border border-line rounded-md px-3 py-2 text-body hover:bg-wash focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nku"
+            >
+              <span className="text-muted">@ </span>
+              {event.location}
+            </button>
+          )}
         </div>
       )}
       <h3 className="mt-4 text-base font-bold leading-[1.4] break-words">

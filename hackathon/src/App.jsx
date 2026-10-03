@@ -25,6 +25,8 @@ function App() {
   const [pendingScreen, setPendingScreen] = useState(() => (parseEventHash() ? 'events' : null))
   // A shared event id waiting to be opened once the events list loads.
   const [pendingEventId, setPendingEventId] = useState(() => parseEventHash())
+  // Building to select when the map opens from an event's location.
+  const [mapBuildingId, setMapBuildingId] = useState(null)
 
   // 'drawer' opens the overlay on top of the current screen instead of replacing it.
   const navigateTo = useCallback((id) => {
@@ -54,6 +56,16 @@ function App() {
   }, [])
 
   // Consumed by EventsScreen after a shared event opens (or proves unknown).
+  const showEventOnMap = useCallback((buildingId) => {
+    setMapBuildingId(buildingId)
+    setDrawerOpen(false)
+    setAuthNotice(null)
+    setPendingScreen(null)
+    setScreen('home')
+  }, [])
+
+  const handleMapFocused = useCallback(() => setMapBuildingId(null), [])
+
   const handleSharedEventOpened = useCallback(() => {
     setPendingEventId(null)
     try {
@@ -122,7 +134,15 @@ function App() {
         {visibleScreen === 'register' && (
           <RegisterScreen key="register" onNavigate={navigateTo} onRegister={register} next={pendingScreen} />
         )}
-        {visibleScreen === 'home' && <HomeScreen key="home" onNavigate={navigateTo} user={user} />}
+        {visibleScreen === 'home' && (
+          <HomeScreen
+            key="home"
+            onNavigate={navigateTo}
+            user={user}
+            focusBuildingId={mapBuildingId}
+            onMapFocusHandled={handleMapFocused}
+          />
+        )}
         {visibleScreen === 'parking' && <ParkingScreen key="parking" onNavigate={navigateTo} />}
         {visibleScreen === 'events' && (
           <EventsScreen
@@ -131,6 +151,7 @@ function App() {
             user={user}
             sharedEventId={user ? pendingEventId : null}
             onSharedEventOpened={handleSharedEventOpened}
+            onShowOnMap={showEventOnMap}
           />
         )}
         {visibleScreen === 'account' && (

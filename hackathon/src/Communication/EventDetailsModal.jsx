@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { attendeeCount, commentAuthor, eventWhen, isEventCreator, isRegistered } from './useEvents'
 
-export default function EventDetailsModal({ event, user, onClose, onAddComment, onEdit, onDelete, onRegister, onShare }) {
+export default function EventDetailsModal({ event, user, onClose, onAddComment, onEdit, onDelete, onRegister, onShare, onShowOnMap }) {
   const [commentText, setCommentText] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
@@ -63,7 +63,16 @@ export default function EventDetailsModal({ event, user, onClose, onAddComment, 
             <h2 id="event-details-title" className="mt-1 text-xl font-bold leading-[1.3] text-ink break-words">
               {event.title}
             </h2>
-            <p className="mt-2 text-[14px] text-body leading-[1.5] break-words">{event.location}</p>
+            {event.location && (
+              <button
+                type="button"
+                onClick={() => onShowOnMap?.(event)}
+                className="mt-2 text-left text-[14px] font-semibold leading-[1.5] text-body break-words hover:text-nkuDeep"
+              >
+                <span className="text-muted">@ </span>
+                {event.location}
+              </button>
+            )}
           </div>
           <button
             type="button"

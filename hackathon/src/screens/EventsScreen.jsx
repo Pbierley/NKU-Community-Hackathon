@@ -4,6 +4,7 @@ import EventCalendar from '../Communication/EventCalendar'
 import EventDetailsModal from '../Communication/EventDetailsModal'
 import EventModal from '../Communication/EventModal'
 import { buildEventShareUrl, eventDayKey, formatDayKey, isPastEvent, isRegistered, parseEventHash, searchEvents, sortEventsByDate, useEvents } from '../Communication/useEvents'
+import { findBuildingForLocation, useBuildings } from '../Navigation/buildings'
 import AppHeader from '../components/AppHeader'
 import Toast from '../components/Toast'
 
@@ -22,8 +23,9 @@ function groupByDay(events) {
   return groups
 }
 
-export default function EventsScreen({ onNavigate, user, sharedEventId, onSharedEventOpened }) {
+export default function EventsScreen({ onNavigate, user, sharedEventId, onSharedEventOpened, onShowOnMap }) {
   const { events, addEvent, updateEvent, deleteEvent, toggleRegister, addComment } = useEvents()
+  const { buildings, loading: buildingsLoading } = useBuildings()
   const [query, setQuery] = useState('')
   const [view, setView] = useState('list')
   const [selectedDay, setSelectedDay] = useState(null)
@@ -62,6 +64,21 @@ export default function EventsScreen({ onNavigate, user, sharedEventId, onShared
     }
     onSharedEventOpened?.()
   }, [sharedEventId, events, onSharedEventOpened])
+
+  function showOnMap(event) {
+    const place = String(event?.location ?? '').trim()
+    if (!place) return
+    if (buildingsLoading) {
+      setToast('Loading the campus map…')
+      return
+    }
+    const building = findBuildingForLocation(buildings, place)
+    if (!building) {
+      setToast(`${place} isn't on the campus map.`)
+      return
+    }
+    onShowOnMap?.(building.id)
+  }
 
   function openEvent(eventId) {
     setSelectedEventId(eventId)
@@ -290,6 +307,7 @@ export default function EventsScreen({ onNavigate, user, sharedEventId, onShared
                   onRegister={toggleRegister}
                   onOpen={(openedEvent) => openEvent(openedEvent.id)}
                   onShare={handleShare}
+                  onShowOnMap={showOnMap}
                   onEdit={(eventToUpdate) => {
                     setEventToEdit(eventToUpdate)
                     setIsModalOpen(true)
@@ -334,6 +352,7 @@ export default function EventsScreen({ onNavigate, user, sharedEventId, onShared
         onAddComment={addComment}
         onRegister={toggleRegister}
         onShare={handleShare}
+        onShowOnMap={showOnMap}
         onEdit={(eventToUpdate) => {
           closeDetails()
           setEventToEdit(eventToUpdate)
