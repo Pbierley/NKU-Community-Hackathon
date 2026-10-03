@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-export default function LoginScreen({ onNavigate, onLogin }) {
-  const [email, setEmail] = useState('jordan.norse@nku.edu')
+export default function LoginScreen({ onNavigate, onLogin, notice }) {
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPw, setShowPw] = useState(false)
   const [error, setError] = useState(null)
@@ -23,12 +23,13 @@ export default function LoginScreen({ onNavigate, onLogin }) {
 
   return (
     <div className="screen h-full flex flex-col bg-canvas">
-      <main className="flex-1 overflow-y-auto no-scrollbar px-6 pb-6 pt-12 flex flex-col items-start text-left max-w-[65ch]">
-        <img src="/logo.avif" alt="Northern Kentucky University logo" className="h-16 w-auto rounded-lg shadow-card" />
-        <h1 className="mt-8 text-3xl font-extrabold tracking-tight leading-[1.2]">
-          Northern Kentucky University
-        </h1>
-        <p className="mt-2 text-[15px] text-body leading-[1.6]">Campus Experience Portal</p>
+      <main className="flex-1 overflow-y-auto no-scrollbar px-4 sm:px-6 pb-6 pt-8 sm:pt-12 flex flex-col items-center">
+        <div className="w-full max-w-md flex flex-col text-left">
+          <img src="/logo.avif" alt="Northern Kentucky University logo" className="h-16 w-auto rounded-lg shadow-card mx-auto" />
+          <h1 className="mt-8 text-3xl sm:text-4xl font-extrabold tracking-tight leading-[1.2] text-center">
+            Northern Kentucky University
+          </h1>
+          <p className="mt-2 text-[15px] text-body leading-[1.6] text-center">Campus Experience Portal</p>
 
         <nav className="w-full mt-8 bg-wash rounded-lg p-1 grid grid-cols-2" aria-label="Authentication">
           <button
@@ -45,6 +46,12 @@ export default function LoginScreen({ onNavigate, onLogin }) {
             Register
           </button>
         </nav>
+
+        {notice && (
+          <p role="status" className="w-full mt-4 bg-[#FFFBEB] border border-nku rounded-lg px-4 py-3 text-[14px] font-semibold text-ink leading-[1.5]">
+            {notice}
+          </p>
+        )}
 
         <form onSubmit={handleSubmit} className="w-full mt-8 space-y-4" aria-label="Login form">
           <div>
@@ -66,6 +73,7 @@ export default function LoginScreen({ onNavigate, onLogin }) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
+                placeholder="Email"
                 className="w-full bg-transparent text-[15px] font-medium leading-[1.6] text-ink placeholder:text-faint"
               />
             </div>
@@ -91,7 +99,7 @@ export default function LoginScreen({ onNavigate, onLogin }) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
-                placeholder="Enter your password"
+                placeholder="Password"
                 className="w-full bg-transparent text-[15px] font-medium leading-[1.6] text-ink placeholder:text-faint placeholder:tracking-normal tracking-[0.2em]"
               />
               <button
@@ -123,7 +131,7 @@ export default function LoginScreen({ onNavigate, onLogin }) {
           </button>
         </form>
 
-        <p className="mt-6 text-[14px] text-body leading-[1.6] max-w-[65ch]">
+        <p className="mt-6 text-[14px] text-body leading-[1.6] text-center">
           <span>Don&rsquo;t have an account?</span>
           <button
             type="button"
@@ -133,11 +141,19 @@ export default function LoginScreen({ onNavigate, onLogin }) {
             Make Account
           </button>
         </p>
+        <button
+          type="button"
+          onClick={() => onNavigate('home')}
+          className="mt-3 text-[14px] text-muted leading-[1.6] underline underline-offset-2 self-center"
+        >
+          Continue without logging in
+        </button>
 
         <div className="flex-1 min-h-8" />
-        <footer className="w-full border-t border-line pt-4 text-left">
+        <footer className="w-full border-t border-line pt-4 text-center">
           <p className="text-[13px] text-muted leading-[1.5]">Secured with NKU Duo MFA Protection</p>
         </footer>
+        </div>
       </main>
     </div>
   )

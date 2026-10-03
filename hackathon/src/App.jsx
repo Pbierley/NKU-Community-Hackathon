@@ -8,12 +8,15 @@ import LoginScreen from './screens/LoginScreen'
 import RegisterScreen from './screens/RegisterScreen'
 import './App.css'
 
-const PROTECTED = new Set(['home', 'events', 'account'])
+// Home (map) is public; events and account require a signed-in user and
+// redirect to login when logged out.
+const PROTECTED = new Set(['events', 'account'])
 
 function App() {
   const { user, loading, login, register, logout } = useAuth()
-  const [screen, setScreen] = useState('login')
+  const [screen, setScreen] = useState('home')
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [authNotice, setAuthNotice] = useState(null)
 
   // 'drawer' opens the overlay on top of the current screen instead of replacing it.
   const navigateTo = useCallback((id) => {
@@ -23,6 +26,13 @@ function App() {
     }
     setDrawerOpen(false)
     setScreen(id)
+    // Remember why a logged-out user was sent to login so the login
+    // screen can explain (e.g. "To view events, sign in").
+    if (PROTECTED.has(id)) {
+      setAuthNotice(id === 'events' ? 'To view events, sign in' : 'Sign in to continue')
+    } else if (id === 'home') {
+      setAuthNotice(null)
+    }
   }, [])
 
   // Derive the visible screen instead of syncing it in an effect:
@@ -48,7 +58,8 @@ function App() {
   async function handleLogout() {
     await logout()
     setDrawerOpen(false)
-    setScreen('login')
+    setAuthNotice(null)
+    setScreen('home')
   }
 
   const shell =
@@ -67,7 +78,14 @@ function App() {
   return (
     <div className="bg-[#E9EAEC] text-ink leading-[1.6] min-h-[100dvh] h-[100dvh] flex justify-center">
       <div className={shell}>
-        {visibleScreen === 'login' && <LoginScreen key="login" onNavigate={navigateTo} onLogin={login} />}
+        {visibleScreen === 'login' && (
+          <LoginScreen
+            key="login"
+            onNavigate={navigateTo}
+            onLogin={login}
+            notice={!user ? authNotice : null}
+          />
+        )}
         {visibleScreen === 'register' && (
           <RegisterScreen key="register" onNavigate={navigateTo} onRegister={register} />
         )}

@@ -33,8 +33,8 @@ export default function AccountScreen({ onNavigate, user, onLogout }) {
         <span className="w-12 shrink-0" />
       </header>
 
-      <main className="flex-1 overflow-y-auto no-scrollbar p-6 text-left">
-        <section className="bg-white border border-line rounded-xl p-8 shadow-card" aria-label="Account">
+      <main className="flex-1 overflow-y-auto no-scrollbar p-4 sm:p-6 text-left flex flex-col items-center">
+        <section className="w-full max-w-2xl bg-white border border-line rounded-xl p-6 sm:p-8 shadow-card" aria-label="Account">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-ink text-white font-bold text-[16px] flex items-center justify-center shrink-0">
               {initials(name)}
@@ -57,7 +57,7 @@ export default function AccountScreen({ onNavigate, user, onLogout }) {
             </div>
             <div className="bg-canvas border border-line rounded-lg px-4 py-4 flex items-center justify-between gap-4">
               <dt className="text-[11px] font-bold tracking-[0.06em] uppercase text-body shrink-0">Major</dt>
-              <dd className="text-right text-[15px] font-semibold leading-[1.6]">{major}</dd>
+              <dd className="text-right text-[15px] font-semibold leading-[1.6] min-w-0 break-words">{major}</dd>
             </div>
             <div className="bg-canvas border border-line rounded-lg p-4">
               <dt className="text-[11px] font-bold tracking-[0.06em] uppercase text-body">Interests</dt>

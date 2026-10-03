@@ -135,13 +135,13 @@ export default function EventModal({ isOpen, onClose, onPost, onUpdate, eventToE
   }
 
   return (
-    <div className="absolute inset-0 z-[70] flex items-end sm:items-center justify-center">
+    <div className="absolute inset-0 z-[70] flex items-end sm:items-center justify-center sm:p-6">
       <div
         className="absolute inset-0"
         style={{ background: 'rgba(17,24,39,0.45)', backdropFilter: 'blur(8px)' }}
         onClick={onClose}
       />
-      <div className="relative w-full max-h-[90%] overflow-y-auto no-scrollbar bg-white border border-line rounded-t-xl sm:rounded-xl p-6 shadow-card text-left">
+      <div className="relative w-full sm:max-w-xl max-h-[90%] overflow-y-auto no-scrollbar bg-white border border-line rounded-t-xl sm:rounded-xl p-4 sm:p-6 shadow-card text-left">
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-xl font-bold tracking-tight leading-[1.3]">
             {isEditing ? 'Edit event' : 'Make a post'}
@@ -249,7 +249,7 @@ export default function EventModal({ isOpen, onClose, onPost, onUpdate, eventToE
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-3">
             <div>
               <label htmlFor="event-start-time" className="text-[11px] font-bold tracking-[0.06em] uppercase text-body">
                 Start time <span aria-hidden="true">*</span>

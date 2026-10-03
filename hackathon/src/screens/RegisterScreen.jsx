@@ -91,14 +91,14 @@ export default function RegisterScreen({ onNavigate, onRegister }) {
         </span>
       </header>
 
-      <main className="flex-1 overflow-y-auto no-scrollbar p-6 pb-32 space-y-6 text-left">
+      <main className="flex-1 overflow-y-auto no-scrollbar p-4 sm:p-6 pb-32 space-y-6 text-left flex flex-col items-center">
         {error && (
-          <p role="alert" className="bg-[#FEF2F2] border border-[#FECACA] rounded-lg px-4 py-4 text-[14px] font-semibold text-[#B91C1C] leading-[1.5]">
+          <p role="alert" className="w-full max-w-2xl bg-[#FEF2F2] border border-[#FECACA] rounded-lg px-4 py-4 text-[14px] font-semibold text-[#B91C1C] leading-[1.5]">
             {error}
           </p>
         )}
 
-        <section className="bg-white border border-line rounded-xl p-6 shadow-card">
+        <section className="w-full max-w-2xl bg-white border border-line rounded-xl p-6 shadow-card">
           <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight leading-[1.3]">
             <span className="w-8 h-8 rounded-full bg-ink text-white text-[13px] font-bold flex items-center justify-center tnum shrink-0">
               1
@@ -147,7 +147,7 @@ export default function RegisterScreen({ onNavigate, onRegister }) {
           </div>
         </section>
 
-        <section className="bg-white border border-nku rounded-xl p-6 shadow-card">
+        <section className="w-full max-w-2xl bg-white border border-nku rounded-xl p-6 shadow-card">
           <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight leading-[1.3]">
             <span className="w-8 h-8 rounded-full bg-nku text-ink text-[13px] font-bold flex items-center justify-center tnum shrink-0">
               2
@@ -231,22 +231,24 @@ export default function RegisterScreen({ onNavigate, onRegister }) {
       </main>
 
       <footer className="absolute bottom-0 inset-x-0 p-6 pt-8 bg-gradient-to-t from-white via-white to-transparent text-left">
-        <button
-          type="button"
-          onClick={handleSubmit}
-          disabled={busy}
-          className="w-full h-14 px-8 rounded-lg bg-nku font-bold text-[15px] text-ink shadow-card active:scale-[0.99] transition disabled:opacity-60"
-        >
-          {busy ? 'CREATING…' : selectedCount > 0 ? 'FINISH' : 'SKIP FOR NOW'}
-        </button>
-        <button
-          type="button"
-          onClick={() => onNavigate('login')}
-          className="w-full text-left mt-4 text-[14px] text-muted leading-[1.6]"
-        >
-          Already have an account?{' '}
-          <span className="font-semibold text-ink underline underline-offset-2">Login</span>
-        </button>
+        <div className="w-full max-w-2xl mx-auto">
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={busy}
+            className="w-full h-14 px-8 rounded-lg bg-nku font-bold text-[15px] text-ink shadow-card active:scale-[0.99] transition disabled:opacity-60"
+          >
+            {busy ? 'CREATING…' : selectedCount > 0 ? 'FINISH' : 'SKIP FOR NOW'}
+          </button>
+          <button
+            type="button"
+            onClick={() => onNavigate('login')}
+            className="w-full text-left mt-4 text-[14px] text-muted leading-[1.6]"
+          >
+            Already have an account?{' '}
+            <span className="font-semibold text-ink underline underline-offset-2">Login</span>
+          </button>
+        </div>
       </footer>
     </div>
   )
