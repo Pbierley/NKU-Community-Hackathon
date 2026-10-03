@@ -69,7 +69,7 @@ export default function BuildingSearch({ buildings, selectedId, onSelect, onClea
 
   if (selected) {
     return (
-      <div className="absolute top-4 inset-x-4 z-[1000] md:right-auto md:w-[min(28rem,calc(100%-2rem))]">
+      <div className="absolute top-2 left-1/2 z-[1000] w-[min(28rem,calc(100%-1rem))] -translate-x-1/2">
         <div className={BOX}>
           <span className="shrink-0 text-[12px] font-bold bg-nku text-ink rounded-md px-2 py-1 tnum">
             {selected.id}
@@ -86,7 +86,7 @@ export default function BuildingSearch({ buildings, selectedId, onSelect, onClea
   const showList = open && query.trim() !== ''
 
   return (
-    <div className="absolute top-4 inset-x-4 z-[1000] md:right-auto md:w-[min(28rem,calc(100%-2rem))]">
+    <div className="absolute top-2 left-1/2 z-[1000] w-[min(28rem,calc(100%-1rem))] -translate-x-1/2">
       <div className={`field ${BOX}`}>
         <SearchIcon />
         <input
