@@ -36,6 +36,8 @@ function App() {
   const [pendingEventId, setPendingEventId] = useState(() => parseEventHash())
   // Building to select when the map opens from an event's location.
   const [mapBuildingId, setMapBuildingId] = useState(null)
+  // Event to reopen when the map was opened from that event's location.
+  const [mapReturnEventId, setMapReturnEventId] = useState(null)
 
   // 'drawer' opens the overlay on top of the current screen instead of replacing it.
   const navigateTo = useCallback((id) => {
@@ -65,8 +67,9 @@ function App() {
   }, [])
 
   // Consumed by EventsScreen after a shared event opens (or proves unknown).
-  const showEventOnMap = useCallback((buildingId) => {
+  const showEventOnMap = useCallback((buildingId, eventId) => {
     setMapBuildingId(buildingId)
+    setMapReturnEventId(eventId ?? null)
     setDrawerOpen(false)
     setAuthNotice(null)
     setPendingScreen(null)
@@ -76,6 +79,7 @@ function App() {
   const handleMapFocused = useCallback(() => setMapBuildingId(null), [])
 
   const openEventFromMap = useCallback((eventId) => {
+    setMapReturnEventId(null)
     setPendingEventId(eventId)
     try {
       window.history.replaceState(null, '', `#/events/${encodeURIComponent(eventId)}`)
@@ -124,6 +128,7 @@ function App() {
     setAuthNotice(null)
     setPendingScreen(null)
     setPendingEventId(null)
+    setMapReturnEventId(null)
     setScreen('home')
   }
 
@@ -163,6 +168,8 @@ function App() {
             focusBuildingId={mapBuildingId}
             onMapFocusHandled={handleMapFocused}
             onOpenEvent={openEventFromMap}
+            returnEventId={mapReturnEventId}
+            onBackToEvent={openEventFromMap}
           />
         )}
         {visibleScreen === 'parking' && <ParkingScreen key="parking" onNavigate={navigateTo} user={user} />}

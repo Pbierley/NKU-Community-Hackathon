@@ -32,7 +32,7 @@ function eventsOnMapToday(events, buildings) {
   return [...groups.values()]
 }
 
-export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFocusHandled, onOpenEvent }) {
+export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFocusHandled, onOpenEvent, returnEventId, onBackToEvent }) {
   const { buildings, error: buildingsError } = useBuildings()
   const { events } = useEvents()
   const { summary, rate } = useParkingFullness()
@@ -123,7 +123,7 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
           onClick={() => setShowTodayEvents((on) => !on)}
           aria-pressed={showTodayEvents}
           aria-label={showTodayEvents ? "Hide today's events" : "Show today's events"}
-          className={`absolute right-16 bottom-40 z-[1000] w-10 h-10 rounded-lg border shadow-card flex items-center justify-center ${
+          className={`absolute right-4 bottom-52 z-[1000] w-10 h-10 rounded-lg border shadow-card flex items-center justify-center ${
             showTodayEvents ? 'bg-nku border-ink text-ink' : 'bg-white border-line text-ink'
           }`}
         >
@@ -153,6 +153,18 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
             </svg>
           )}
         </button>
+        {returnEventId && (
+          <button
+            type="button"
+            onClick={() => onBackToEvent?.(returnEventId)}
+            className="absolute left-3 top-16 z-[1000] h-10 pl-2 pr-3 rounded-lg bg-white border border-line shadow-card flex items-center gap-1 text-[13px] font-bold text-ink"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <path d="M15 5l-7 7 7 7" />
+            </svg>
+            Back to events
+          </button>
+        )}
         <BuildingSearch
           buildings={buildings}
           selectedId={selectedId}

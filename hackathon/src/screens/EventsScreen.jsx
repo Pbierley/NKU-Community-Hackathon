@@ -78,7 +78,7 @@ export default function EventsScreen({ onNavigate, user, sharedEventId, onShared
       setToast(`${place} isn't on the campus map.`)
       return
     }
-    onShowOnMap?.(building.id)
+    onShowOnMap?.(building.id, event.id)
   }
 
   function openEvent(eventId) {
