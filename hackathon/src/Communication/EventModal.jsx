@@ -1,8 +1,37 @@
-import { useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useBuildings } from '../Navigation/buildings'
 
-export default function EventModal({ isOpen, onClose, onPost }) {
-  const fileInputRef = useRef(null)
+function isImageUrl(value) {
+  try {
+    const url = new URL(value)
+    return url.protocol === 'http:' || url.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
+function toDateInput(value) {
+  if (!value) return ''
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) return ''
+  const year = parsed.getFullYear()
+  const month = String(parsed.getMonth() + 1).padStart(2, '0')
+  const day = String(parsed.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+function toTimeInput(value) {
+  if (!value) return ''
+  if (/^([01]\d|2[0-3]):[0-5]\d$/.test(value)) return value
+  const match = value.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i)
+  if (!match) return ''
+  let hours = Number(match[1]) % 12
+  if (match[3].toUpperCase() === 'PM') hours += 12
+  return `${String(hours).padStart(2, '0')}:${match[2]}`
+}
+
+export default function EventModal({ isOpen, onClose, onPost, onUpdate, eventToEdit = null }) {
   const { buildings } = useBuildings()
   const [name, setName] = useState('')
   const [location, setLocation] = useState('')
@@ -11,8 +40,27 @@ export default function EventModal({ isOpen, onClose, onPost }) {
   const [startTime, setStartTime] = useState('')
   const [endTime, setEndTime] = useState('')
   const [tags, setTags] = useState('')
-  const [selectedFiles, setSelectedFiles] = useState([])
+  const [imageUrl, setImageUrl] = useState('')
+  const [existingImages, setExistingImages] = useState([])
+  const [imageError, setImageError] = useState('')
   const [isLocationOpen, setIsLocationOpen] = useState(false)
+  const isEditing = Boolean(eventToEdit)
+
+  useEffect(() => {
+    if (!isOpen) return
+    setName(eventToEdit?.title ?? '')
+    setLocation(eventToEdit?.location ?? '')
+    setDescription(eventToEdit?.description ?? '')
+    setDate(toDateInput(eventToEdit?.date))
+    const [start = '', end = ''] = (eventToEdit?.time ?? '').split(/\s+-\s+/)
+    setStartTime(toTimeInput(start))
+    setEndTime(toTimeInput(end))
+    setTags((eventToEdit?.tags ?? []).join(', '))
+    setImageUrl('')
+    setExistingImages(eventToEdit?.images ?? [])
+    setImageError('')
+    setIsLocationOpen(false)
+  }, [isOpen, eventToEdit])
 
   if (!isOpen) return null
 
@@ -33,13 +81,20 @@ export default function EventModal({ isOpen, onClose, onPost }) {
     setStartTime('')
     setEndTime('')
     setTags('')
-    setSelectedFiles([])
+    setImageUrl('')
+    setExistingImages([])
+    setImageError('')
     setIsLocationOpen(false)
   }
 
   function handlePost(event) {
     event.preventDefault()
     if (!name.trim() || !location.trim() || !description.trim() || !date || !startTime || !endTime || !tags.trim()) return
+    const trimmedImageUrl = imageUrl.trim()
+    if (trimmedImageUrl && !isImageUrl(trimmedImageUrl)) {
+      setImageError('Enter a valid image URL beginning with http:// or https://.')
+      return
+    }
 
     const formattedDate = new Date(`${date}T00:00:00`).toLocaleDateString('en-US', {
       month: 'long',
@@ -51,17 +106,32 @@ export default function EventModal({ isOpen, onClose, onPost }) {
       minute: '2-digit',
     })
 
-    onPost({
-      id: `event-${Date.now()}`,
+    const updatedEvent = {
+      ...(eventToEdit ?? {}),
+      id: eventToEdit?.id ?? `event-${Date.now()}`,
       title: name.trim(),
       location: location.trim(),
       description: description.trim(),
       date: formattedDate,
       time: `${formatTime(startTime)} - ${formatTime(endTime)}`,
       tags: tags.split(',').map((tag) => tag.trim()).filter(Boolean),
-      images: selectedFiles.map((file) => file.name),
-    })
+      images: trimmedImageUrl ? [...existingImages, trimmedImageUrl] : existingImages,
+    }
+    if (isEditing) onUpdate(updatedEvent)
+    else onPost(updatedEvent)
     reset()
+  }
+
+  function addImageUrl() {
+    const trimmedImageUrl = imageUrl.trim()
+    if (!trimmedImageUrl) return
+    if (!isImageUrl(trimmedImageUrl)) {
+      setImageError('Enter a valid image URL beginning with http:// or https://.')
+      return
+    }
+    setExistingImages((current) => current.includes(trimmedImageUrl) ? current : [...current, trimmedImageUrl])
+    setImageUrl('')
+    setImageError('')
   }
 
   return (
@@ -73,7 +143,9 @@ export default function EventModal({ isOpen, onClose, onPost }) {
       />
       <div className="relative w-full max-h-[90%] overflow-y-auto no-scrollbar bg-white border border-line rounded-t-xl sm:rounded-xl p-6 shadow-card text-left">
         <div className="flex items-center justify-between gap-4">
-          <h2 className="text-xl font-bold tracking-tight leading-[1.3]">Make a post</h2>
+          <h2 className="text-xl font-bold tracking-tight leading-[1.3]">
+            {isEditing ? 'Edit event' : 'Make a post'}
+          </h2>
           <button
             type="button"
             onClick={onClose}
@@ -224,24 +296,47 @@ export default function EventModal({ isOpen, onClose, onPost }) {
 
           <div className="border border-line rounded-lg p-4">
             <p className="text-[11px] font-bold tracking-[0.06em] uppercase text-body">Images</p>
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="mt-4 h-12 px-4 rounded-lg bg-wash text-ink font-semibold text-[14px]"
-            >
-              Choose files
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              className="hidden"
-              onChange={(e) => setSelectedFiles(Array.from(e.target.files))}
-            />
-            {selectedFiles.length > 0 && (
+            <div className="mt-3 flex gap-2">
+              <input
+                type="url"
+                value={imageUrl}
+                onChange={(e) => {
+                  setImageUrl(e.target.value)
+                  setImageError('')
+                }}
+                placeholder="https://example.com/event-photo.jpg"
+                aria-label="Image URL"
+                className="field h-12 min-w-0 flex-1 px-3 rounded-lg bg-white border border-line text-[14px] text-ink placeholder:text-faint"
+              />
+              <button
+                type="button"
+                onClick={addImageUrl}
+                className="h-12 shrink-0 rounded-lg bg-wash px-4 text-ink font-semibold text-[14px]"
+              >
+                Add URL
+              </button>
+            </div>
+            <p className="mt-2 text-[12px] text-muted">Use a direct link to an image.</p>
+            {imageError && <p className="mt-3 text-[13px] text-red-700" role="alert">{imageError}</p>}
+            {existingImages.length > 0 && (
               <ul className="mt-4 space-y-2 text-[13px] text-muted leading-[1.5]">
-                {selectedFiles.map((file) => (
-                  <li key={`${file.name}-${file.size}-${file.lastModified}`}>{file.name}</li>
+                {existingImages.map((image, index) => (
+                  <li key={`${image}-${index}`} className="flex items-center gap-3">
+                    <img
+                      src={image}
+                      alt={`Event image ${index + 1} preview`}
+                      className="h-12 w-16 shrink-0 rounded border border-line object-cover"
+                    />
+                    <span className="min-w-0 flex-1 truncate">{image}</span>
+                    <button
+                      type="button"
+                      onClick={() => setExistingImages((current) => current.filter((_, imageIndex) => imageIndex !== index))}
+                      aria-label={`Remove image ${image}`}
+                      className="shrink-0 text-body underline"
+                    >
+                      Remove
+                    </button>
+                  </li>
                 ))}
               </ul>
             )}
@@ -253,7 +348,7 @@ export default function EventModal({ isOpen, onClose, onPost }) {
               type="submit"
               className="w-full h-14 px-8 rounded-lg bg-nku hover:bg-nkuDeep font-bold text-[15px] text-ink shadow-card"
             >
-              Post
+              {isEditing ? 'Save changes' : 'Post'}
             </button>
           </div>
         </form>
