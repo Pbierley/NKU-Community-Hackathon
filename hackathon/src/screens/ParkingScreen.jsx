@@ -1,6 +1,7 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import AppHeader from '../components/AppHeader'
 import { hasLocation, isParkingPlace, mapLabel, useBuildings } from '../Navigation/buildings'
+import { FULLNESS_LEVELS, formatReportedAt } from '../Navigation/ParkingFullness'
 import { useParkingFullness } from '../Navigation/useParkingFullness'
 
 function reportFor(summary, placeId) {
@@ -13,19 +14,33 @@ function sortByFullness(places, summary) {
     const right = reportFor(summary, b.id)
     if (left && !right) return -1
     if (!left && right) return 1
-    if (left && right && left.average !== right.average) return left.average - right.average
+    if (left && right && left.rating !== right.rating) return left.rating - right.rating
     return a.name.localeCompare(b.name)
   })
 }
 
-export default function ParkingScreen({ onNavigate }) {
+export default function ParkingScreen({ onNavigate, user }) {
   const { buildings, loading, error: buildingsError } = useBuildings()
-  const { summary, error: fullnessError } = useParkingFullness()
+  const { summary, error: fullnessError, rate } = useParkingFullness()
+  const [busyId, setBusyId] = useState(null)
+  const [rateError, setRateError] = useState(null)
   const places = useMemo(
     () => sortByFullness(buildings.filter((building) => isParkingPlace(building) && hasLocation(building)), summary),
     [buildings, summary],
   )
   const error = buildingsError ?? fullnessError
+
+  async function choose(placeId, rating) {
+    setBusyId(placeId)
+    setRateError(null)
+    try {
+      await rate(placeId, rating)
+    } catch (err) {
+      setRateError(err.message || 'Could not save your rating.')
+    } finally {
+      setBusyId(null)
+    }
+  }
 
   return (
     <div className="screen h-full flex flex-col bg-canvas">
@@ -34,39 +49,79 @@ export default function ParkingScreen({ onNavigate }) {
         <div className="w-full max-w-2xl mx-auto">
           <h1 className="text-xl font-bold tracking-tight leading-[1.3]">Parking</h1>
           <p className="mt-1 text-[14px] text-muted leading-[1.5]">
-            Least full first. Lots and garages with no reports today are listed last. Rankings reset each day.
+            Least full first, using the latest report. Lots and garages with no reports today are listed last.
           </p>
+          {!user && (
+            <button
+              type="button"
+              onClick={() => onNavigate('login')}
+              className="mt-3 h-10 px-4 rounded-md bg-nku font-bold text-[14px] text-ink"
+            >
+              Sign in to add a score
+            </button>
+          )}
 
           {loading && <p className="mt-6 text-[15px] text-muted">Loading parking…</p>}
           {error && <p className="mt-6 text-[15px] text-body">{error}</p>}
+          {rateError && <p className="mt-4 text-[14px] text-body">{rateError}</p>}
 
           {!loading && !error && (
             <ul className="mt-4 space-y-2">
               {places.map((place) => {
                 const report = reportFor(summary, place.id)
+                const reportedAt = formatReportedAt(report?.reportedAt)
+                const mine = report?.mine ?? null
                 return (
                   <li
                     key={place.id}
-                    className="flex items-center gap-4 bg-white border border-line rounded-xl px-4 py-3 shadow-card"
+                    className="bg-white border border-line rounded-xl px-4 py-3 shadow-card"
                   >
-                    <span className="shrink-0 min-w-10 h-10 px-2 rounded-md bg-wash border border-line text-[13px] font-bold flex items-center justify-center">
-                      {mapLabel(place)}
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[15px] font-semibold leading-[1.5]">{place.name}</span>
-                      <span className="block text-[13px] text-muted leading-[1.4]">
-                        {report
-                          ? `${report.count} ${report.count === 1 ? 'report' : 'reports'} today`
-                          : 'Not rated today'}
+                    <div className="flex items-center gap-4">
+                      <span className="shrink-0 min-w-10 h-10 px-2 rounded-md bg-wash border border-line text-[13px] font-bold flex items-center justify-center">
+                        {mapLabel(place)}
                       </span>
-                    </span>
-                    <span className="shrink-0 text-right">
-                      {report ? (
-                        <span className="text-[15px] font-bold tnum">{report.average}<span className="text-[12px] font-semibold text-muted"> / 5</span></span>
-                      ) : (
-                        <span className="text-[13px] font-semibold text-muted">—</span>
-                      )}
-                    </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-[15px] font-semibold leading-[1.5]">{place.name}</span>
+                        <span className="block text-[13px] text-muted leading-[1.4]">
+                          {report
+                            ? reportedAt
+                              ? `Reported ${reportedAt}`
+                              : 'Reported today'
+                            : 'Not rated today'}
+                        </span>
+                      </span>
+                      <span className="shrink-0 text-right">
+                        {report ? (
+                          <span className="text-[15px] font-bold tnum">{report.rating}<span className="text-[12px] font-semibold text-muted"> / 5</span></span>
+                        ) : (
+                          <span className="text-[13px] font-semibold text-muted">—</span>
+                        )}
+                      </span>
+                    </div>
+                    {user && (
+                      <div className="mt-3 flex gap-1.5" role="group" aria-label={`Fullness for ${place.name}`}>
+                        {FULLNESS_LEVELS.map((level) => {
+                          const selected = mine === level.value
+                          return (
+                            <button
+                              key={level.value}
+                              type="button"
+                              disabled={busyId === place.id}
+                              aria-pressed={selected}
+                              aria-label={`${level.value}, ${level.label}`}
+                              onClick={() => choose(place.id, level.value)}
+                              className={`h-10 flex-1 rounded-md border text-[14px] font-bold ${
+                                selected
+                                  ? 'bg-nku border-nku text-ink'
+                                  : 'bg-white border-line text-ink'
+                              }`}
+                            >
+                              {level.value}
+                            </button>
+                          )
+                        })}
+                      </div>
+                    )}
                   </li>
                 )
               })}

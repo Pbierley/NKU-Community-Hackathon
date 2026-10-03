@@ -635,9 +635,17 @@ function campusDate(now = new Date()) {
 }
 
 async function parkingSummary(date, userId) {
+  // One score per lot: the newest report from today, not an average of every report.
   const grouped = await parkingRankings.aggregate([
     { $match: { date } },
-    { $group: { _id: '$placeId', average: { $avg: '$rating' }, count: { $sum: 1 } } },
+    { $sort: { updatedAt: -1 } },
+    {
+      $group: {
+        _id: '$placeId',
+        rating: { $first: '$rating' },
+        reportedAt: { $first: '$updatedAt' },
+      },
+    },
   ]).toArray()
   const mineDocs = userId
     ? await parkingRankings.find({ date, userId }, { projection: { _id: 0, placeId: 1, rating: 1 } }).toArray()
@@ -647,8 +655,8 @@ async function parkingSummary(date, userId) {
     date,
     places: grouped.map((row) => ({
       placeId: row._id,
-      average: Math.round(row.average * 10) / 10,
-      count: row.count,
+      rating: row.rating,
+      reportedAt: row.reportedAt instanceof Date ? row.reportedAt.toISOString() : row.reportedAt ?? null,
       mine: mineByPlace.get(row._id) ?? null,
     })),
   }

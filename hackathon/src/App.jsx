@@ -143,7 +143,7 @@ function App() {
             onMapFocusHandled={handleMapFocused}
           />
         )}
-        {visibleScreen === 'parking' && <ParkingScreen key="parking" onNavigate={navigateTo} />}
+        {visibleScreen === 'parking' && <ParkingScreen key="parking" onNavigate={navigateTo} user={user} />}
         {visibleScreen === 'events' && (
           <EventsScreen
             key="events"

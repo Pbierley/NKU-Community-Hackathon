@@ -1,13 +1,26 @@
 import { useState } from 'react'
 import { mapLabel } from './buildings'
 
-const LEVELS = [
+export const FULLNESS_LEVELS = [
   { value: 1, label: 'Not full' },
   { value: 2, label: 'Fairly open' },
   { value: 3, label: 'Filling up' },
   { value: 4, label: 'Almost full' },
   { value: 5, label: 'Full' },
 ]
+
+export function formatReportedAt(iso) {
+  if (!iso) return ''
+  const date = new Date(iso)
+  if (Number.isNaN(date.getTime())) return ''
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/New_York',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(date)
+}
 
 function placeReport(summary, placeId) {
   return summary?.places?.find((place) => place.placeId === placeId) ?? null
@@ -31,8 +44,9 @@ export default function ParkingFullness({ place, user, summary, onRate, onSignIn
     }
   }
 
+  const reportedAt = formatReportedAt(report?.reportedAt)
   const today = report
-    ? `${report.average} of 5 from ${report.count} ${report.count === 1 ? 'report' : 'reports'}`
+    ? `${report.rating} of 5${reportedAt ? `, reported ${reportedAt}` : ''}`
     : 'No reports yet today'
 
   return (
@@ -43,7 +57,7 @@ export default function ParkingFullness({ place, user, summary, onRate, onSignIn
       <p className="mt-0.5 text-[13px] text-muted leading-[1.4]">How full is it? {today}</p>
       {user ? (
         <div className="mt-2 flex gap-1.5" role="group" aria-label="Fullness from 1, not full, to 5, full">
-          {LEVELS.map((level) => {
+          {FULLNESS_LEVELS.map((level) => {
             const selected = mine === level.value
             return (
               <button
