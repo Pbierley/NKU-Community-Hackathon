@@ -1,26 +1,3359 @@
 [
   {
-    "id": "event-001",
-    "title": "NKU Club Fair",
-    "location": "Student Union",
-    "description": "Meet student orgs across campus.",
-    "category": "Campus",
-    "when": "Thu • 11AM",
-    "attendeeIds": ["user-001", "user-002"],
-    "comments": [
-      { "id": "comment-001", "author": "Alex", "text": "Anyone else going?" }
-    ]
+    "id": "nku-381047",
+    "title": "Submit Your Passport",
+    "description": "Submit Your Passport. Monday, 24 August 2026 At 1:00 PM, EDT (GMT-4).",
+    "date": "August 24, 2026",
+    "time": "1:00 PM - Fri, May 7, 2027 1:00 PM",
+    "location": "Steely Library",
+    "tags": [
+      "Educational/Awareness"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_629680_passport_1_55230208-5520-46aa-b20a-37e822608b52_99152559.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381047",
+    "host": "Steely Library"
   },
   {
-    "id": "event-002",
-    "title": "Computer Science Study Session",
+    "id": "nku-381074",
+    "title": "24HR Animation Contest",
+    "description": "24HR Animation Contest. Friday, 02 October 2026 At 5:00 PM, EDT (GMT-4). Fine Art Center 305 and 307.",
+    "date": "October 2, 2026",
+    "time": "5:00 PM - Sat, Oct 3, 2026 8:00 PM",
+    "location": "Fine Art Center 305 & 307",
+    "tags": [
+      "Social",
+      "Leadership & Professional Development"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_627007_WIACLUBSignage_2jpg_2b72fe7c-764b-434d-959a-22e773de39f2_917102153.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381074",
+    "host": "WIA Student Collective"
+  },
+  {
+    "id": "nku-380681",
+    "title": "Fall Fest",
+    "description": "Fall Fest. Monday, 05 October 2026 At 11:00 AM, EDT (GMT-4).",
+    "date": "October 5, 2026",
+    "time": "11 AM - 2 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Social",
+      "Free stuff",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_599792_Fall_fest_1_d541c6a6-9b00-4144-ab3f-9c0647d03670_924162651.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380681",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-381134",
+    "title": "Rock Painting with RA Adriana!",
+    "description": "Two hands holding examples of painted rocks",
+    "date": "October 5, 2026",
+    "time": "5 PM - 6 PM",
+    "location": "Norse Hall",
+    "tags": [
+      "Social",
+      "Free stuff",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618235_IMG_3005PNG_303f0363-bec1-4f0b-ad3b-0328f5eed344_91812627.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381134",
+    "host": "Norse Hall"
+  },
+  {
+    "id": "nku-380633",
+    "title": "2026 Student Wellness Fair - Explore your Wellness!",
+    "description": "2026 Student Wellness Fair - Explore your Wellness! Tuesday, 06 October 2026 At 10:00 AM, EDT (GMT-4).",
+    "date": "October 6, 2026",
+    "time": "10 AM - 2 PM",
+    "location": "Student Wellness Education",
+    "tags": [
+      "Educational/Awareness",
+      "Free stuff",
+      "Health & Wellness",
+      "Student Wellness Education"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_608280_Wellness_Fair_banner_216006a8-0863-4334-b937-b1e4718400d0_78161133.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380633",
+    "host": "Student Wellness Education"
+  },
+  {
+    "id": "nku-380611",
+    "title": "Fiber Arts Meetup",
+    "description": "Fiber Arts Meetup. Tuesday, 06 October 2026 At 12:00 PM, EDT (GMT-4).",
+    "date": "October 6, 2026",
+    "time": "12 PM - 1 PM",
     "location": "Steely Library",
-    "description": "Open review for midterms.",
-    "category": "Tech",
-    "when": "Tonight • 6PM",
-    "attendeeIds": ["user-003"],
-    "comments": [
-      { "id": "comment-002", "author": "Jordan", "text": "I'll be there around 6." }
-    ]
+    "tags": [
+      "Social",
+      "YSA Friendly",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_629680_fam_3fa91b6e-2284-48ec-9240-7fd673961085_716103550.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380611",
+    "host": "Steely Library"
+  },
+  {
+    "id": "nku-380813",
+    "title": "Boba and Bingo",
+    "description": "Boba and Bingo. Tuesday, 06 October 2026 At 5:00 PM, EDT (GMT-4).",
+    "date": "October 6, 2026",
+    "time": "5 PM - 7 PM",
+    "location": "Panhellenic Council",
+    "tags": [
+      "Social",
+      "Free stuff",
+      "Free food",
+      "Fraternity & Sorority Life"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2024/r2_image_upload_600740_processed9C0A11E0A3E94736BE846CF40A012DA5_93085555.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380813",
+    "host": "Panhellenic Council"
+  },
+  {
+    "id": "nku-380829",
+    "title": "6:33 (Dinner & Worship)",
+    "description": "Two girls, photo says 5:30pm Free Dinner Fellowship",
+    "date": "October 6, 2026",
+    "time": "5:30 PM - 7:30 PM",
+    "location": "Baptist Campus Ministry",
+    "tags": [
+      "Spiritual",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618337_633_photo_512fac22-ce7b-4e4c-8d2a-d5aa6f7b74a5_85103830.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380829",
+    "host": "Baptist Campus Ministry"
+  },
+  {
+    "id": "nku-380857",
+    "title": "Campus Outreach Tuesdays",
+    "description": "Campus Outreach Tuesdays 7:30pm at SU 102",
+    "date": "October 6, 2026",
+    "time": "7:30 PM - 9 PM",
+    "location": "Campus Outreach",
+    "tags": [
+      "Meeting",
+      "Faith-Based",
+      "General Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618230_campusoutreachtuesdaysupdated_c6e74c2b-c868-4ec1-98fc-0885731149b0_813141410.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380857",
+    "host": "Campus Outreach"
+  },
+  {
+    "id": "nku-380601",
+    "title": "Study Abroad Fair",
+    "description": "Study Abroad Fair. Wednesday, 07 October 2026 At 10:00 AM, EDT (GMT-4).",
+    "date": "October 7, 2026",
+    "time": "10 AM - 2 PM",
+    "location": "Office of Education Abroad",
+    "tags": [
+      "Cultural"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_610296_773bdf1b39ae47fcacf67a5699117bfejpg_10820db8-65f5-49c6-b52a-2293d4dba32b_610154845.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380601",
+    "host": "Office of Education Abroad"
+  },
+  {
+    "id": "nku-381223",
+    "title": "Banned Books Week Readout",
+    "description": "Banned Books Week Readout. Wednesday, 07 October 2026 At 11:00 AM, EDT (GMT-4).",
+    "date": "October 7, 2026",
+    "time": "11 AM - 1 PM",
+    "location": "Steely Library",
+    "tags": [
+      "Educational/Awareness",
+      "YSA Friendly",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_629680_banned_books_week_readout_1_7cd1f37c-2390-4cfd-8ad7-9dbab20ea7b4_930124633.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381223",
+    "host": "Steely Library"
+  },
+  {
+    "id": "nku-381237",
+    "title": "Live at the Loch",
+    "description": "Live at the Loch. Wednesday, 07 October 2026 At 11:00 AM, EDT (GMT-4).",
+    "date": "October 7, 2026",
+    "time": "11 AM - 7 PM",
+    "location": "Norse Code Radio",
+    "tags": [
+      "Social",
+      "Free food",
+      "Live Entertainment"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_630852_825336765_1709242307868359_19259129564458355_njpg_87c5713d-d1bd-465f-9a7c-a0f7839e2783_1029714.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381237",
+    "host": "Norse Code Radio"
+  },
+  {
+    "id": "nku-380767",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "October 7, 2026",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380767",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-381145",
+    "title": "Coffee Chat",
+    "description": "Coffee Chat. Wednesday, 07 October 2026 At 5:00 PM, EDT (GMT-4). Area outside Starbucks in Student Union.",
+    "date": "October 7, 2026",
+    "time": "5 PM - 6 PM",
+    "location": "Area outside Starbucks in Student Union",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381145",
+    "host": "American Sign Language Club"
+  },
+  {
+    "id": "nku-381178",
+    "title": "LMs Game Night",
+    "description": "Green background with the words “Leadership Mentors presents: Game Night“ in white and yellow. Pictures of playing cards and game pieces.",
+    "date": "October 7, 2026",
+    "time": "5 PM - 7:30 PM",
+    "location": "Leadership Mentors",
+    "tags": [
+      "Leadership",
+      "Leadership & Professional Development"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_603973_Screenshot_1102026_12224__f068a8b0-b889-4964-9b1e-c7566070eb3a_10112930.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381178",
+    "host": "Leadership Mentors"
+  },
+  {
+    "id": "nku-380841",
+    "title": "S'more Than Our Letters",
+    "description": "S’more Than Our Letters. Wednesday, 07 October 2026 At 6:00 PM, EDT (GMT-4).",
+    "date": "October 7, 2026",
+    "time": "6 PM - 8 PM",
+    "location": "Order of Omega",
+    "tags": [
+      "Social",
+      "Fraternity & Sorority Life"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2024/r2_image_upload_613464_308626646_189789853462247_6072966727038236859_njpg_31105837.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380841",
+    "host": "Order of Omega"
+  },
+  {
+    "id": "nku-381130",
+    "title": "Virtual Student Teaching Panel",
+    "description": "Virtual Student Teaching Panel. Wednesday, 07 October 2026 At 6:00 PM, EDT (GMT-4). Online Event.",
+    "date": "October 7, 2026",
+    "time": "6 PM - 7 PM",
+    "location": "Online Event",
+    "tags": [
+      "Meeting",
+      "Virtual"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_627544_EducatorsRising2025_NorseMedia23jpg_113142841.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381130",
+    "host": "College of Education"
+  },
+  {
+    "id": "nku-381218",
+    "title": "Dress to Impress Game Night",
+    "description": "Dress to Impress Game Night. Wednesday, 07 October 2026 At 6:00 PM, EDT (GMT-4).",
+    "date": "October 7, 2026",
+    "time": "6 PM - 7 PM",
+    "location": "Kentucky Hall & Commonwealth Hall",
+    "tags": [
+      "Social",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381218",
+    "host": "Kentucky Hall & Commonwealth Hall"
+  },
+  {
+    "id": "nku-381219",
+    "title": "Pennant Flag Making with RA Jaiden!!",
+    "description": "Join RA Jaiden for a fun and creative night of making your own pennant flag door dec! Come hang out, get creative, and make a personalized flag to decorate your door. All supplies will be provided, so just bring yourself and your creativity!",
+    "date": "October 7, 2026",
+    "time": "7 PM - 8 PM",
+    "location": "Kentucky Hall & Commonwealth Hall",
+    "tags": [
+      "Social"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_639482_JOIN_RA_JAIDEN_IN_06c1cd5f-99ad-4626-951c-d7b8c9972848_929211844.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381219",
+    "host": "Kentucky Hall & Commonwealth Hall"
+  },
+  {
+    "id": "nku-380811",
+    "title": "Big Pink Volleyball 2026",
+    "description": "Breast cancer logo for Big Pink Volleyball flyer",
+    "date": "October 8, 2026",
+    "time": "12 PM - 7:30 PM",
+    "location": "Center for Student Engagement",
+    "tags": [
+      "Fundraiser",
+      "Athletic"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_630852_270467acd87748b2b893639a2ed7a99djpg_b3926fbe-99c2-4536-9153-a3bf2e7561d1_81317955.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380811",
+    "host": "Center for Student Engagement"
+  },
+  {
+    "id": "nku-380817",
+    "title": "Make Space for Wellness",
+    "description": "Make Space for Wellness. Thursday, 08 October 2026 At 12:30 PM, EDT (GMT-4).",
+    "date": "October 8, 2026",
+    "time": "12:30 PM - 1:30 PM",
+    "location": "Student Wellness Education",
+    "tags": [
+      "Educational/Awareness",
+      "Health & Wellness",
+      "Student Wellness Education"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_608280_Make_Space_c5105e1f-922b-4d97-a278-088556cd57ca_8516044.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380817",
+    "host": "Student Wellness Education"
+  },
+  {
+    "id": "nku-381149",
+    "title": "Ping Pong Tournament",
+    "description": "Ping Pong Tournament. Thursday, 08 October 2026 At 6:00 PM, EDT (GMT-4).",
+    "date": "October 8, 2026",
+    "time": "6 PM - 8 PM",
+    "location": "University Suites",
+    "tags": [
+      "Athletic/Sports",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381149",
+    "host": "University Suites"
+  },
+  {
+    "id": "nku-381204",
+    "title": "DIY Bookmark Making",
+    "description": "DIY Bookmark Making. Thursday, 08 October 2026 At 6:30 PM, EDT (GMT-4).",
+    "date": "October 8, 2026",
+    "time": "6:30 PM - 8 PM",
+    "location": "Kentucky Hall & Commonwealth Hall",
+    "tags": [
+      "Social",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381204",
+    "host": "Kentucky Hall & Commonwealth Hall"
+  },
+  {
+    "id": "nku-381127",
+    "title": "Norse Baja, Cars & Coffee",
+    "description": "Cars and Coffee event poster for October 9th, 11 AM to 2 PM, featuring the Norse Baja logo above an off-road Baja buggy kicking up dirt. The tagline reads “All cars. Great coffee. Strong community.“",
+    "date": "October 9, 2026",
+    "time": "11 AM - 2 PM",
+    "location": "Norse Baja",
+    "tags": [
+      "Fundraiser",
+      "Free stuff",
+      "YSA Friendly",
+      "Drop In Event",
+      "Teaching Technologies"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_641067_originalB6AAC4A8F20F4FE09A9FEB791C318171_4fd509ae-17e0-4d49-b92e-76681010255d_918115129.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381127",
+    "host": "Norse Baja"
+  },
+  {
+    "id": "nku-381197",
+    "title": "Familia Friday: Sip & Paint",
+    "description": "Familia Friday: Sip and Paint. Oct 9th from 4 to 6:30 PM. SU 102",
+    "date": "October 9, 2026",
+    "time": "4 PM - 6:30 PM",
+    "location": "Latinos Avanzando Mentorship Program",
+    "tags": [
+      "Social",
+      "Free stuff",
+      "Free food",
+      "YSA Friendly",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_606737_Multicolour_Illustrated_Sip_Paint_Instagram_Post_7200834c-481b-423d-9acd-e5e6b60e1ebf_925211422.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381197",
+    "host": "Latinos Avanzando Mentorship Program"
+  },
+  {
+    "id": "nku-380871",
+    "title": "NKU Lights Up: Blink Cincinnati",
+    "description": "downtown cincinnati bridge with lights",
+    "date": "October 9, 2026",
+    "time": "7 PM - 10:15 PM",
+    "location": "Center for Student Engagement",
+    "tags": [
+      "Social",
+      "Free stuff",
+      "Live Entertainment"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_612641_Image_20_a7dd641c-a774-45e7-bfd4-eb89f7e95296_917153218.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380871",
+    "host": "Center for Student Engagement"
+  },
+  {
+    "id": "nku-380810",
+    "title": "Greek Day of Service 2026",
+    "description": "NKU students volunteering",
+    "date": "October 10, 2026",
+    "time": "9 AM - 12 PM",
+    "location": "Center for Student Engagement",
+    "tags": [
+      "Community Service"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380810",
+    "host": "Center for Student Engagement"
+  },
+  {
+    "id": "nku-381154",
+    "title": "College Football Watch Party",
+    "description": "College Football Watch Party. Saturday, 10 October 2026 At 7:00 PM, EDT (GMT-4).",
+    "date": "October 10, 2026",
+    "time": "7 PM - 9 PM",
+    "location": "University Suites",
+    "tags": [
+      "Athletic/Sports"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_636777_college_football_watch_party_1cbabdfb-f013-4a3d-bc5a-d23cadf66ed9_920212757.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381154",
+    "host": "University Suites"
+  },
+  {
+    "id": "nku-381061",
+    "title": "Start Your Week Off Sweet!",
+    "description": "Start Your Week Off Sweet! Sunday, 11 October 2026 At 6:00 PM, EDT (GMT-4). New Residence Hall Lobby.",
+    "date": "October 11, 2026",
+    "time": "6 PM - 7:30 PM",
+    "location": "New Residence Hall Lobby",
+    "tags": [
+      "Social",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381061",
+    "host": "New Residence Hall"
+  },
+  {
+    "id": "nku-380809",
+    "title": "Take a Break with a Book",
+    "description": "A promotional banner advertising “TAKE A BREAK WITH A BOOK”. Below the title are the logos for NKU Wellness Education and NKU W. Frank Steely Library. The event date is “October 12, 2026.” Additional details state: “Student Union 2nd Floor Lobby” and “11 AM to 1 PM.” Decorative illustrations include colorful stacked books, open books, leafy accents, and a subtle grid pattern.",
+    "date": "October 12, 2026",
+    "time": "11 AM - 1 PM",
+    "location": "Student Wellness Education",
+    "tags": [
+      "Educational/Awareness",
+      "Free stuff",
+      "Student Wellness Education"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_608280_my_engagement_photo1_821aeac2-936b-472c-a52d-c013b1cc6284_731115913.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380809",
+    "host": "Student Wellness Education"
+  },
+  {
+    "id": "nku-381133",
+    "title": "COE Mid-Term Study Cafe",
+    "description": "COE Mid-Term Study Cafe. Monday, 12 October 2026 At 2:30 PM, EDT (GMT-4). Private Location ( register to display ) .",
+    "date": "October 12, 2026",
+    "time": "2:30 PM - 4:30 PM",
+    "location": "College of Education",
+    "tags": [
+      "Social"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_627544_EducatorsRising2025_NorseMedia23jpg_113142841.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381133",
+    "host": "College of Education"
+  },
+  {
+    "id": "nku-381157",
+    "title": "ASL Club Game Night",
+    "description": "ASL Club Game Night. Monday, 12 October 2026 At 6:00 PM, EDT (GMT-4).",
+    "date": "October 12, 2026",
+    "time": "6 PM - 7:30 PM",
+    "location": "American Sign Language Club",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381157",
+    "host": "American Sign Language Club"
+  },
+  {
+    "id": "nku-381171",
+    "title": "Fall Festival",
+    "description": "Fall Festival. Monday, 12 October 2026 At 6:00 PM, EDT (GMT-4). New Residence Hall.",
+    "date": "October 12, 2026",
+    "time": "6 PM - 8 PM",
+    "location": "New Residence Hall",
+    "tags": [
+      "Social",
+      "Free stuff",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381171",
+    "host": "New Residence Hall"
+  },
+  {
+    "id": "nku-380682",
+    "title": "Design a Safe Drive",
+    "description": "APB and NKU Norse Center for Belonging ‘Design a Safe Drive’ event flyer. The event is Tuesday, October 13, from 11 a.m. to 2 p.m. at the Student Union Plaza. featuring free safety kits and three prize winners.",
+    "date": "October 13, 2026",
+    "time": "11 AM - 2 PM",
+    "location": "Norse Center for Belonging",
+    "tags": [
+      "Social"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_600132_Imagejpg_b5ee5900-2d2e-4bc5-bd54-12c2f51d8c9d_92411635.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380682",
+    "host": "Norse Center for Belonging"
+  },
+  {
+    "id": "nku-381126",
+    "title": "Dirty Soda With RA's Sarah and Lucy!",
+    "description": "Dirty Soda With RA’s Sarah and Lucy! Tuesday, 13 October 2026 At 4:00 PM, EDT (GMT-4). Norse Commons Lobby.",
+    "date": "October 13, 2026",
+    "time": "4 PM - 5:30 PM",
+    "location": "Norse Commons Lobby",
+    "tags": [
+      "Social",
+      "Free food",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381126",
+    "host": "Norse Hall"
+  },
+  {
+    "id": "nku-380830",
+    "title": "6:33 (Dinner & Worship)",
+    "description": "Two girls, photo says 5:30pm Free Dinner Fellowship",
+    "date": "October 13, 2026",
+    "time": "5:30 PM - 7:30 PM",
+    "location": "Baptist Campus Ministry",
+    "tags": [
+      "Spiritual",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618337_633_photo_92b854d8-7e95-473e-8354-a115d02bced1_85103843.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380830",
+    "host": "Baptist Campus Ministry"
+  },
+  {
+    "id": "nku-380858",
+    "title": "Campus Outreach Tuesdays",
+    "description": "Campus Outreach Tuesdays 7:30pm at SU 102",
+    "date": "October 13, 2026",
+    "time": "7:30 PM - 9 PM",
+    "location": "Campus Outreach",
+    "tags": [
+      "Meeting",
+      "Faith-Based",
+      "General Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618230_campusoutreachtuesdaysupdated_c6e74c2b-c868-4ec1-98fc-0885731149b0_813141410.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380858",
+    "host": "Campus Outreach"
+  },
+  {
+    "id": "nku-380768",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "October 14, 2026",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380768",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-381139",
+    "title": "Pumpkin Painting with RA Carlie and RA Coleman!",
+    "description": "Pumpkin Painting with RA Carlie and RA Coleman! Wednesday, 14 October 2026 At 6:30 PM, EDT (GMT-4).",
+    "date": "October 14, 2026",
+    "time": "6:30 PM - 8 PM",
+    "location": "Norse Hall",
+    "tags": [
+      "Social",
+      "Free stuff",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381139",
+    "host": "Norse Hall"
+  },
+  {
+    "id": "nku-381209",
+    "title": "Stress ball making",
+    "description": "Stress ball making. Wednesday, 14 October 2026 At 6:30 PM, EDT (GMT-4).",
+    "date": "October 14, 2026",
+    "time": "6:30 PM - 8 PM",
+    "location": "Kentucky Hall & Commonwealth Hall",
+    "tags": [
+      "Social"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381209",
+    "host": "Kentucky Hall & Commonwealth Hall"
+  },
+  {
+    "id": "nku-380990",
+    "title": "Cereal & Serial",
+    "description": "Cereal and Serial. Wednesday, 14 October 2026 At 8:00 PM, EDT (GMT-4). New Residence Hall Lobby.",
+    "date": "October 14, 2026",
+    "time": "8 PM - 10 PM",
+    "location": "New Residence Hall Lobby",
+    "tags": [
+      "Social",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380990",
+    "host": "New Residence Hall"
+  },
+  {
+    "id": "nku-380651",
+    "title": "Law School Fair",
+    "description": "Name of the event ( Law School Fair )",
+    "date": "October 15, 2026",
+    "time": "10 AM - 1 PM",
+    "location": "Career Services",
+    "tags": [
+      "Academic",
+      "Leadership & Professional Development"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2024/r2_image_upload_610054_Law_School_669126.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380651",
+    "host": "Career Services"
+  },
+  {
+    "id": "nku-381230",
+    "title": "Voting Ambassadors First Meeting",
+    "description": "An illustration of a race car on a road with the words “race with us to the polls, make a difference.“",
+    "date": "October 15, 2026",
+    "time": "3 PM - 4 PM",
+    "location": "SCRIPPS Howard Center for Civic Engagement",
+    "tags": [
+      "Academic",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_629794_Ready_Set_Vote_7_8b7eccea-e372-43e5-8762-2679b4602e80_10191254.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381230",
+    "host": "SCRIPPS Howard Center for Civic Engagement"
+  },
+  {
+    "id": "nku-381186",
+    "title": "Option 9 Family Night",
+    "description": "Option 9 Family Night. Thursday, 15 October 2026 At 4:30 PM, EDT (GMT-4).",
+    "date": "October 15, 2026",
+    "time": "4:30 PM - 7:30 PM",
+    "location": "Norse Center for Belonging",
+    "tags": [
+      "Social"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381186",
+    "host": "Norse Center for Belonging"
+  },
+  {
+    "id": "nku-380629",
+    "title": "NKU R.O.C.K.S. General Body Meeting",
+    "description": "NKU R.O.C.K.S. General Body Meeting. Thursday, 15 October 2026 At 5:00 PM, EDT (GMT-4).",
+    "date": "October 15, 2026",
+    "time": "5 PM - 6:30 PM",
+    "location": "NKU R.O.C.K.S.",
+    "tags": [
+      "Meeting",
+      "General Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618520_NKU_ROCKS_LOGO_b09bb259-15e9-4f14-9849-a2fc91b6d592_65215512.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380629",
+    "host": "NKU R.O.C.K.S."
+  },
+  {
+    "id": "nku-381181",
+    "title": "One direction friendship bracelets",
+    "description": "One direction friendship bracelets. Thursday, 15 October 2026 At 6:00 PM, EDT (GMT-4).",
+    "date": "October 15, 2026",
+    "time": "6 PM - 8 PM",
+    "location": "New Residence Hall",
+    "tags": [
+      "Social",
+      "Free stuff"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381181",
+    "host": "New Residence Hall"
+  },
+  {
+    "id": "nku-380859",
+    "title": "Campus Outreach Tuesdays",
+    "description": "Campus Outreach Tuesdays 7:30pm at SU 102",
+    "date": "October 20, 2026",
+    "time": "7:30 PM - 9 PM",
+    "location": "Campus Outreach",
+    "tags": [
+      "Meeting",
+      "Faith-Based",
+      "General Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618230_campusoutreachtuesdaysupdated_c6e74c2b-c868-4ec1-98fc-0885731149b0_813141410.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380859",
+    "host": "Campus Outreach"
+  },
+  {
+    "id": "nku-380623",
+    "title": "Cultivate a Growth Mindset Workshop",
+    "description": "Cultivate a Growth Mindset Workshop. Wednesday, 21 October 2026 At 2:00 PM, EDT (GMT-4).",
+    "date": "October 21, 2026",
+    "time": "2 PM - 3:30 PM",
+    "location": "Student Wellness Education",
+    "tags": [
+      "Educational/Awareness",
+      "Free stuff",
+      "Health & Wellness",
+      "Student Wellness Education",
+      "Wellness Graduation Cord Eligible"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_608280_my_engagement_photo1_5d695cfb-c5a3-47be-ba26-e0bddb6ff972_84154522.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380623",
+    "host": "Student Wellness Education"
+  },
+  {
+    "id": "nku-380769",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "October 21, 2026",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380769",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-381109",
+    "title": "University Suites' Gravity Games",
+    "description": "Gravity Games Photo ( oct-21st 5-7pm )",
+    "date": "October 21, 2026",
+    "time": "5 PM - 7 PM",
+    "location": "University Suites",
+    "tags": [
+      "Social"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_637432_Your_paragraph_text_012736e7-e86e-4724-b6de-4d6ee737d78e_917175346.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381109",
+    "host": "University Suites"
+  },
+  {
+    "id": "nku-381146",
+    "title": "Coffee Chat",
+    "description": "Coffee Chat. Thursday, 22 October 2026 At 8:00 AM, EDT (GMT-4). Area outside Starbucks in Student Union.",
+    "date": "October 22, 2026",
+    "time": "8 AM - 9 AM",
+    "location": "Area outside Starbucks in Student Union",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381146",
+    "host": "American Sign Language Club"
+  },
+  {
+    "id": "nku-380683",
+    "title": "APB: Bounce Back from Break",
+    "description": "APB: Bounce Back from Break. Thursday, 22 October 2026 At 12:00 PM, EDT (GMT-4).",
+    "date": "October 22, 2026",
+    "time": "12 PM - 3 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Social"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380683",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-381199",
+    "title": "BGS Speaker Series - Bob Heil",
+    "description": "BGS Speaker Series - Bob Heil. Thursday, 22 October 2026 At 4:30 PM, EDT (GMT-4). BC 111.",
+    "date": "October 22, 2026",
+    "time": "4:30 PM - 6 PM",
+    "location": "BC 111",
+    "tags": [
+      "Academic",
+      "Free food",
+      "YSA Friendly",
+      "Leadership & Professional Development",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381199",
+    "host": "Beta Gamma Sigma"
+  },
+  {
+    "id": "nku-381239",
+    "title": "Trick Or Treat",
+    "description": "Trick Or Treat. Thursday, 22 October 2026 At 5:00 PM, EDT (GMT-4). Kentucky Hall Lobby and Commonwealth Lobby.",
+    "date": "October 22, 2026",
+    "time": "5 PM - 7 PM",
+    "location": "Kentucky Hall Lobby & Commonwealth Lobby",
+    "tags": [
+      "Social",
+      "Free food",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381239",
+    "host": "Kentucky Hall & Commonwealth Hall"
+  },
+  {
+    "id": "nku-381040",
+    "title": "Six@Six Lecture - What We Know and What's Ahead: A Conversation about Domestic Violence",
+    "description": "Flyer with a photo of a candlelight vigil and event details",
+    "date": "October 22, 2026",
+    "time": "6 PM - 7:30 PM",
+    "location": "SCRIPPS Howard Center for Civic Engagement",
+    "tags": [
+      "Lecture"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_629794_66_Graphics_6_04b67010-18a1-4588-9f90-dfb4db67fe85_98112729.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381040",
+    "host": "SCRIPPS Howard Center for Civic Engagement"
+  },
+  {
+    "id": "nku-380973",
+    "title": "Friday Night Spike",
+    "description": "Friday Night Spike. Friday, 23 October 2026 At 5:00 PM, EDT (GMT-4). NKU Intermural Fields.",
+    "date": "October 23, 2026",
+    "time": "5 PM - 10 PM",
+    "location": "NKU Intermural Fields",
+    "tags": [
+      "Athletic/Sports",
+      "Athletic"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_629255_ChatGPT_Image_Sep_1_2026_05_04_36_PM_ff3f0c86-f3e8-4975-b9dd-0a91b60d96b6_91171259.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380973",
+    "host": "Northern Kentucky Roundnet Club"
+  },
+  {
+    "id": "nku-380585",
+    "title": "Council and Chapter Office Meeting",
+    "description": "This meeting brings together FSL council members and chapter officers to share key updates, review upcoming dates and deadlines, and discuss important policies, events, and initiatives impacting the community. Participants will receive reminders, support resources, and action items to help chapters stay informed, engaged, and aligned with FSL expectations and goals.",
+    "date": "October 26, 2026",
+    "time": "5 PM - 6 PM",
+    "location": "Fraternity and Sorority Life",
+    "tags": [
+      "Meeting",
+      "Fraternity & Sorority Life"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_630852_Screenshot_20260504_112443_54112640.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380585",
+    "host": "Fraternity and Sorority Life"
+  },
+  {
+    "id": "nku-380831",
+    "title": "6:33 (Dinner & Worship)",
+    "description": "Two girls, photo says 5:30pm Free Dinner Fellowship",
+    "date": "October 27, 2026",
+    "time": "5:30 PM - 7:30 PM",
+    "location": "Baptist Campus Ministry",
+    "tags": [
+      "Spiritual",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618337_633_photo_379f7604-68b7-4cc4-a8b6-49723c2a9df5_85103911.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380831",
+    "host": "Baptist Campus Ministry"
+  },
+  {
+    "id": "nku-380760",
+    "title": "Democracy Square Live! - October",
+    "description": "Democracy Square Live logo",
+    "date": "October 28, 2026",
+    "time": "12 PM - 1 PM",
+    "location": "SCRIPPS Howard Center for Civic Engagement",
+    "tags": [
+      "Meeting",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_629794_Democracy_Square_Live_Instagram_Post_45_116111513.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380760",
+    "host": "SCRIPPS Howard Center for Civic Engagement"
+  },
+  {
+    "id": "nku-380696",
+    "title": "Crafternoon: Spooky Scrapbooking",
+    "description": "the words backslash backslash backslash backslash backslash backslash backslash “crafternoons at Stego Studio backslash backslash backslash backslash backslash backslash backslash “ in a white box on top of collage-look scraps of paper with colorful cut pieces of paper overlaid",
+    "date": "October 28, 2026",
+    "time": "1 PM - 2 PM",
+    "location": "Steely Library",
+    "tags": [
+      "Social",
+      "YSA Friendly",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_629680_crafternoon_1_ea5d4ff0-1121-4dfa-8b0a-e4ffd0089cbc_716102246.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380696",
+    "host": "Steely Library"
+  },
+  {
+    "id": "nku-380770",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "October 28, 2026",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380770",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380798",
+    "title": "STEM Pizza Supper: Frightfully Fun STEM Where Science Meets Spooky!",
+    "description": "STEM Pizza Supper: Frightfully Fun STEM Where Science Meets Spooky! Wednesday, 28 October 2026 At 5:00 PM, EDT (GMT-4).",
+    "date": "October 28, 2026",
+    "time": "5 PM - 6 PM",
+    "location": "Center for Integrative Natural Science and Mathematics",
+    "tags": [
+      "Social",
+      "Free stuff",
+      "Free food",
+      "General Meeting",
+      "Health & Wellness",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_620862_image_upload_620862_image_upload_620862_Best_Pizza_Search_Bar_Instagram_Post_71994414_72311114_c9dc69a3-d8c8-4caa-bc64-1ed51399001f_728105359.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380798",
+    "host": "Center for Integrative Natural Science and Mathematics"
+  },
+  {
+    "id": "nku-381187",
+    "title": "PAC Pumpkin Palooza",
+    "description": "PAC Pumpkin Palooza. Wednesday, 28 October 2026 At 5:00 PM, EDT (GMT-4).",
+    "date": "October 28, 2026",
+    "time": "5 PM - 7 PM",
+    "location": "Norse Center for Belonging",
+    "tags": [
+      "Social"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381187",
+    "host": "Norse Center for Belonging"
+  },
+  {
+    "id": "nku-381158",
+    "title": "ASL Club Halloween Party",
+    "description": "ASL Club Halloween Party. Wednesday, 28 October 2026 At 7:00 PM, EDT (GMT-4).",
+    "date": "October 28, 2026",
+    "time": "7 PM - 9 PM",
+    "location": "American Sign Language Club",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381158",
+    "host": "American Sign Language Club"
+  },
+  {
+    "id": "nku-380867",
+    "title": "Healthy Halloween",
+    "description": "Flyer for Healthy Halloween, a Halloween-themed wellness event on October 29, 2026, in the UC Ballroom from 11 a.m. to 1 p.m. The flyer features a large orange pumpkin with ghosts, a witch’s hat, stars, and a jack-o’-lantern against a purple background.",
+    "date": "October 29, 2026",
+    "time": "11 AM - 1 PM",
+    "location": "Student Wellness Education",
+    "tags": [
+      "Office Hours",
+      "Free stuff",
+      "Health & Wellness"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_608280_Healthy_Halloween_1_85d2bfad-863d-4b3f-bdc2-2cb30c2a573d_813174417.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380867",
+    "host": "Student Wellness Education"
+  },
+  {
+    "id": "nku-381066",
+    "title": "Leadership Programs: What are they & why should you go?",
+    "description": "Leadership Programs: What are they and why should you go? Thursday, 29 October 2026 At 4:30 PM, EDT (GMT-4).",
+    "date": "October 29, 2026",
+    "time": "4:30 PM - 5:30 PM",
+    "location": "Finance and Accounting Student Association",
+    "tags": [
+      "Academic",
+      "Free food",
+      "YSA Friendly",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381066",
+    "host": "Finance and Accounting Student Association"
+  },
+  {
+    "id": "nku-380630",
+    "title": "NKU R.O.C.K.S. General Body Meeting",
+    "description": "NKU R.O.C.K.S. General Body Meeting. Thursday, 29 October 2026 At 5:00 PM, EDT (GMT-4).",
+    "date": "October 29, 2026",
+    "time": "5 PM - 6:30 PM",
+    "location": "NKU R.O.C.K.S.",
+    "tags": [
+      "Meeting",
+      "General Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618520_NKU_ROCKS_LOGO_b09bb259-15e9-4f14-9849-a2fc91b6d592_65215512.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380630",
+    "host": "NKU R.O.C.K.S."
+  },
+  {
+    "id": "nku-380758",
+    "title": "Movie Night & Costume Party",
+    "description": "Phone, knife, and home with the label SCREAM",
+    "date": "October 29, 2026",
+    "time": "6 PM - 10 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Social",
+      "Free stuff",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_original95EBE576C438471992DE061FFF514746_6663e6c6-79ea-4223-87c1-ef411cbbfcca_930172830.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380758",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380919",
+    "title": "Tri Beta - Initiation and Senior Honor Cord Ceremony",
+    "description": "Tri Beta - Initiation and Senior Honor Cord Ceremony. Thursday, 29 October 2026 At 6:00 PM, EDT (GMT-4). HE 102 slash 104.",
+    "date": "October 29, 2026",
+    "time": "6 PM - 8 PM",
+    "location": "HE 102/104",
+    "tags": [
+      "Ceremony"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2025/r2_image_upload_610955_Screen_Shot_20250905_at_43744_PM_95163812.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380919",
+    "host": "Beta Beta Beta"
+  },
+  {
+    "id": "nku-381217",
+    "title": "Casino Royale",
+    "description": "Casino Royale. Thursday, 29 October 2026 At 7:00 PM, EDT (GMT-4).",
+    "date": "October 29, 2026",
+    "time": "7 PM - 9 PM",
+    "location": "New Residence Hall",
+    "tags": [
+      "Social",
+      "Free food",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381217",
+    "host": "New Residence Hall"
+  },
+  {
+    "id": "nku-380604",
+    "title": "Trick or Treat Yourself",
+    "description": "Trick or Treat Yourself. Friday, 30 October 2026 At 11:00 AM, EDT (GMT-4).",
+    "date": "October 30, 2026",
+    "time": "11 AM - 1 PM",
+    "location": "Student Wellness Education",
+    "tags": [
+      "Educational/Awareness",
+      "Free stuff",
+      "Health & Wellness",
+      "Tabling",
+      "Student Wellness Education"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_608280_trick_or_treat_yourself_banner_27747527-f1f0-4bde-9a9e-34e628f39742_71162434.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380604",
+    "host": "Student Wellness Education"
+  },
+  {
+    "id": "nku-380937",
+    "title": "National Pan Hellenic Stroll Off",
+    "description": "National Pan Hellenic Stroll Off. Friday, 30 October 2026 At 6:00 PM, EDT (GMT-4).",
+    "date": "October 30, 2026",
+    "time": "6 PM - 10 PM",
+    "location": "National Pan-Hellenic Council",
+    "tags": [
+      "Cultural",
+      "Fraternity & Sorority Life",
+      "Live Entertainment"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_607762_Upd_Stroll_Off_Flyer_28fe497f-ce64-43b7-9b58-7a3d1cbe3d69_101151413.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380937",
+    "host": "National Pan-Hellenic Council"
+  },
+  {
+    "id": "nku-381142",
+    "title": "Monthly Magic The Gathering Draft Games",
+    "description": "Monthly Magic The Gathering Draft Games. Saturday, 31 October 2026 At 6:00 PM, EDT (GMT-4). University suites lobby.",
+    "date": "October 31, 2026",
+    "time": "6 PM - 10 PM",
+    "location": "University suites lobby",
+    "tags": [
+      "Social",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381142",
+    "host": "University Suites"
+  },
+  {
+    "id": "nku-380959",
+    "title": "Greeks Sing 2026: Movie Night with the Greeks",
+    "description": "Greeks Sing 2026: Movie Night with the Greeks. Monday, 02 November 2026 At 6:00 PM, EST (GMT-5).",
+    "date": "November 2, 2026",
+    "time": "6 PM - 8 PM",
+    "location": "Order of Omega",
+    "tags": [
+      "Social",
+      "Fraternity & Sorority Life"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2024/r2_image_upload_613464_308626646_189789853462247_6072966727038236859_njpg_31105837.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380959",
+    "host": "Order of Omega"
+  },
+  {
+    "id": "nku-380612",
+    "title": "Fiber Arts Meetup",
+    "description": "Fiber Arts Meetup. Tuesday, 03 November 2026 At 12:00 PM, EST (GMT-5).",
+    "date": "November 3, 2026",
+    "time": "12 PM - 1 PM",
+    "location": "Steely Library",
+    "tags": [
+      "Social"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_629680_fam_d673591c-82c9-4b65-8549-85a3e4f28969_716103617.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380612",
+    "host": "Steely Library"
+  },
+  {
+    "id": "nku-380832",
+    "title": "6:33 (Dinner & Worship)",
+    "description": "Two girls, photo says 5:30pm Free Dinner Fellowship",
+    "date": "November 3, 2026",
+    "time": "5:30 PM - 7:30 PM",
+    "location": "Baptist Campus Ministry",
+    "tags": [
+      "Spiritual",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618337_633_photo_78be4408-840a-4a57-b01c-a43a18d218c7_85103920.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380832",
+    "host": "Baptist Campus Ministry"
+  },
+  {
+    "id": "nku-380860",
+    "title": "Campus Outreach Tuesdays",
+    "description": "Campus Outreach Tuesdays 7:30pm at SU 102",
+    "date": "November 3, 2026",
+    "time": "7:30 PM - 9 PM",
+    "location": "Campus Outreach",
+    "tags": [
+      "Meeting",
+      "Faith-Based",
+      "General Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618230_campusoutreachtuesdaysupdated_c6e74c2b-c868-4ec1-98fc-0885731149b0_813141410.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380860",
+    "host": "Campus Outreach"
+  },
+  {
+    "id": "nku-380625",
+    "title": "Stress Less Station",
+    "description": "Flyer inviting students to “Refill at the Stress Less Station.“ Includes an image of a gas station, with the Norse Wellness Logo on the pumps.",
+    "date": "November 4, 2026",
+    "time": "11 AM - 1 PM",
+    "location": "Student Wellness Education",
+    "tags": [
+      "Educational/Awareness",
+      "Free stuff",
+      "Health & Wellness",
+      "Tabling",
+      "Student Wellness Education"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_608280_my_engagement_photo1_ece66c8a-7295-4b84-afdc-1e25ae4c9b40_81716597.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380625",
+    "host": "Student Wellness Education"
+  },
+  {
+    "id": "nku-381188",
+    "title": "Road Show with the Library",
+    "description": "Flyer for the NCB and Steely Library Road Show on November 4, 2026, from 11:00 a.m. to 1:00 p.m. on the fifth floor of Landrum Hall. The flyer features NKU’s Norse mascot standing beside a black and gold car on a roadway. Students are invited to learn about the Library Hot Spot and Stego Studio makerspace. A QR code is included for additional information. NCB Road Show Library",
+    "date": "November 4, 2026",
+    "time": "11 AM - 1 PM",
+    "location": "Norse Center for Belonging",
+    "tags": [
+      "Educational/Awareness",
+      "Free stuff"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_599719_NCB_Road_Showpdf3_00c325ba-bc10-45a1-94e0-154e6bb0210d_92422141.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381188",
+    "host": "Norse Center for Belonging"
+  },
+  {
+    "id": "nku-380771",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "November 4, 2026",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380771",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-381039",
+    "title": "The Norse Journaling Community",
+    "description": "Flyer for The Norse Journaling Community, presented by NKU’s Norse Center for Belonging and Wellness Education. The program invites all NKU students to explore journaling for self-expression, wellness, and belonging under the theme “Reflect. Create. Connect.” Upcoming events are November 5, February 10, and April 8 at 5:30 p.m. in SU 102, with monthly prompts also offered. The first 80 students who register receive a free journaling kit containing a hardcover journal, one black pen, two colored pens, correction tape, two rolls of washi tape, a pack of 300 washi stickers, and four sheets of quote paper. A QR code is included on the flyer for registration.",
+    "date": "November 5, 2026",
+    "time": "5:30 PM - 6:30 PM",
+    "location": "Student Union 102",
+    "tags": [
+      "Workshop",
+      "Free stuff",
+      "Student Wellness Education"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_599719_1_8e18270f-7994-4989-90be-a3e7a7743b1b_924205553.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381039",
+    "host": "Norse Center for Belonging"
+  },
+  {
+    "id": "nku-381147",
+    "title": "Coffee Chat",
+    "description": "Coffee Chat. Monday, 09 November 2026 At 5:00 PM, EST (GMT-5).",
+    "date": "November 9, 2026",
+    "time": "5 PM - 6 PM",
+    "location": "American Sign Language Club",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381147",
+    "host": "American Sign Language Club"
+  },
+  {
+    "id": "nku-380833",
+    "title": "6:33 (Dinner & Worship)",
+    "description": "Two girls, photo says 5:30pm Free Dinner Fellowship",
+    "date": "November 10, 2026",
+    "time": "5:30 PM - 7:30 PM",
+    "location": "Baptist Campus Ministry",
+    "tags": [
+      "Spiritual",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618337_633_photo_9ba33d1d-2c7d-4a08-bea6-aa82a434f267_85103931.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380833",
+    "host": "Baptist Campus Ministry"
+  },
+  {
+    "id": "nku-380861",
+    "title": "Campus Outreach Tuesdays",
+    "description": "Campus Outreach Tuesdays 7:30pm at SU 102",
+    "date": "November 10, 2026",
+    "time": "7:30 PM - 9 PM",
+    "location": "Campus Outreach",
+    "tags": [
+      "Meeting",
+      "Faith-Based",
+      "General Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618230_campusoutreachtuesdaysupdated_c6e74c2b-c868-4ec1-98fc-0885731149b0_813141410.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380861",
+    "host": "Campus Outreach"
+  },
+  {
+    "id": "nku-380772",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "November 11, 2026",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380772",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380631",
+    "title": "NKU R.O.C.K.S. General Body Meeting",
+    "description": "NKU R.O.C.K.S. General Body Meeting. Thursday, 12 November 2026 At 5:00 PM, EST (GMT-5).",
+    "date": "November 12, 2026",
+    "time": "5 PM - 6:30 PM",
+    "location": "NKU R.O.C.K.S.",
+    "tags": [
+      "Meeting",
+      "General Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618520_NKU_ROCKS_LOGO_reprisedremovebgpreview_d335f2fd-9b41-44b4-8b19-8895e062ff24_71221416.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380631",
+    "host": "NKU R.O.C.K.S."
+  },
+  {
+    "id": "nku-380634",
+    "title": "Rest & Recharge Workshop",
+    "description": "Promotional flyer for the “Rest and Recharge Workshop” offered by NKU Student Wellness Education. The flyer has a dark blue background with light clouds and stars. A graphic shows a person resting comfortably on a soft pillow on the right hand side. The text reads: backslash “Learn about the seven types of rest and take home free resources to support your rest and well-being. backslash “ The NKU Student Wellness Education logo appears inside a cloud in the lower left corner. The event details state: November 12, 2026, from 5 PM to 6:30 PM in SU 302.",
+    "date": "November 12, 2026",
+    "time": "5 PM - 6:30 PM",
+    "location": "Student Wellness Education",
+    "tags": [
+      "Educational/Awareness",
+      "Free stuff",
+      "Health & Wellness",
+      "Student Wellness Education",
+      "Wellness Graduation Cord Eligible"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_608280_my_engagement_photo1_fc65695b-9a75-4295-b3e3-6a6db7166a8e_84161120.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380634",
+    "host": "Student Wellness Education"
+  },
+  {
+    "id": "nku-380685",
+    "title": "NKU's Got Talent",
+    "description": "NKU’s Got Talent. Thursday, 12 November 2026 At 6:00 PM, EST (GMT-5).",
+    "date": "November 12, 2026",
+    "time": "6 PM - 8 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Social"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380685",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-381148",
+    "title": "Coffee Chat",
+    "description": "Coffee Chat. Tuesday, 17 November 2026 At 8:00 AM, EST (GMT-5). Area outside Starbucks in Student Union.",
+    "date": "November 17, 2026",
+    "time": "8 AM - 9 AM",
+    "location": "Area outside Starbucks in Student Union",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381148",
+    "host": "American Sign Language Club"
+  },
+  {
+    "id": "nku-380834",
+    "title": "6:33 (Dinner & Worship)",
+    "description": "Two girls, photo says 5:30pm Free Dinner Fellowship",
+    "date": "November 17, 2026",
+    "time": "5:30 PM - 7:30 PM",
+    "location": "Baptist Campus Ministry",
+    "tags": [
+      "Spiritual",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618337_633_photo_a8c44c68-dfe8-4e1e-8e3e-eb84e6fc6b65_85103949.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380834",
+    "host": "Baptist Campus Ministry"
+  },
+  {
+    "id": "nku-380862",
+    "title": "Campus Outreach Tuesdays",
+    "description": "Campus Outreach Tuesdays 7:30pm at SU 102",
+    "date": "November 17, 2026",
+    "time": "7:30 PM - 9 PM",
+    "location": "Campus Outreach",
+    "tags": [
+      "Meeting",
+      "Faith-Based",
+      "General Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618230_campusoutreachtuesdaysupdated_c6e74c2b-c868-4ec1-98fc-0885731149b0_813141410.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380862",
+    "host": "Campus Outreach"
+  },
+  {
+    "id": "nku-380636",
+    "title": "Fall Take & Make",
+    "description": "A fall themed NKU Student Wellness Education flyer decorated with autumn leaves, a gnome holding a pumpkin, and a jar filled with fall themed images. The heading reads “Fall Take and Make.” The flyer invites students to take a fall craft and make it at home. Event details say “11 slash 18 slash 26, 11 a.m. to 1 p.m., SU 2nd Floor Lobby.”",
+    "date": "November 18, 2026",
+    "time": "11 AM - 1 PM",
+    "location": "Student Wellness Education",
+    "tags": [
+      "Educational/Awareness",
+      "Free stuff",
+      "Health & Wellness",
+      "Tabling",
+      "Student Wellness Education"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_608280_fall_take_and_make_banner_01a9eb39-3e16-485d-8270-b1e72fa30e4a_78135534.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380636",
+    "host": "Student Wellness Education"
+  },
+  {
+    "id": "nku-380761",
+    "title": "Democracy Square Live! - November",
+    "description": "Democracy Square Live logo",
+    "date": "November 18, 2026",
+    "time": "12 PM - 1 PM",
+    "location": "SCRIPPS Howard Center for Civic Engagement",
+    "tags": [
+      "Meeting",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_629794_Democracy_Square_Live_Instagram_Post_45_116111513.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380761",
+    "host": "SCRIPPS Howard Center for Civic Engagement"
+  },
+  {
+    "id": "nku-380697",
+    "title": "Crafternoon: Friendship Bracelets",
+    "description": "the words backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “crafternoons at Stego Studio backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “ in a white box on top of collage-look scraps of paper with colorful cut pieces of paper overlaid",
+    "date": "November 18, 2026",
+    "time": "1 PM - 2 PM",
+    "location": "Steely Library",
+    "tags": [
+      "Social",
+      "YSA Friendly",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_629680_crafternoon_1_ea5d4ff0-1121-4dfa-8b0a-e4ffd0089cbc_716102246.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380697",
+    "host": "Steely Library"
+  },
+  {
+    "id": "nku-380773",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "November 18, 2026",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380773",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380800",
+    "title": "STEM Pizza Supper: STEM with Gratitude",
+    "description": "STEM Pizza Supper: STEM with Gratitude. Wednesday, 18 November 2026 At 5:00 PM, EST (GMT-5).",
+    "date": "November 18, 2026",
+    "time": "5 PM - 6 PM",
+    "location": "Center for Integrative Natural Science and Mathematics",
+    "tags": [
+      "Social",
+      "Free stuff",
+      "Free food",
+      "General Meeting",
+      "Health & Wellness",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_620862_image_upload_620862_image_upload_620862_Best_Pizza_Search_Bar_Instagram_Post_71994414_72311114_05dde438-fa34-429b-8774-8470a46242dc_728105421.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380800",
+    "host": "Center for Integrative Natural Science and Mathematics"
+  },
+  {
+    "id": "nku-380934",
+    "title": "Miss Krimson and Kreme Scholarship Pageant",
+    "description": "Miss Krimson and Kreme Scholarship Pageant. Wednesday, 18 November 2026 At 7:00 PM, EST (GMT-5).",
+    "date": "November 18, 2026",
+    "time": "7 PM - 10 PM",
+    "location": "Kappa Alpha Psi Fraternity, Inc.",
+    "tags": [
+      "Cultural",
+      "Fraternity & Sorority Life",
+      "Live Entertainment"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_607762_Pageant_ef1fb270-8664-4feb-a4b6-760bf3bb9178_826164915.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380934",
+    "host": "Kappa Alpha Psi Fraternity, Inc."
+  },
+  {
+    "id": "nku-381196",
+    "title": "NLS Annual Fall Leadership Retreat 2026",
+    "description": "Flyer for the 35th Annual NLS Fall Retreat 2026, themed “This Is It: A Mix for the Weekend,” taking place November 20-22. The design resembles a handwritten mix CD in a clear jewel case and includes a QR code for more information or registration.",
+    "date": "November 20, 2026",
+    "time": "10:00 AM - Sun, Nov 22, 2026 3:00 PM",
+    "location": "Country Lake Christian Retreat",
+    "tags": [
+      "Leadership",
+      "Leadership & Professional Development"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_599800_processed536694FAFF3F482E960510CA0B3979C4_1b3cb591-249a-4bdc-97f5-0765fa4aeff9_925162151.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381196",
+    "host": "Center for Student Engagement"
+  },
+  {
+    "id": "nku-380586",
+    "title": "Council and Chapter Office Meeting",
+    "description": "This meeting brings together FSL council members and chapter officers to share key updates, review upcoming dates and deadlines, and discuss important policies, events, and initiatives impacting the community. Participants will receive reminders, support resources, and action items to help chapters stay informed, engaged, and aligned with FSL expectations and goals.",
+    "date": "November 30, 2026",
+    "time": "5 PM - 6 PM",
+    "location": "Fraternity and Sorority Life",
+    "tags": [
+      "Meeting",
+      "Fraternity & Sorority Life"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_630852_Screenshot_20260504_112443_54112640.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380586",
+    "host": "Fraternity and Sorority Life"
+  },
+  {
+    "id": "nku-381143",
+    "title": "Monthly Magic The Gathering Draft Games",
+    "description": "Monthly Magic The Gathering Draft Games. Monday, 30 November 2026 At 6:00 PM, EST (GMT-5). University suites lobby.",
+    "date": "November 30, 2026",
+    "time": "6 PM - 10 PM",
+    "location": "University suites lobby",
+    "tags": [
+      "Social",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381143",
+    "host": "University Suites"
+  },
+  {
+    "id": "nku-381159",
+    "title": "ASL Club Game Night",
+    "description": "ASL Club Game Night. Monday, 30 November 2026 At 6:00 PM, EST (GMT-5).",
+    "date": "November 30, 2026",
+    "time": "6 PM - 7 PM",
+    "location": "American Sign Language Club",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381159",
+    "host": "American Sign Language Club"
+  },
+  {
+    "id": "nku-380613",
+    "title": "Fiber Arts Meetup",
+    "description": "Fiber Arts Meetup. Tuesday, 01 December 2026 At 12:00 PM, EST (GMT-5).",
+    "date": "December 1, 2026",
+    "time": "12 PM - 1 PM",
+    "location": "Steely Library",
+    "tags": [
+      "Social"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_629680_fam_cb898602-5bec-4730-a893-1381d028d65a_716103641.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380613",
+    "host": "Steely Library"
+  },
+  {
+    "id": "nku-380835",
+    "title": "6:33 (Dinner & Worship)",
+    "description": "Two girls, photo says 5:30pm Free Dinner Fellowship",
+    "date": "December 1, 2026",
+    "time": "5:30 PM - 7:30 PM",
+    "location": "Baptist Campus Ministry",
+    "tags": [
+      "Spiritual",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618337_633_photo_2e773260-7838-4603-94a7-24845d2f4ad8_85103959.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380835",
+    "host": "Baptist Campus Ministry"
+  },
+  {
+    "id": "nku-380686",
+    "title": "Gingerbread House Decorating",
+    "description": "Gingerbread House Decorating. Tuesday, 01 December 2026 At 6:00 PM, EST (GMT-5).",
+    "date": "December 1, 2026",
+    "time": "6 PM - 8 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Social"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380686",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380863",
+    "title": "Campus Outreach Tuesdays",
+    "description": "Campus Outreach Tuesdays 7:30pm at SU 102",
+    "date": "December 1, 2026",
+    "time": "7:30 PM - 9 PM",
+    "location": "Campus Outreach",
+    "tags": [
+      "Meeting",
+      "Faith-Based",
+      "General Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618230_campusoutreachtuesdaysupdated_c6e74c2b-c868-4ec1-98fc-0885731149b0_813141410.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380863",
+    "host": "Campus Outreach"
+  },
+  {
+    "id": "nku-380774",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "December 2, 2026",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380774",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380635",
+    "title": "Create a Gift Café",
+    "description": "Create a Gift Café. Thursday, 03 December 2026 At 11:00 AM, EST (GMT-5).",
+    "date": "December 3, 2026",
+    "time": "11 AM - 1:30 PM",
+    "location": "Student Wellness Education",
+    "tags": [
+      "Educational/Awareness",
+      "Free stuff",
+      "Health & Wellness",
+      "Student Wellness Education"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_608280_my_engagement_photo1_5e622aad-21d0-4de8-84ab-07827d6b5459_8785329.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380635",
+    "host": "Student Wellness Education"
+  },
+  {
+    "id": "nku-380836",
+    "title": "6:33 (Dinner & Worship)",
+    "description": "Two girls, photo says 5:30pm Free Dinner Fellowship",
+    "date": "December 8, 2026",
+    "time": "5:30 PM - 7:30 PM",
+    "location": "Baptist Campus Ministry",
+    "tags": [
+      "Spiritual",
+      "Free food"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618337_633_photo_5a89fa6f-75ee-4b58-9956-f056b30ea0af_85104012.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380836",
+    "host": "Baptist Campus Ministry"
+  },
+  {
+    "id": "nku-380864",
+    "title": "Campus Outreach Tuesdays",
+    "description": "Campus Outreach Tuesdays 7:30pm at SU 102",
+    "date": "December 8, 2026",
+    "time": "7:30 PM - 9 PM",
+    "location": "Campus Outreach",
+    "tags": [
+      "Meeting",
+      "Faith-Based",
+      "General Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618230_campusoutreachtuesdaysupdated_c6e74c2b-c868-4ec1-98fc-0885731149b0_813141410.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380864",
+    "host": "Campus Outreach"
+  },
+  {
+    "id": "nku-380687",
+    "title": "Destressfest",
+    "description": "Destressfest. Wednesday, 09 December 2026 At 11:00 AM, EST (GMT-5).",
+    "date": "December 9, 2026",
+    "time": "11 AM - 2 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Social"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/images/groups/professional-02.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380687",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380698",
+    "title": "Crafternoon: Make Your Own Holiday Card",
+    "description": "the words backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “crafternoons at Stego Studio backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “ in a white box on top of collage-look scraps of paper with colorful cut pieces of paper overlaid",
+    "date": "December 9, 2026",
+    "time": "1 PM - 2 PM",
+    "location": "Steely Library",
+    "tags": [
+      "Social",
+      "YSA Friendly",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_629680_crafternoon_1_ea5d4ff0-1121-4dfa-8b0a-e4ffd0089cbc_716102246.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380698",
+    "host": "Steely Library"
+  },
+  {
+    "id": "nku-380775",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "December 9, 2026",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380775",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380632",
+    "title": "NKU R.O.C.K.S. General Body Meeting",
+    "description": "NKU R.O.C.K.S. General Body Meeting. Thursday, 10 December 2026 At 5:00 PM, EST (GMT-5).",
+    "date": "December 10, 2026",
+    "time": "5 PM - 6:30 PM",
+    "location": "NKU R.O.C.K.S.",
+    "tags": [
+      "Meeting",
+      "General Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_618520_NKU_ROCKS_LOGO_reprisedremovebgpreview_d335f2fd-9b41-44b4-8b19-8895e062ff24_71221416.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380632",
+    "host": "NKU R.O.C.K.S."
+  },
+  {
+    "id": "nku-380777",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "January 13, 2027",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380777",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380869",
+    "title": "Winterfest",
+    "description": "Winterfest. Thursday, 14 January 2027 At 5:00 PM, EST (GMT-5).",
+    "date": "January 14, 2027",
+    "time": "5 PM - 7 PM",
+    "location": "Center for Student Engagement",
+    "tags": [
+      "Social",
+      "Free stuff",
+      "Free food",
+      "Drop In Event"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_630852_NKUWinterfest_1webp_97218235-62f6-46c9-afb6-a2b1e95e27e5_813165531.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380869",
+    "host": "Center for Student Engagement"
+  },
+  {
+    "id": "nku-380868",
+    "title": "MLK Day of Service",
+    "description": "MLK Day of Service. Saturday, 16 January 2027 At 10:00 AM, EST (GMT-5).",
+    "date": "January 16, 2027",
+    "time": "10 AM - 1 PM",
+    "location": "Center for Student Engagement",
+    "tags": [
+      "Community Service"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2025/r2_image_upload_630852_MLK_DayofServicewebp_108104645.jpeg"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380868",
+    "host": "Center for Student Engagement"
+  },
+  {
+    "id": "nku-380588",
+    "title": "Welcome Back Meeting",
+    "description": "This welcome back meeting brings together FSL council leaders and chapter officers to kick off the semester with important updates, key dates, and shared expectations. The session provides an opportunity to reconnect, review upcoming initiatives, and ensure chapters are prepared for a successful and engaged semester.",
+    "date": "January 19, 2027",
+    "time": "5 PM - 6 PM",
+    "location": "Fraternity and Sorority Life",
+    "tags": [
+      "Meeting",
+      "Fraternity & Sorority Life"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_630852_Screenshot_20260504_113134_54113154.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380588",
+    "host": "Fraternity and Sorority Life"
+  },
+  {
+    "id": "nku-380778",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "January 20, 2027",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380778",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380779",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "January 27, 2027",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380779",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380780",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "February 3, 2027",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380780",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380781",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "February 10, 2027",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380781",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-381191",
+    "title": "The Norse Journaling Community",
+    "description": "Flyer for The Norse Journaling Community, presented by NKU’s Norse Center for Belonging and Wellness Education. The program invites all NKU students to explore journaling for self-expression, wellness, and belonging under the theme “Reflect. Create. Connect.” Upcoming events are November 5, February 10, and April 8 at 5:30 p.m. in SU 102, with monthly prompts also offered. The first 80 students who register receive a free journaling kit containing a hardcover journal, one black pen, two colored pens, correction tape, two rolls of washi tape, a pack of 300 washi stickers, and four sheets of quote paper. A QR code is included on the flyer for registration.",
+    "date": "February 10, 2027",
+    "time": "5:30 PM - 6:30 PM",
+    "location": "Student Union 102",
+    "tags": [
+      "Workshop",
+      "Free stuff",
+      "Student Wellness Education"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_599719_1_8e18270f-7994-4989-90be-a3e7a7743b1b_924205553.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381191",
+    "host": "Norse Center for Belonging"
+  },
+  {
+    "id": "nku-380605",
+    "title": "Be Mindful Valentine",
+    "description": "Flyer advertising the “Be Mindful Valentine“ event from Student Wellness Education. Flyer shows images of the Valentines themed Mochi stress toys available at the event. The flyer has a pink background with cute cartoon animals with heart shaped balloons.",
+    "date": "February 12, 2027",
+    "time": "11 AM - 1 PM",
+    "location": "Student Wellness Education",
+    "tags": [
+      "Educational/Awareness",
+      "Free stuff",
+      "Health & Wellness",
+      "Tabling",
+      "Student Wellness Education"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_608280_My_Engagement_photo1_83105ca7-0c82-41c2-bed3-77184a5b448b_817162216.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380605",
+    "host": "Student Wellness Education"
+  },
+  {
+    "id": "nku-380782",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "February 17, 2027",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380782",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380783",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "February 24, 2027",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380783",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380784",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "March 3, 2027",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380784",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380785",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "March 17, 2027",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380785",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380786",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "March 24, 2027",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380786",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380787",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "March 31, 2027",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380787",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380788",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "April 7, 2027",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380788",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-381192",
+    "title": "The Norse Journaling Community",
+    "description": "Flyer for The Norse Journaling Community, presented by NKU’s Norse Center for Belonging and Wellness Education. The program invites all NKU students to explore journaling for self-expression, wellness, and belonging under the theme “Reflect. Create. Connect.” Upcoming events are November 5, February 10, and April 8 at 5:30 p.m. in SU 102, with monthly prompts also offered. The first 80 students who register receive a free journaling kit containing a hardcover journal, one black pen, two colored pens, correction tape, two rolls of washi tape, a pack of 300 washi stickers, and four sheets of quote paper. A QR code is included on the flyer for registration.",
+    "date": "April 8, 2027",
+    "time": "5:30 PM - 6:30 PM",
+    "location": "Student Union 102",
+    "tags": [
+      "Workshop",
+      "Free stuff",
+      "Student Wellness Education"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_599719_1_8e18270f-7994-4989-90be-a3e7a7743b1b_924205553.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=381192",
+    "host": "Norse Center for Belonging"
+  },
+  {
+    "id": "nku-380870",
+    "title": "Gold and White Award Ceremony",
+    "description": "Gold and White Award Ceremony. Wednesday, 14 April 2027 At 6:00 PM, EDT (GMT-4).",
+    "date": "April 14, 2027",
+    "time": "6 PM - 9 PM",
+    "location": "Center for Student Engagement",
+    "tags": [
+      "Ceremony",
+      "Leadership & Professional Development"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_630852_Gold_and_White_Presentation_2026_f6b304ee-8bf3-4b81-89c1-5832bdad0cc7_813171257.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380870",
+    "host": "Center for Student Engagement"
+  },
+  {
+    "id": "nku-380789",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "April 21, 2027",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380789",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "nku-380790",
+    "title": "Activities Programming Board - General Body Meeting",
+    "description": "Color burtst background with cloud featuring the letters backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “APB: backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash backslash “",
+    "date": "April 28, 2027",
+    "time": "5 PM - 6 PM",
+    "location": "Activities Programming Board",
+    "tags": [
+      "Meeting"
+    ],
+    "images": [
+      "https://myengagement.nku.edu/upload/nku/2026/r2_image_upload_625722_Untitled_design_fb02dd1a-1786-4e2a-b301-2acb76f34c65_72095026.png"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://myengagement.nku.edu/rsvp_boot?id=380790",
+    "host": "Activities Programming Board"
+  },
+  {
+    "id": "truist-all-elite-wrestling-collision",
+    "title": "All Elite Wrestling: Collision",
+    "description": "All Elite Wrestling is back in the Bluegrass State!\n\nAEW Collision returns to Truist Arena in Highland Heights on Saturday, October 3, bringing the best in professional wrestling back to Truist Arena for the first time in two years!\n\nDon’t miss your chance to see AEW’s biggest stars LIVE as they bring hard-hitting matches, unforgettable moments and non-stop action to Truist Arena. Where the best wrestle — and where you can see it all live!\n\nJoin us for this LIVE event at Truist Arena in Highland Heights.\n\nAEW Collision is a two-hour, in-ring wrestling spectacular featuring more wrestlers, more stories and more action for AEW fans.\n\nAEW Collision airs every Saturday at 8 p.m. ET/7 p.m. CT on TNT and streams live on HBO Max.\n\nDon’t miss AEW Collision LIVE at Truist Arena on Saturday, October 3!\n\nTickets $34-$96.",
+    "date": "October 3, 2026",
+    "time": "Doors 6:30 PM • Show 7:30 PM",
+    "location": "Truist Arena",
+    "tags": [
+      "Sports"
+    ],
+    "images": [
+      "https://truistarena.imgix.net/events/ostsIjPja7L9LIApH7l9aMofAahHykZNKZbD0CEv.jpg?auto=compress%2Cformat&crop=faces%2Centropy&fit=crop&h=630&ixlib=php-3.3.1&w=1200&s=4f118c00b956374a4743885ac585351b"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://thetruistarena.com/events/2026/10/all-elite-wrestling-collision",
+    "host": "Truist Arena"
+  },
+  {
+    "id": "truist-alabama",
+    "title": "Alabama",
+    "description": "Alabama, The Oak Ridge Boys\n\nThe iconic Country Music Hall of Fame group ALABAMA is bringing their critically acclaimed Live in Concert tour to Truist Arena in Highland Heights, KY on October 11th at 7:00 PM. Presented by Outback Presents and Pepper Entertainment, Alabama will be supported by The Oak Ridge Boys.\n\nWith over 33 No. 1 singles on the Billboard Hot Country Songs chart and timeless classics like “Mountain Music,” “Song of the South,” “Dixieland Delight,” and “The Closer You Get,” ALABAMA continues to delight audiences nationwide. The band earned CMA’s Entertainer of the Year three years in a row (1982–1984) and was inducted into the Country Music Hall of Fame in 2005. They have won over 200 industry awards and still counting. They’ve earned 21 Gold®, Platinum® and Multi-Platinum® albums and were named the RIAA's Country Group of the Century. They are members of the Country Music Hall of Fame and have a star on the Hollywood Walk of Fame. They are also world-class philanthropists who have raised over 800 million dollars for charity.\n\nTickets $40-$184.75.",
+    "date": "October 11, 2026",
+    "time": "Doors 5:30 PM • Show 7 PM",
+    "location": "Truist Arena",
+    "tags": [
+      "Music"
+    ],
+    "images": [
+      "https://truistarena.imgix.net/events/Eaktg8f1FGd5scL5wyiwkdu397pkoDVDwtURdPVx.jpg?auto=compress%2Cformat&crop=faces%2Centropy&fit=crop&h=630&ixlib=php-3.3.1&w=1200&s=6e4f49d9828bb394c80669306e27eb81"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://thetruistarena.com/events/2026/10/alabama",
+    "host": "Truist Arena"
+  },
+  {
+    "id": "truist-hot-wheels-monster-trucks-live-color-bash",
+    "title": "Hot Wheels Monster Trucks Live - Color Bash",
+    "description": "Hot Wheels Monster Trucks Live Color Bash takes the action to a whole new level, transforming the arena into a full-throttle collision of color. Vibrant paint-splattered trucks, bursts of color, and electrifying lighting turn every smash, and crash, into a vivid spectacle the whole family can see, feel, and remember.\n\nWhen the mischievous Skelesaurus drains all the color from Monster Truck Island, it's up to the crew of Rhinomite™, Mega Wrex™, Tiger Shark™, Bone Shaker™, and Bigfoot® to win it back — one massive stunt at a time, joined by a mysterious new ally! Every wheelie, jump, donut and freestyle run brings the color roaring back, building to a full-arena burst of light, sound, and pure Monster Truck energy. It's the show you love, reimagined like you've never seen it.\n\nADD Hot Wheels Pre-Show Party TO YOUR TICKET FOR JUST $7.50 PER PERSON AT CHECKOUT!\n\nThe Hot Wheels Pre-Show Party is an event that gives fans exclusive access to their favorite Hot Wheels Monster Trucks up close! This unique experience allows fans to enter the competition floor before the show and get their minds blown by the outrageous design and epic size of the Hot Wheels Monster Trucks.\n\nExperience the heart of where all the epic crashes and thrilling stunts will take place. This party also features exclusive games, contests and giveaways. If you want to go big, you gotta go Hot Wheels at the Pre-Show Party!\n\nThe Hot Wheels Pre-Show Party is available for your enjoyment starting 2 1/2 hours before each showtime and lasts an hour and 15 minutes. Admittance will end 15 minutes before the Hot Wheels Pre-Show Party concludes.\n\nJust add at checkout. Hot Wheels Pre-show Party starts at times below.\n\nSaturday 12:00 show - 9:30am-10:45am\n\nSaturday 7:00 show - 4:30pm-5:45pm\n\nSunday 2:00 show - 11:30am-12:45pm\n\nADD VIP TO YOUR TICKET AT CHECKOUT!\n\nExclusive Backstage Hot Wheels VIP Experience\n\nSee the Hot Wheels Monster Trucks up close and personal, exclusively guided by the hosts of Hot Wheels Monster Trucks Live! Experience what happens behind the scenes before all the smashing and crashing goes down and then watch when the Hot Wheels Monster Trucks come to life.\n\nJust add at checkout. The escorted VIP package will start at the times below:\n\nSaturday 12:00 show - VIP is 10:15am-11:15am\n\nSaturday 7:00 show - VIP is 5:15pm-6:15pm\n\nSunday 2:00 show - VIP is 12:15pm-1:15pm\n\nTickets $7.5-$59.",
+    "date": "February 6 - 7, 2027",
+    "time": "Saturday, February 6, 2027: Doors 11 AM, Show 12 PM; Doors 6 PM, Show 7 PM. Sunday, February 7, 2027: Doors 1 PM, Show 2 PM",
+    "location": "Truist Arena",
+    "tags": [
+      "Sports"
+    ],
+    "images": [
+      "https://truistarena.imgix.net/events/3EGCi6GJLnRBMsi44qE4OxfrWgIf5VAwjMM9HVDv.jpg?auto=compress%2Cformat&crop=faces%2Centropy&fit=crop&h=630&ixlib=php-3.3.1&w=1200&s=abfff03f2243bb99a7effa73b2eadb17"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://thetruistarena.com/events/2027/02/hot-wheels-monster-trucks-live-color-bash",
+    "host": "Truist Arena"
+  },
+  {
+    "id": "truist-nku-womens-basketball",
+    "title": "NKU Women's Basketball",
+    "description": "#NorseNation! Come out and support your NKU Norse!\n\nBuy tickets: https://www.ticketmaster.com/northern-kentucky-norse-womens-basketball-tickets/artist/1365493?venueId=180851",
+    "date": "Upcoming",
+    "time": "",
+    "location": "Truist Arena",
+    "tags": [
+      "Athletics"
+    ],
+    "images": [
+      "https://truistarena.imgix.net/events/fFqDIQ2toK6ZEAAd2iDsssxhebctf3SpHUTjO1Gm.png?auto=compress%2Cformat&crop=faces%2Centropy&fit=crop&h=630&ixlib=php-3.3.1&w=1200&s=019e7cc876d1f776a675eae7ec99df14"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://thetruistarena.com/events/2026/12/nku-womens-basketball",
+    "host": "Truist Arena"
+  },
+  {
+    "id": "truist-nku-mens-basketball",
+    "title": "NKU Men's Basketball",
+    "description": "#NorseNation! Come out and support your NKU Norse!\n\nBuy tickets: https://www.ticketmaster.com/northern-kentucky-norse-mens-basketball-tickets/artist/1365456?venueId=180851",
+    "date": "Upcoming",
+    "time": "",
+    "location": "Truist Arena",
+    "tags": [
+      "Athletics"
+    ],
+    "images": [
+      "https://truistarena.imgix.net/events/0H22g21wB5b0mvUVIOtEeLsRbRFfIpJflEoaSckt.png?auto=compress%2Cformat&crop=faces%2Centropy&fit=crop&h=630&ixlib=php-3.3.1&w=1200&s=3863c8784b7550a16b63f1dbeed30ca6"
+    ],
+    "attendeeIds": [],
+    "reactions": {
+      "like": 0,
+      "love": 0,
+      "interested": 0
+    },
+    "comments": [],
+    "sourceUrl": "https://thetruistarena.com/events/2026/12/nku-mens-basketball",
+    "host": "Truist Arena"
   }
 ]
