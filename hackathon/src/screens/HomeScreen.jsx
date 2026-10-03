@@ -78,14 +78,14 @@ export default function HomeScreen({ onNavigate }) {
           type="button"
           onClick={toggleMapFull}
           aria-label={mapFull ? 'Exit full screen' : 'Full screen map'}
-          className="absolute right-4 bottom-48 z-[1000] w-12 h-12 bg-white border border-line rounded-lg shadow-card flex items-center justify-center text-ink"
+          className="absolute right-4 bottom-40 z-[1000] w-10 h-10 bg-white border border-line rounded-lg shadow-card flex items-center justify-center text-ink"
         >
           {mapFull ? (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
               <path d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6" />
             </svg>
           ) : (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
               <path d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6" />
             </svg>
           )}
