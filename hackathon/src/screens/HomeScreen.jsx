@@ -5,9 +5,10 @@ import Toast from '../components/Toast'
 import { eventDayKey, eventWhen, useEvents } from '../Communication/useEvents'
 import BuildingSearch from '../Navigation/BuildingSearch'
 import CampusMap from '../Navigation/CampusMap'
-import ParkingFullness from '../Navigation/ParkingFullness'
-import { findBuildingForLocation, getBuildingById, hasLocation, isParkingPlace, useBuildings } from '../Navigation/buildings'
+import ParkingFullness, { BUSYNESS_LEVELS } from '../Navigation/ParkingFullness'
+import { findBuildingForLocation, getBuildingById, hasLocation, isParkingPlace, isRecreationCenter, useBuildings } from '../Navigation/buildings'
 import { useParkingFullness } from '../Navigation/useParkingFullness'
+import { useRecBusyness } from '../Navigation/useRecBusyness'
 import { useUserLocation } from '../Navigation/useUserLocation'
 import { useWalkingRoute } from '../Navigation/useWalkingRoute'
 
@@ -36,6 +37,7 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
   const { buildings, error: buildingsError } = useBuildings()
   const { events } = useEvents()
   const { summary, rate } = useParkingFullness()
+  const { summary: recSummary, rate: rateRec } = useRecBusyness()
   const { position, accuracy, heading, error: locationError, compassEnabled, enableCompass } =
     useUserLocation()
   const [follow, setFollow] = useState(focusBuildingId == null)
@@ -114,7 +116,7 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
           }}
           full={mapFull}
           route={route}
-          bottomInset={destination && isParkingPlace(destination) ? 176 : 0}
+          bottomInset={destination && (isParkingPlace(destination) || isRecreationCenter(destination)) ? 176 : 0}
           eventSpots={showTodayEvents ? todaySpots : []}
           onOpenEvent={onOpenEvent}
         />
@@ -181,6 +183,20 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
             summary={summary}
             onRate={(rating) => rate(destination.id, rating)}
             onSignIn={() => onNavigate('login')}
+          />
+        )}
+        {destination && isRecreationCenter(destination) && (
+          <ParkingFullness
+            place={destination}
+            user={user}
+            summary={recSummary}
+            onRate={(rating) => rateRec(destination.id, rating)}
+            onSignIn={() => onNavigate('login')}
+            prompt="How busy is it?"
+            timeLabel="Last updated"
+            scaleHint="1 means empty and 5 means packed."
+            groupLabel="Busyness from 1, empty, to 5, packed"
+            levels={BUSYNESS_LEVELS}
           />
         )}
       </main>

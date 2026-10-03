@@ -5,3 +5,8 @@ export function isParkingPlace(building) {
   const name = String(building?.name ?? '')
   return /^Lot [A-Z]$/.test(name) || /Garage$/i.test(name)
 }
+
+// The recreation center is its own pin, separate from Albright Health Center.
+export function isRecreationCenter(building) {
+  return String(building?.name ?? '').trim().toLowerCase() === 'campus rec center'
+}

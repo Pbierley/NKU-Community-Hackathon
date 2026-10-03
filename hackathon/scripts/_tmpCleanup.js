@@ -1,0 +1,12 @@
+const { MongoClient } = await import('mongodb')
+const client = new MongoClient(process.env.MongoURI)
+await client.connect()
+const db = client.db(process.env.MongoDB ?? 'hackathon')
+const emails = ['rec-pin-check@example.com']
+const users = await db.collection('users').find({ email: { $in: emails } }, { projection: { id: 1 } }).toArray()
+const ids = users.map((user) => user.id)
+const deletedUsers = await db.collection('users').deleteMany({ email: { $in: emails } })
+const deletedSessions = await db.collection('sessions').deleteMany({ userId: { $in: ids } })
+const deletedRankings = await db.collection('rankings').deleteMany({ userId: { $in: ids }, kind: 'rec' })
+console.log(JSON.stringify({ users: deletedUsers.deletedCount, sessions: deletedSessions.deletedCount, rankings: deletedRankings.deletedCount }))
+await client.close()

@@ -9,6 +9,14 @@ export const FULLNESS_LEVELS = [
   { value: 5, label: 'Very full' },
 ]
 
+export const BUSYNESS_LEVELS = [
+  { value: 1, label: 'Empty' },
+  { value: 2, label: 'Fairly quiet' },
+  { value: 3, label: 'Moderate' },
+  { value: 4, label: 'Busy' },
+  { value: 5, label: 'Packed' },
+]
+
 export function formatReportedAt(iso) {
   if (!iso) return ''
   const date = new Date(iso)
@@ -26,7 +34,19 @@ function placeReport(summary, placeId) {
   return summary?.places?.find((place) => place.placeId === placeId) ?? null
 }
 
-export default function ParkingFullness({ place, user, summary, onRate, onSignIn }) {
+export default function ParkingFullness({
+  place,
+  user,
+  summary,
+  onRate,
+  onSignIn,
+  prompt = 'How full is it?',
+  emptyText = 'No reports yet today',
+  timeLabel = 'reported',
+  scaleHint = '1 means empty and 5 means very full.',
+  groupLabel = 'Fullness from 1, empty, to 5, very full',
+  levels = FULLNESS_LEVELS,
+}) {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
   const report = placeReport(summary, place.id)
@@ -46,18 +66,18 @@ export default function ParkingFullness({ place, user, summary, onRate, onSignIn
 
   const reportedAt = formatReportedAt(report?.reportedAt)
   const today = report
-    ? `${report.rating} of 5${reportedAt ? `, reported ${reportedAt}` : ''}`
-    : 'No reports yet today'
+    ? `${report.rating} of 5${reportedAt ? `, ${timeLabel} ${reportedAt}` : ''}`
+    : emptyText
 
   return (
     <section className="absolute bottom-4 left-4 right-16 z-[1000] bg-white border border-line rounded-lg shadow-card p-3 text-left">
       <p className="text-[13px] font-bold text-ink leading-[1.4]">
         {mapLabel(place)} · {place.name}
       </p>
-      <p className="mt-0.5 text-[13px] text-muted leading-[1.4]">How full is it? {today}</p>
+      <p className="mt-0.5 text-[13px] text-muted leading-[1.4]">{prompt} {today}</p>
       {user ? (
-        <div className="mt-2 flex gap-1.5" role="group" aria-label="Fullness from 1, empty, to 5, very full">
-          {FULLNESS_LEVELS.map((level) => {
+        <div className="mt-2 flex gap-1.5" role="group" aria-label={groupLabel}>
+          {levels.map((level) => {
             const selected = mine === level.value
             return (
               <button
@@ -88,7 +108,7 @@ export default function ParkingFullness({ place, user, summary, onRate, onSignIn
         </button>
       )}
       <p className="mt-1.5 text-[12px] text-muted leading-[1.4]">
-        {user ? '1 means empty and 5 means very full. ' : ''}
+        {user ? `${scaleHint} ` : ''}
         Rankings reset each day.
         {error ? ` ${error}` : ''}
       </p>

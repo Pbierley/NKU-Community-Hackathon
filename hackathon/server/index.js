@@ -6,7 +6,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import { accountTypeOf, canCreateEvents, canGrantElevatedRoles, canInviteAdmins, canManageLocations, canModerateEvents, canRemoveAdmins, isDeveloper } from '../src/auth/accountTypes.js'
-import { isParkingPlace } from '../src/Navigation/parkingPlaces.js'
+import { isParkingPlace, isRecreationCenter } from '../src/Navigation/parkingPlaces.js'
 
 const scrypt = promisify(_scrypt)
 
@@ -946,10 +946,12 @@ function campusDate(now = new Date()) {
   }).format(now)
 }
 
-async function parkingSummary(date, userId) {
-  // One score per lot: the newest report from today, not an average of every report.
+async function rankingSummary(date, userId, kind) {
+  // One score per place: the newest report from today, not an average of every report.
+  // Recreation ratings share the collection and are kept out of parking scores.
+  const match = kind === 'rec' ? { date, kind: 'rec' } : { date, kind: { $ne: 'rec' } }
   const grouped = await parkingRankings.aggregate([
-    { $match: { date } },
+    { $match: match },
     { $sort: { updatedAt: -1 } },
     {
       $group: {
@@ -960,7 +962,7 @@ async function parkingSummary(date, userId) {
     },
   ]).toArray()
   const mineDocs = userId
-    ? await parkingRankings.find({ date, userId }, { projection: { _id: 0, placeId: 1, rating: 1 } }).toArray()
+    ? await parkingRankings.find({ ...match, userId }, { projection: { _id: 0, placeId: 1, rating: 1 } }).toArray()
     : []
   const mineByPlace = new Map(mineDocs.map((doc) => [doc.placeId, doc.rating]))
   return {
@@ -981,7 +983,7 @@ app.get('/api/parking/fullness', async (req, res) => {
       return
     }
     const user = await authUser(req)
-    res.json(await parkingSummary(campusDate(), user?.id ?? null))
+    res.json(await rankingSummary(campusDate(), user?.id ?? null, 'parking'))
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Could not load parking fullness.' })
@@ -1023,10 +1025,66 @@ app.post('/api/parking/fullness', async (req, res) => {
       },
       { upsert: true },
     )
-    res.json(await parkingSummary(date, user.id))
+    res.json(await rankingSummary(date, user.id, 'parking'))
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Could not save parking fullness.' })
+  }
+})
+
+app.get('/api/rec/busyness', async (req, res) => {
+  try {
+    if (!parkingRankings) {
+      res.status(503).json({ error: 'Recreation ratings are unavailable.' })
+      return
+    }
+    const user = await authUser(req)
+    res.json(await rankingSummary(campusDate(), user?.id ?? null, 'rec'))
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Could not load recreation busyness.' })
+  }
+})
+
+app.post('/api/rec/busyness', async (req, res) => {
+  try {
+    if (!parkingRankings) {
+      res.status(503).json({ error: 'Recreation ratings are unavailable.' })
+      return
+    }
+    const user = await authUser(req)
+    if (!user) {
+      res.status(401).json({ error: 'Sign in to rate the recreation center.' })
+      return
+    }
+    const rating = Number(req.body.rating)
+    const placeId = Number(req.body.placeId)
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      res.status(400).json({ error: 'Choose a busyness from 1 to 5.' })
+      return
+    }
+    if (!Number.isInteger(placeId)) {
+      res.status(400).json({ error: 'Choose the campus recreation center.' })
+      return
+    }
+    const place = (await listBuildings()).find((building) => building.id === placeId)
+    if (!place || !isRecreationCenter(place)) {
+      res.status(400).json({ error: 'Choose the campus recreation center.' })
+      return
+    }
+    const date = campusDate()
+    await parkingRankings.updateOne(
+      { placeId, userId: user.id, date },
+      {
+        $set: { rating, kind: 'rec', updatedAt: new Date().toISOString() },
+        $setOnInsert: { placeId, userId: user.id, date },
+      },
+      { upsert: true },
+    )
+    res.json(await rankingSummary(date, user.id, 'rec'))
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Could not save recreation busyness.' })
   }
 })
 
