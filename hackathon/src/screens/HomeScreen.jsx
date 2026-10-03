@@ -1,17 +1,40 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import AppHeader from '../components/AppHeader'
 import FeaturedEvents from '../components/FeaturedEvents'
 import Toast from '../components/Toast'
+import { eventDayKey, eventWhen, useEvents } from '../Communication/useEvents'
 import BuildingSearch from '../Navigation/BuildingSearch'
 import CampusMap from '../Navigation/CampusMap'
 import ParkingFullness from '../Navigation/ParkingFullness'
-import { getBuildingById, hasLocation, isParkingPlace, useBuildings } from '../Navigation/buildings'
+import { findBuildingForLocation, getBuildingById, hasLocation, isParkingPlace, useBuildings } from '../Navigation/buildings'
 import { useParkingFullness } from '../Navigation/useParkingFullness'
 import { useUserLocation } from '../Navigation/useUserLocation'
 import { useWalkingRoute } from '../Navigation/useWalkingRoute'
 
-export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFocusHandled }) {
+function todayKey() {
+  const now = new Date()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  return `${now.getFullYear()}-${month}-${day}`
+}
+
+function eventsOnMapToday(events, buildings) {
+  const today = todayKey()
+  const groups = new Map()
+  for (const event of events) {
+    if (eventDayKey(event) !== today) continue
+    const building = findBuildingForLocation(buildings, event.location)
+    if (!building) continue
+    const group = groups.get(building.id) ?? { building, events: [] }
+    group.events.push({ id: event.id, title: event.title, when: eventWhen(event) })
+    groups.set(building.id, group)
+  }
+  return [...groups.values()]
+}
+
+export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFocusHandled, onOpenEvent }) {
   const { buildings, error: buildingsError } = useBuildings()
+  const { events } = useEvents()
   const { summary, rate } = useParkingFullness()
   const { position, accuracy, heading, error: locationError, compassEnabled, enableCompass } =
     useUserLocation()
@@ -20,6 +43,8 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
   const [notice, setNotice] = useState(null)
   const [dismissedError, setDismissedError] = useState(null)
   const [mapFull, setMapFull] = useState(false)
+  const [showTodayEvents, setShowTodayEvents] = useState(false)
+  const todaySpots = useMemo(() => eventsOnMapToday(events, buildings), [events, buildings])
   const destination = selectedId != null ? getBuildingById(buildings, selectedId) : null
   const destPoint =
     destination && hasLocation(destination) ? [destination.Location.lat, destination.Location.lng] : null
@@ -90,7 +115,28 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
           full={mapFull}
           route={route}
           bottomInset={destination && isParkingPlace(destination) ? 176 : 0}
+          eventSpots={showTodayEvents ? todaySpots : []}
+          onOpenEvent={onOpenEvent}
         />
+        <button
+          type="button"
+          onClick={() => setShowTodayEvents((on) => !on)}
+          aria-pressed={showTodayEvents}
+          aria-label={showTodayEvents ? "Hide today's events" : "Show today's events"}
+          className={`absolute right-16 bottom-40 z-[1000] w-10 h-10 rounded-lg border shadow-card flex items-center justify-center ${
+            showTodayEvents ? 'bg-nku border-ink text-ink' : 'bg-white border-line text-ink'
+          }`}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+            <rect x="3.5" y="5" width="17" height="15.5" rx="2" />
+            <path d="M3.5 9.5h17M8 3.5v3M16 3.5v3" />
+          </svg>
+          {todaySpots.length > 0 && (
+            <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-ink text-white text-[11px] leading-5 text-center tnum">
+              {todaySpots.reduce((sum, spot) => sum + spot.events.length, 0)}
+            </span>
+          )}
+        </button>
         <button
           type="button"
           onClick={toggleMapFull}

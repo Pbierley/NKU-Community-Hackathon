@@ -89,6 +89,63 @@ function buildingIcon(id, state, label) {
   return buildingIcons.get(key)
 }
 
+const eventIcons = new Map()
+
+function eventIcon(count) {
+  const key = String(count)
+  if (!eventIcons.has(key)) {
+    eventIcons.set(
+      key,
+      L.divIcon({
+        className: 'event-pin',
+        html: `<span>${count}</span>`,
+        iconSize: [28, 28],
+        iconAnchor: [14, 42],
+        popupAnchor: [0, -42],
+      }),
+    )
+  }
+  return eventIcons.get(key)
+}
+
+function CloseEventPopups({ spots }) {
+  const map = useMap()
+  useEffect(() => {
+    if (spots.length === 0) map.closePopup()
+  }, [map, spots])
+  return null
+}
+
+function EventMarkers({ spots, onOpenEvent }) {
+  return spots.map(({ building, events }) => (
+    <Marker
+      key={`event-${building.id}`}
+      position={[building.Location.lat, building.Location.lng]}
+      icon={eventIcon(events.length)}
+      zIndexOffset={900}
+      title={`${events.length} event${events.length === 1 ? '' : 's'} at ${building.name}`}
+    >
+      <Popup>
+        <p className="text-[13px] font-semibold text-muted">{building.name}</p>
+        <ul className="mt-2 flex max-h-48 flex-col gap-2 overflow-y-auto">
+          {events.map((event) => (
+            <li key={event.id}>
+              <button
+                type="button"
+                onClick={() => onOpenEvent?.(event.id)}
+                className="text-left"
+              >
+                <span className="block text-[15px] font-bold leading-[1.4] text-ink">{event.title}</span>
+                <span className="block text-[13px] leading-[1.4] text-muted">{event.when}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </Popup>
+    </Marker>
+  ))
+}
+
 function BuildingMarkers({ buildings, selectedId, onSelect }) {
   return buildings.filter(hasLocation).map((b) => {
     const state = selectedId == null ? 'normal' : b.id === selectedId ? 'selected' : 'dimmed'
@@ -298,6 +355,8 @@ export default function CampusMap({
   full,
   route,
   bottomInset = 0,
+  eventSpots = [],
+  onOpenEvent,
 }) {
   return (
     <MapContainer
@@ -319,6 +378,8 @@ export default function CampusMap({
       <FitMap full={full} />
       <LimitZoomToCampus routeActive={route?.length > 1} />
       <BuildingMarkers buildings={buildings} selectedId={selectedId} onSelect={onSelect} />
+      <CloseEventPopups spots={eventSpots} />
+      <EventMarkers spots={eventSpots} onOpenEvent={onOpenEvent} />
       <FlyToBuilding buildings={buildings} selectedId={selectedId} route={route} bottomInset={bottomInset} />
       {route?.length > 1 && (
         <Polyline

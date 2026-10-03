@@ -75,6 +75,16 @@ function App() {
 
   const handleMapFocused = useCallback(() => setMapBuildingId(null), [])
 
+  const openEventFromMap = useCallback((eventId) => {
+    setPendingEventId(eventId)
+    try {
+      window.history.replaceState(null, '', `#/events/${encodeURIComponent(eventId)}`)
+    } catch {
+      /* hash sync is best-effort */
+    }
+    navigateTo('events')
+  }, [navigateTo])
+
   const handleSharedEventOpened = useCallback(() => {
     setPendingEventId(null)
     try {
@@ -152,6 +162,7 @@ function App() {
             user={user}
             focusBuildingId={mapBuildingId}
             onMapFocusHandled={handleMapFocused}
+            onOpenEvent={openEventFromMap}
           />
         )}
         {visibleScreen === 'parking' && <ParkingScreen key="parking" onNavigate={navigateTo} user={user} />}
