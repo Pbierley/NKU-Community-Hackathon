@@ -78,7 +78,23 @@ export function useEvents() {
     setEvents((current) => current.map((event) => (event.id === saved.id ? saved : event)))
   }
 
-  return { events, error, addEvent, toggleRegister }
+  async function addComment(eventId, text) {
+    const res = await fetch(`/api/events/${encodeURIComponent(eventId)}/comments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    })
+    if (!res.ok) throw new Error('Could not add comment.')
+    const comment = await res.json()
+    setEvents((current) => current.map((event) => (
+      event.id === eventId
+        ? { ...event, comments: [...(event.comments ?? []), comment] }
+        : event
+    )))
+    return comment
+  }
+
+  return { events, error, addEvent, toggleRegister, addComment }
 }
 
 export function searchEvents(events, query) {

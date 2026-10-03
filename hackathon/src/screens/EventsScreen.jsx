@@ -1,16 +1,19 @@
 import { useState } from 'react'
 import Event from '../Communication/Event'
+import EventDetailsModal from '../Communication/EventDetailsModal'
 import EventModal from '../Communication/EventModal'
 import { searchEvents, useEvents } from '../Communication/useEvents'
 import AppHeader from '../components/AppHeader'
 import Toast from '../components/Toast'
 
 export default function EventsScreen({ onNavigate }) {
-  const { events, addEvent, toggleRegister } = useEvents()
+  const { events, addEvent, toggleRegister, addComment } = useEvents()
   const [query, setQuery] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedEventId, setSelectedEventId] = useState(null)
   const [toast, setToast] = useState(null)
   const results = searchEvents(events, query)
+  const selectedEvent = events.find((event) => event.id === selectedEventId) ?? null
 
   async function handlePost(newEvent) {
     try {
@@ -47,7 +50,12 @@ export default function EventsScreen({ onNavigate }) {
           <p className="text-[15px] text-muted leading-[1.6]">No events found</p>
         )}
         {results.map((event) => (
-          <Event key={event.id} event={event} onRegister={toggleRegister} />
+          <Event
+            key={event.id}
+            event={event}
+            onRegister={toggleRegister}
+            onOpen={(openedEvent) => setSelectedEventId(openedEvent.id)}
+          />
         ))}
       </main>
 
@@ -63,6 +71,11 @@ export default function EventsScreen({ onNavigate }) {
       </footer>
 
       <EventModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onPost={handlePost} />
+      <EventDetailsModal
+        event={selectedEvent}
+        onClose={() => setSelectedEventId(null)}
+        onAddComment={addComment}
+      />
       <Toast message={toast} onDone={() => setToast(null)} />
     </div>
   )
