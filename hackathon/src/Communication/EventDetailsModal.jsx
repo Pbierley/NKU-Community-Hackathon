@@ -45,25 +45,25 @@ export default function EventDetailsModal({ event, user, onClose, onAddComment, 
   }
 
   return (
-    <div className="absolute inset-0 z-[80] flex items-end sm:items-center justify-center">
+    <div className="absolute inset-0 z-[80] flex items-end sm:items-center justify-center sm:p-6">
       <div
         className="absolute inset-0"
         style={{ background: 'rgba(17,24,39,0.45)', backdropFilter: 'blur(8px)' }}
         onClick={onClose}
       />
       <section
-        className="relative w-full max-h-[90%] overflow-y-auto no-scrollbar bg-white border border-line rounded-t-xl sm:rounded-xl p-6 shadow-card text-left"
+        className="relative w-full sm:max-w-2xl max-h-[90%] overflow-y-auto no-scrollbar bg-white border border-line rounded-t-xl sm:rounded-xl p-4 sm:p-6 shadow-card text-left"
         role="dialog"
         aria-modal="true"
         aria-labelledby="event-details-title"
       >
         <div className="flex items-start justify-between gap-4">
-          <div>
+          <div className="min-w-0">
             <p className="text-[13px] text-muted leading-[1.5]">{eventWhen(event)}</p>
-            <h2 id="event-details-title" className="mt-1 text-xl font-bold leading-[1.3] text-ink">
+            <h2 id="event-details-title" className="mt-1 text-xl font-bold leading-[1.3] text-ink break-words">
               {event.title}
             </h2>
-            <p className="mt-2 text-[14px] text-body leading-[1.5]">{event.location}</p>
+            <p className="mt-2 text-[14px] text-body leading-[1.5] break-words">{event.location}</p>
           </div>
           <button
             type="button"
@@ -78,7 +78,7 @@ export default function EventDetailsModal({ event, user, onClose, onAddComment, 
         </div>
 
         {event.description && (
-          <p className="mt-5 text-[15px] text-body leading-[1.6] whitespace-pre-wrap">{event.description}</p>
+          <p className="mt-5 text-[15px] text-body leading-[1.6] whitespace-pre-wrap break-words">{event.description}</p>
         )}
 
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-wash px-4 py-3">
@@ -151,7 +151,7 @@ export default function EventDetailsModal({ event, user, onClose, onAddComment, 
             {event.comments?.length ? event.comments.map((comment) => (
               <article key={comment.id} className="rounded-lg bg-wash px-4 py-3">
                 <p className="text-[13px] font-semibold text-body">{commentAuthor(comment)}</p>
-                <p className="mt-1 text-[14px] text-body leading-[1.5] whitespace-pre-wrap">{comment.text}</p>
+                <p className="mt-1 text-[14px] text-body leading-[1.5] whitespace-pre-wrap break-words">{comment.text}</p>
               </article>
             )) : (
               <p className="text-[14px] text-muted">No comments yet.</p>

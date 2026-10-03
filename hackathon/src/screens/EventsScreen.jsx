@@ -77,7 +77,8 @@ export default function EventsScreen({ onNavigate, user }) {
       <AppHeader onNavigate={onNavigate} />
 
       <div className="px-4 pt-4 text-left bg-white border-b border-line pb-4">
-        <div className="flex items-center gap-2 bg-white border border-line rounded-lg px-4 h-14 shadow-card">
+        <div className="w-full max-w-2xl mx-auto">
+          <div className="flex items-center gap-2 bg-white border border-line rounded-lg px-4 h-14 shadow-card">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round">
             <circle cx="11" cy="11" r="6.5" />
             <path d="m16 16 4.5 4.5" />
@@ -120,9 +121,10 @@ export default function EventsScreen({ onNavigate, user }) {
         <p className="mt-2 text-[12px] text-muted leading-[1.5] tnum">
           Sorted by soonest · {results.length} event{results.length === 1 ? '' : 's'}
         </p>
+        </div>
       </div>
 
-      <main className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-4 space-y-4 pb-32 text-left">
+      <main className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-4 space-y-4 pb-32 text-left w-full max-w-2xl md:mx-auto">
         {view === 'calendar' && (
           <EventCalendar events={results} selectedDay={selectedDay} onSelectDay={setSelectedDay} />
         )}
@@ -175,16 +177,18 @@ export default function EventsScreen({ onNavigate, user }) {
       </main>
 
       <footer className="absolute bottom-0 inset-x-0 p-6 pt-8 bg-gradient-to-t from-white via-white to-transparent text-left">
-        <button
-          type="button"
-          onClick={() => {
-            setEventToEdit(null)
-            setIsModalOpen(true)
-          }}
-          className="w-full h-14 px-8 rounded-lg bg-nku hover:bg-nkuDeep font-bold text-[15px] text-ink shadow-card active:scale-[0.99] transition"
-        >
-          + MAKE POST
-        </button>
+        <div className="w-full max-w-2xl mx-auto">
+          <button
+            type="button"
+            onClick={() => {
+              setEventToEdit(null)
+              setIsModalOpen(true)
+            }}
+            className="w-full h-14 px-8 rounded-lg bg-nku hover:bg-nkuDeep font-bold text-[15px] text-ink shadow-card active:scale-[0.99] transition"
+          >
+            + MAKE POST
+          </button>
+        </div>
         <div className="mx-auto mt-4 w-8 h-1 rounded-full bg-line" />
       </footer>
 

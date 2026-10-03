@@ -113,13 +113,23 @@ export default function NavDrawer({ open, user, onNavigate, onClose, onLogout })
         </nav>
 
         <footer className="p-6 pt-2 text-left">
-          <button
-            type="button"
-            onClick={onLogout}
-            className="w-full h-14 px-8 rounded-lg bg-[#FEF2F2] text-[#B91C1C] border border-[#FECACA] font-semibold text-[15px]"
-          >
-            {user ? `Sign Out (${user.name.split(' ')[0]})` : 'Sign Out'}
-          </button>
+          {user ? (
+            <button
+              type="button"
+              onClick={onLogout}
+              className="w-full h-14 px-8 rounded-lg bg-[#FEF2F2] text-[#B91C1C] border border-[#FECACA] font-semibold text-[15px]"
+            >
+              {`Sign Out (${user.name.split(' ')[0]})`}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => onNavigate('login')}
+              className="w-full h-14 px-8 rounded-lg bg-ink text-white font-semibold text-[15px]"
+            >
+              Sign In
+            </button>
+          )}
         </footer>
       </aside>
     </div>

@@ -51,14 +51,16 @@ export default function HomeScreen({ onNavigate }) {
 
   return (
     <div
-      className={`screen h-full bg-canvas ${
-        mapFull ? 'grid grid-rows-1' : 'grid grid-rows-[auto_minmax(0,1fr)_auto]'
+      className={`screen h-full w-full max-w-full bg-canvas ${
+        mapFull
+          ? 'grid grid-cols-[minmax(0,1fr)] grid-rows-1'
+          : 'grid grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto]'
       }`}
     >
       {!mapFull && <AppHeader onNavigate={onNavigate} />}
 
       <main
-        className={`relative isolate min-h-0 overflow-hidden text-left ${
+        className={`relative isolate min-h-0 min-w-0 max-w-full overflow-hidden text-left ${
           mapFull ? '' : 'mx-4 mt-4 rounded-xl border border-line'
         }`}
       >
