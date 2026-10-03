@@ -42,8 +42,8 @@ function App() {
   const Screen = SCREENS[screen]
 
   return (
-    <div className="bg-[#E9EAEC] text-ink leading-[1.6] min-h-[100dvh] flex justify-center md:items-center md:py-8">
-      <div className="w-full max-w-[480px] md:max-w-[560px] h-[100dvh] md:h-[92dvh] md:rounded-2xl bg-canvas relative overflow-hidden border border-line flex flex-col shadow-card">
+    <div className="bg-[#E9EAEC] text-ink leading-[1.6] min-h-[100dvh] h-[100dvh] flex justify-center">
+      <div className="w-full h-full max-w-[480px] md:max-w-none bg-canvas relative overflow-hidden border-x border-line md:border-0 flex flex-col md:shadow-none">
         <Screen key={screen} onNavigate={navigateTo} />
         <NavDrawer open={drawerOpen} onNavigate={navigateTo} onClose={() => setDrawerOpen(false)} />
       </div>

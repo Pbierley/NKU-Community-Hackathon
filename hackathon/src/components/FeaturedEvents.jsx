@@ -24,7 +24,7 @@ export default function FeaturedEvents({ onNavigate }) {
           <article
             key={event.id}
             onClick={() => onNavigate('events')}
-            className="cursor-pointer snap-start shrink-0 w-[68%] sm:w-[48%] bg-white border border-line rounded-xl p-4 shadow-card"
+            className="cursor-pointer snap-start shrink-0 w-[68%] sm:w-[48%] md:w-[32%] lg:w-[24%] bg-white border border-line rounded-xl p-4 shadow-card"
           >
             {eventCategory(event) && (
               <span className={`inline-block text-[12px] font-semibold border rounded-md px-3 py-2 ${categoryTint(eventCategory(event))}`}>
