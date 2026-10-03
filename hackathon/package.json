@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "server": "node --env-file=../.env --watch server/index.js",
-    "seed:buildings": "node --env-file=../.env scripts/seedBuildings.js"
+    "seed:buildings": "node --env-file=../.env scripts/seedBuildings.js",
+    "fetch:walkways": "node scripts/fetchWalkways.js"
   },
   "dependencies": {
     "express": "^5.2.1",

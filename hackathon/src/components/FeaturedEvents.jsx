@@ -1,4 +1,4 @@
-import { categoryTint, useEvents } from '../Communication/useEvents'
+import { categoryTint, eventCategory, eventWhen, useEvents } from '../Communication/useEvents'
 
 export default function FeaturedEvents({ onNavigate }) {
   const { events } = useEvents()
@@ -26,12 +26,12 @@ export default function FeaturedEvents({ onNavigate }) {
             onClick={() => onNavigate('events')}
             className="cursor-pointer snap-start shrink-0 w-[68%] sm:w-[48%] bg-white border border-line rounded-xl p-4 shadow-card"
           >
-            {event.category && (
-              <span className={`inline-block text-[12px] font-semibold border rounded-md px-3 py-2 ${categoryTint(event.category)}`}>
-                {event.category}
+            {eventCategory(event) && (
+              <span className={`inline-block text-[12px] font-semibold border rounded-md px-3 py-2 ${categoryTint(eventCategory(event))}`}>
+                {eventCategory(event)}
               </span>
             )}
-            <p className="mt-2 text-[13px] text-muted leading-[1.5] tnum">{event.when ?? 'Upcoming'}</p>
+            <p className="mt-2 text-[13px] text-muted leading-[1.5] tnum">{eventWhen(event)}</p>
             <h3 className="mt-1 text-[15px] font-bold leading-[1.5]">{event.title}</h3>
             <p className="mt-1 text-[13px] text-muted leading-[1.5]">{event.location}</p>
           </article>

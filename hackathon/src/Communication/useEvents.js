@@ -1,18 +1,32 @@
 import { useEffect, useState } from 'react'
-import defaultEvents from './events.json'
 
-const STORAGE_KEY = 'nku-events'
 const CURRENT_USER = 'current-user'
 
 const CATEGORY_TINTS = {
   Athletics: 'bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]',
   Sports: 'bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]',
+  Games: 'bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]',
+  Social: 'bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]',
   Arts: 'bg-[#F5F3FF] text-[#5B21B6] border-[#DDD6FE]',
   Music: 'bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]',
+  Clubs: 'bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]',
+  Campus: 'bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]',
+  Students: 'bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]',
   Career: 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]',
   'Tech / Hack': 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]',
   Tech: 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]',
-  Campus: 'bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]',
+  'Computer Science': 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]',
+  Study: 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]',
+  Academics: 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]',
+}
+
+export function eventCategory(event) {
+  return event.category ?? event.tags?.[0] ?? 'Campus'
+}
+
+export function eventWhen(event) {
+  if (event.when) return event.when
+  return [event.date, event.time].filter(Boolean).join(' • ') || 'Upcoming'
 }
 
 export function categoryTint(category) {
@@ -23,49 +37,55 @@ export function isRegistered(event) {
   return event.attendeeIds?.includes(CURRENT_USER)
 }
 
-function readStoredEvents() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    return saved ? JSON.parse(saved) : defaultEvents
-  } catch {
-    return defaultEvents
-  }
-}
-
 export function useEvents() {
-  const [events, setEvents] = useState(readStoredEvents)
+  const [events, setEvents] = useState([])
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    if (events.length > 0) localStorage.setItem(STORAGE_KEY, JSON.stringify(events))
-  }, [events])
+    const controller = new AbortController()
+    fetch('/api/events', { signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) throw new Error(`Server responded ${res.status}`)
+        return res.json()
+      })
+      .then((docs) => {
+        setEvents(docs)
+        setError(null)
+      })
+      .catch((err) => {
+        if (err.name === 'AbortError') return
+        setError(`Could not load events: ${err.message}`)
+      })
+    return () => controller.abort()
+  }, [])
 
-  function addEvent(newEvent) {
-    setEvents((current) => [newEvent, ...current])
+  async function addEvent(newEvent) {
+    const res = await fetch('/api/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newEvent),
+    })
+    if (!res.ok) throw new Error('Could not post event.')
+    const saved = await res.json()
+    setEvents((current) => [saved, ...current])
+    return saved
   }
 
-  function toggleRegister(eventId) {
-    setEvents((current) =>
-      current.map((event) => {
-        if (event.id !== eventId) return event
-        const ids = event.attendeeIds ?? []
-        return {
-          ...event,
-          attendeeIds: isRegistered(event)
-            ? ids.filter((id) => id !== CURRENT_USER)
-            : [...ids, CURRENT_USER],
-        }
-      }),
-    )
+  async function toggleRegister(eventId) {
+    const res = await fetch(`/api/events/${encodeURIComponent(eventId)}/register`, { method: 'PATCH' })
+    if (!res.ok) throw new Error('Could not update registration.')
+    const saved = await res.json()
+    setEvents((current) => current.map((event) => (event.id === saved.id ? saved : event)))
   }
 
-  return { events, addEvent, toggleRegister }
+  return { events, error, addEvent, toggleRegister }
 }
 
 export function searchEvents(events, query) {
   const q = query.trim().toLowerCase()
   if (!q) return events
   return events.filter((event) => {
-    const hay = [event.title, event.location, event.description, event.category]
+    const hay = [event.title, event.location, event.description, eventCategory(event), ...(event.tags ?? [])]
       .filter(Boolean)
       .join(' ')
       .toLowerCase()

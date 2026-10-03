@@ -36,11 +36,10 @@ export default function EventModal({ isOpen, onClose, onPost }) {
       title: name.trim(),
       location: location.trim(),
       description: description.trim(),
-      category: 'Campus',
-      when: 'Upcoming',
-      files: selectedFiles.map((file) => file.name),
-      attendeeIds: [],
-      comments: [],
+      date: 'Upcoming',
+      time: '',
+      tags: ['Campus'],
+      images: selectedFiles.map((file) => file.name),
     })
     reset()
   }

@@ -4,6 +4,7 @@ import {
   Circle,
   MapContainer,
   Marker,
+  Polyline,
   Popup,
   TileLayer,
   useMap,
@@ -105,12 +106,16 @@ function BuildingMarkers({ buildings, selectedId }) {
   })
 }
 
-function FlyToBuilding({ buildings, selectedId }) {
+function FlyToBuilding({ buildings, selectedId, route }) {
   const map = useMap()
   useEffect(() => {
+    if (route?.length > 1) {
+      map.fitBounds(route, { padding: [48, 48], maxZoom: 18 })
+      return
+    }
     const b = selectedId != null ? getBuildingById(buildings, selectedId) : null
     if (b && hasLocation(b)) map.flyTo([b.Location.lat, b.Location.lng], Math.max(map.getZoom(), 18))
-  }, [map, buildings, selectedId])
+  }, [map, buildings, selectedId, route])
   return null
 }
 
@@ -204,6 +209,7 @@ export default function CampusMap({
   onLocate,
   selectedId,
   full,
+  route,
 }) {
   return (
     <MapContainer
@@ -225,7 +231,13 @@ export default function CampusMap({
       <FitMap full={full} />
       <LimitZoomToCampus />
       <BuildingMarkers buildings={buildings} selectedId={selectedId} />
-      <FlyToBuilding buildings={buildings} selectedId={selectedId} />
+      <FlyToBuilding buildings={buildings} selectedId={selectedId} route={route} />
+      {route?.length > 1 && (
+        <Polyline
+          positions={route}
+          pathOptions={{ color: USER_BLUE, weight: 5, opacity: 0.92, lineJoin: 'round', lineCap: 'round' }}
+        />
+      )}
       {position && accuracy && (
         <Circle
           center={position}
