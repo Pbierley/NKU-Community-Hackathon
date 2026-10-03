@@ -324,6 +324,30 @@ async function listBuildings() {
 const app = express()
 app.use(express.json({ limit: '12mb' }))
 
+// Comma-separated site origins allowed to call this API from a browser.
+// Local dev uses the Vite proxy, so this stays empty until the hosted site exists.
+function allowedOrigins() {
+  return (process.env.CLIENT_ORIGIN ?? '')
+    .split(',')
+    .map((origin) => origin.trim().replace(/\/$/, ''))
+    .filter(Boolean)
+}
+
+app.use((req, res, next) => {
+  const requestOrigin = req.get('origin')
+  if (requestOrigin && allowedOrigins().includes(requestOrigin)) {
+    res.setHeader('Access-Control-Allow-Origin', requestOrigin)
+    res.setHeader('Vary', 'Origin')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS')
+  }
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(204)
+    return
+  }
+  next()
+})
+
 app.get('/api/health', (req, res) => {
   res.json({ ok: true, store: mongoActive() ? 'mongodb' : 'json' })
 })

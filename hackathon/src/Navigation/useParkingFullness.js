@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
+import { apiUrl } from '../api'
 import { getAuthToken } from '../auth/useAuth'
 
 async function loadFullness() {
   const token = getAuthToken()
-  const res = await fetch('/api/parking/fullness', {
+  const res = await fetch(apiUrl('/api/parking/fullness'), {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   })
   const body = await res.json().catch(() => ({}))
@@ -33,7 +34,7 @@ export function useParkingFullness() {
 
   async function rate(placeId, rating) {
     const token = getAuthToken()
-    const res = await fetch('/api/parking/fullness', {
+    const res = await fetch(apiUrl('/api/parking/fullness'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

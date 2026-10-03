@@ -5,6 +5,8 @@ import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => ({
+  // GitHub Pages serves the site at /NKU-Community-Hackathon/. Local dev stays at /.
+  base: mode === 'production' ? '/NKU-Community-Hackathon/' : '/',
   // Phones only allow location and compass on HTTPS, so `npm run dev:phone` adds a self-signed cert.
   plugins: [react(), tailwindcss(), mode === 'phone' && basicSsl()],
   server: {

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { apiUrl } from '../api'
 
 const TOKEN_KEY = 'nku-auth-token'
 const USER_KEY = 'nku-user'
@@ -24,7 +25,7 @@ async function request(path, { token, ...options } = {}) {
   const headers = { 'Content-Type': 'application/json', ...(options.headers ?? {}) }
   const authToken = token ?? getAuthToken()
   if (authToken) headers.Authorization = `Bearer ${authToken}`
-  const res = await fetch(path, { ...options, headers })
+  const res = await fetch(apiUrl(path), { ...options, headers })
   const body = await res.json().catch(() => ({}))
   if (!res.ok) throw new Error(body.error || `Request failed (${res.status})`)
   return body

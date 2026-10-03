@@ -9,7 +9,7 @@ export default function LogoButton({ onClick, size = 'sm', className = '' }) {
       className={`rounded-lg shrink-0 ${className}`}
     >
       <img
-        src="/logo.avif"
+        src={`${import.meta.env.BASE_URL}logo.avif`}
         alt="Northern Kentucky University logo"
         className={`${SIZES[size]} w-auto rounded-lg`}
       />

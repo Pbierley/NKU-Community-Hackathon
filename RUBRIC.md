@@ -25,6 +25,6 @@ Show how the solution links campus and the surrounding community (not only stude
 | Viability beyond hackathon | 10 | Who owns it after the weekend, how it stays alive, why it lasts. |
 | Impact on community | 10 | Effect on NKU student life **and** connection to the wider community. |
 | Progress / what you learned | 10 | What the team learned while building and researching. |
-| Design & delivery on presentation | 10 | Clarity of the pitch and quality of the demo / design. |
+| Design & delivery on presentation | 10 | Clarity of the pitch and quality of the demo / design.  |
 
 **Total: 100**
