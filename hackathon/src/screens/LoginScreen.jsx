@@ -25,7 +25,7 @@ export default function LoginScreen({ onNavigate, onLogin, notice, next }) {
     <div className="screen h-full flex flex-col bg-canvas">
       <main className="flex-1 overflow-y-auto no-scrollbar px-4 sm:px-6 pb-6 pt-8 sm:pt-12 flex flex-col items-center">
         <div className="w-full max-w-md flex flex-col text-left">
-          <img src="/logo.avif" alt="Northern Kentucky University logo" className="h-16 w-auto rounded-lg shadow-card mx-auto" />
+          <img src={`${import.meta.env.BASE_URL}logo.avif`} alt="Northern Kentucky University logo" className="h-16 w-auto rounded-lg shadow-card mx-auto" />
           <h1 className="mt-8 text-3xl sm:text-4xl font-extrabold tracking-tight leading-[1.2] text-center">
             Northern Kentucky University
           </h1>
