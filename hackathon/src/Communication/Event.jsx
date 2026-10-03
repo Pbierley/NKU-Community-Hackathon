@@ -50,16 +50,6 @@ export default function Event({ event, onRegister, onOpen, userId, onEdit }) {
           {registered ? 'Registered ✓' : 'Register'}
         </button>
       </div>
-      {event.comments?.length > 0 && (
-        <div className="mt-4 space-y-2">
-          {event.comments.map((comment) => (
-            <p key={comment.id} className="text-[13px] text-muted leading-[1.5]">
-              <span className="font-semibold text-body">{comment.author}</span>
-              {` ${comment.text}`}
-            </p>
-          ))}
-        </div>
-      )}
     </article>
   )
 }
