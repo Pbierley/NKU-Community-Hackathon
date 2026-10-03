@@ -26,16 +26,11 @@ export default function EventDetailsModal({ event, onClose, onAddComment }) {
   }
 
   return (
-    <div
-      className="absolute inset-0 z-[80] flex items-end sm:items-center justify-center"
-      role="presentation"
-      onMouseDown={(e) => {
-        if (e.target === e.currentTarget) onClose()
-      }}
-    >
+    <div className="absolute inset-0 z-[80] flex items-end sm:items-center justify-center">
       <div
         className="absolute inset-0"
         style={{ background: 'rgba(17,24,39,0.45)', backdropFilter: 'blur(8px)' }}
+        onClick={onClose}
       />
       <section
         className="relative w-full max-h-[90%] overflow-y-auto no-scrollbar bg-white border border-line rounded-t-xl sm:rounded-xl p-6 shadow-card text-left"
