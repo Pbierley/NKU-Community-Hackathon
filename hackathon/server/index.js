@@ -214,6 +214,25 @@ async function setEventAttendees(id, attendeeIds) {
   }
 }
 
+async function appendEventComment(id, comment) {
+  if (mongoActive()) {
+    const result = await eventsColl.updateOne({ id }, { $push: { comments: comment } })
+    return result.matchedCount > 0
+  }
+
+  const events = await readJson(EVENTS_JSON, [])
+  const eventIndex = events.findIndex((event) => event.id === id)
+  if (eventIndex === -1) return false
+
+  const event = events[eventIndex]
+  events[eventIndex] = {
+    ...event,
+    comments: [...(event.comments ?? []), comment],
+  }
+  await writeJson(EVENTS_JSON, events)
+  return true
+}
+
 async function listBuildings() {
   if (mongoActive()) {
     try {
@@ -426,18 +445,16 @@ app.post('/api/events/:id/comments', async (req, res) => {
       return
     }
 
-    const event = await events.findOne({ id: req.params.id })
-    if (!event) {
-      res.status(404).json({ error: 'Event not found.' })
-      return
-    }
-
     const comment = {
       id: `comment-${Date.now()}`,
       author: 'You',
       text,
     }
-    await events.updateOne({ id: req.params.id }, { $push: { comments: comment } })
+    const appended = await appendEventComment(req.params.id, comment)
+    if (!appended) {
+      res.status(404).json({ error: 'Event not found.' })
+      return
+    }
     res.status(201).json(comment)
   } catch (err) {
     console.error(err)
