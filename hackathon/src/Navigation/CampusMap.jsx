@@ -146,9 +146,10 @@ function EventMarkers({ spots, onOpenEvent }) {
   ))
 }
 
-function BuildingMarkers({ buildings, selectedId, onSelect }) {
+function BuildingMarkers({ buildings, selectedId, highlightIds, onSelect }) {
+  const highlights = highlightIds ?? (selectedId != null ? [selectedId] : null)
   return buildings.filter(hasLocation).map((b) => {
-    const state = selectedId == null ? 'normal' : b.id === selectedId ? 'selected' : 'dimmed'
+    const state = highlights == null ? 'normal' : highlights.includes(b.id) ? 'selected' : 'dimmed'
     const label = mapLabel(b)
     return (
       <Marker
@@ -354,6 +355,7 @@ export default function CampusMap({
   onSelect,
   full,
   route,
+  highlightIds,
   bottomInset = 0,
   eventSpots = [],
   onOpenEvent,
@@ -377,7 +379,7 @@ export default function CampusMap({
       <AttributionControl position="bottomleft" prefix={false} />
       <FitMap full={full} />
       <LimitZoomToCampus routeActive={route?.length > 1} />
-      <BuildingMarkers buildings={buildings} selectedId={selectedId} onSelect={onSelect} />
+      <BuildingMarkers buildings={buildings} selectedId={selectedId} highlightIds={highlightIds} onSelect={onSelect} />
       <CloseEventPopups spots={eventSpots} />
       <EventMarkers spots={eventSpots} onOpenEvent={onOpenEvent} />
       <FlyToBuilding buildings={buildings} selectedId={selectedId} route={route} bottomInset={bottomInset} />

@@ -79,6 +79,21 @@ export default function NavDrawer({ open, user, onNavigate, onClose, onLogout })
 
           <button
             type="button"
+            onClick={() => onNavigate('suggest')}
+            className="w-full flex items-center gap-4 px-4 h-12 rounded-lg hover:bg-canvas text-left font-semibold text-[15px] leading-[1.6]"
+          >
+            <span className="w-8 h-8 rounded-lg bg-wash flex items-center justify-center shrink-0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10Z" />
+                <circle cx="12" cy="11" r="2" />
+              </svg>
+            </span>
+            Suggested Parking
+            <span className="ml-auto text-faint">›</span>
+          </button>
+
+          <button
+            type="button"
             onClick={() => onNavigate('events')}
             className="w-full flex items-center gap-4 px-4 h-14 rounded-lg bg-[#FFFBEB] border border-nku text-left"
           >

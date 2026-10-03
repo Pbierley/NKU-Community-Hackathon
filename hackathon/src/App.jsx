@@ -10,9 +10,10 @@ import HomeScreen from './screens/HomeScreen'
 import LoginScreen from './screens/LoginScreen'
 import ParkingScreen from './screens/ParkingScreen'
 import RegisterScreen from './screens/RegisterScreen'
+import SuggestedParkingScreen from './screens/SuggestedParkingScreen'
 import './App.css'
 
-// Home (map) and parking & rec availability are public. Events, account, and admin
+// Home (map), parking & rec, and suggested parking are public. Events, account, and admin
 // redirect to login when logged out. Admin stays hidden unless the
 // signed-in account is an admin or developer.
 const PROTECTED = new Set(['events', 'account', 'admin'])
@@ -173,6 +174,7 @@ function App() {
           />
         )}
         {visibleScreen === 'parking' && <ParkingScreen key="parking" onNavigate={navigateTo} user={user} />}
+        {visibleScreen === 'suggest' && <SuggestedParkingScreen key="suggest" onNavigate={navigateTo} />}
         {visibleScreen === 'events' && (
           <EventsScreen
             key="events"

@@ -11,10 +11,8 @@ function fromKey(key) {
   return key.split(',').map(Number)
 }
 
-export function useWalkingRoute(from, to) {
+export function useWalkGraph() {
   const [nodes, setNodes] = useState(null)
-  const startKey = pointKey(from)
-  const endKey = pointKey(to)
 
   useEffect(() => {
     let cancelled = false
@@ -25,6 +23,14 @@ export function useWalkingRoute(from, to) {
       cancelled = true
     }
   }, [])
+
+  return nodes
+}
+
+export function useWalkingRoute(from, to) {
+  const nodes = useWalkGraph()
+  const startKey = pointKey(from)
+  const endKey = pointKey(to)
 
   return useMemo(() => {
     const start = fromKey(startKey)

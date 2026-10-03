@@ -29,7 +29,13 @@ function ClearButton({ label, onClick }) {
 const BOX =
   'flex items-center gap-2 bg-white border border-line rounded-lg pl-4 pr-2 h-12 shadow-card'
 
-export default function BuildingSearch({ buildings, selectedId, onSelect, onClear }) {
+export default function BuildingSearch({
+  buildings,
+  selectedId,
+  onSelect,
+  onClear,
+  placeholder = 'Where to? Halls, lots, shuttles',
+}) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(0)
@@ -91,7 +97,7 @@ export default function BuildingSearch({ buildings, selectedId, onSelect, onClea
         <SearchIcon />
         <input
           type="text"
-          placeholder="Where to? Halls, lots, shuttles"
+          placeholder={placeholder}
           className="bg-transparent w-full min-w-0 text-[15px] leading-[1.6] font-medium text-ink placeholder:text-faint"
           aria-label="Navigate campus"
           value={query}
