@@ -12,10 +12,14 @@ export default function EventsScreen({ onNavigate }) {
   const [toast, setToast] = useState(null)
   const results = searchEvents(events, query)
 
-  function handlePost(newEvent) {
-    addEvent(newEvent)
-    setIsModalOpen(false)
-    setToast('Event posted')
+  async function handlePost(newEvent) {
+    try {
+      await addEvent(newEvent)
+      setIsModalOpen(false)
+      setToast('Event posted')
+    } catch {
+      setToast('Could not post event.')
+    }
   }
 
   return (

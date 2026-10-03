@@ -3,9 +3,10 @@ import AppHeader from '../components/AppHeader'
 import FeaturedEvents from '../components/FeaturedEvents'
 import Toast from '../components/Toast'
 import BuildingSearch from '../Navigation/BuildingSearch'
-import { useBuildings } from '../Navigation/buildings'
+import { getBuildingById, hasLocation, useBuildings } from '../Navigation/buildings'
 import CampusMap from '../Navigation/CampusMap'
 import { useUserLocation } from '../Navigation/useUserLocation'
+import { useWalkingRoute } from '../Navigation/useWalkingRoute'
 
 export default function HomeScreen({ onNavigate }) {
   const { buildings, error: buildingsError } = useBuildings()
@@ -16,8 +17,12 @@ export default function HomeScreen({ onNavigate }) {
   const [notice, setNotice] = useState(null)
   const [dismissedError, setDismissedError] = useState(null)
   const [mapFull, setMapFull] = useState(false)
+  const destination = selectedId != null ? getBuildingById(buildings, selectedId) : null
+  const destPoint =
+    destination && hasLocation(destination) ? [destination.Location.lat, destination.Location.lng] : null
+  const { route, error: routeError } = useWalkingRoute(position, destPoint)
 
-  const error = buildingsError ?? locationError
+  const error = buildingsError ?? locationError ?? routeError
   const toast = notice ?? (error && error !== dismissedError ? error : null)
   const dismissToast = useCallback(() => {
     if (notice) setNotice(null)
@@ -67,6 +72,7 @@ export default function HomeScreen({ onNavigate }) {
           onLocate={locate}
           selectedId={selectedId}
           full={mapFull}
+          route={route}
         />
         <button
           type="button"
