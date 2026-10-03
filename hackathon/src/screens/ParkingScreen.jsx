@@ -90,8 +90,8 @@ export default function ParkingScreen({ onNavigate, user }) {
                         <span className="block text-[13px] text-muted leading-[1.4]">
                           {report
                             ? reportedAt
-                              ? `Reported ${reportedAt}`
-                              : 'Reported today'
+                              ? `Last updated ${reportedAt}`
+                              : 'Updated today'
                             : 'Not rated today'}
                         </span>
                       </span>
