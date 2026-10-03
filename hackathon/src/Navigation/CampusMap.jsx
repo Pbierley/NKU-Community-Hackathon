@@ -10,7 +10,7 @@ import {
   useMap,
 } from 'react-leaflet'
 import L from './leaflet'
-import { getBuildingById, hasLocation } from './buildings'
+import { getBuildingById, hasLocation, mapLabel } from './buildings'
 import { NKU_BOUNDS, NKU_CENTER } from './nkuMap'
 
 const USER_BLUE = '#2563EB'
@@ -64,18 +64,25 @@ function UserArrow({ position, heading }) {
 const PIN_SIZES = { normal: 28, selected: 40, dimmed: 12 }
 const buildingIcons = new Map()
 
-function buildingIcon(id, state) {
-  const key = `${id}-${state}`
+function pinBox(label, state) {
+  if (state === 'dimmed') return [12, 12]
+  const height = PIN_SIZES[state]
+  const width = height + Math.max(0, String(label).length - 2) * (state === 'selected' ? 11 : 9)
+  return [width, height]
+}
+
+function buildingIcon(id, state, label) {
+  const key = `${id}-${state}-${label}`
   if (!buildingIcons.has(key)) {
-    const size = PIN_SIZES[state]
+    const [width, height] = pinBox(label, state)
     buildingIcons.set(
       key,
       L.divIcon({
         className: `building-pin building-pin--${state}`,
-        html: state === 'dimmed' ? '' : `<span>${id}</span>`,
-        iconSize: [size, size],
-        iconAnchor: [size / 2, size / 2],
-        popupAnchor: [0, -size / 2],
+        html: state === 'dimmed' ? '' : `<span>${label}</span>`,
+        iconSize: [width, height],
+        iconAnchor: [width / 2, height / 2],
+        popupAnchor: [0, -height / 2],
       }),
     )
   }
@@ -85,17 +92,18 @@ function buildingIcon(id, state) {
 function BuildingMarkers({ buildings, selectedId }) {
   return buildings.filter(hasLocation).map((b) => {
     const state = selectedId == null ? 'normal' : b.id === selectedId ? 'selected' : 'dimmed'
+    const label = mapLabel(b)
     return (
       <Marker
         key={b.id}
         position={[b.Location.lat, b.Location.lng]}
-        icon={buildingIcon(b.id, state)}
+        icon={buildingIcon(b.id, state, label)}
         zIndexOffset={state === 'selected' ? 1000 : 0}
-        title={`${b.id}. ${b.name}`}
+        title={`${label}. ${b.name}`}
       >
         <Popup>
           <p className="text-[15px] font-bold leading-[1.5] text-ink">
-            {b.id}. {b.name}
+            {label}. {b.name}
           </p>
           {b.Alias.length > 0 && (
             <p className="mt-1 text-[13px] text-muted leading-[1.5]">{b.Alias.join(' · ')}</p>

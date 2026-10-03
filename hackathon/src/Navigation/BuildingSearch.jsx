@@ -1,5 +1,5 @@
 import { useId, useMemo, useState } from 'react'
-import { buildingCode, getBuildingById, hasLocation, searchBuildings } from './buildings'
+import { getBuildingById, hasLocation, mapLabel, searchBuildings } from './buildings'
 
 function SearchIcon() {
   return (
@@ -72,7 +72,7 @@ export default function BuildingSearch({ buildings, selectedId, onSelect, onClea
       <div className="absolute top-2 left-1/2 z-[1000] w-[min(28rem,calc(100%-1rem))] -translate-x-1/2">
         <div className={BOX}>
           <span className="shrink-0 text-[12px] font-bold bg-nku text-ink rounded-md px-2 py-1 tnum">
-            {selected.id}
+            {mapLabel(selected)}
           </span>
           <span className="flex-1 min-w-0 truncate text-[15px] font-semibold leading-[1.6] text-ink">
             {selected.name}
@@ -132,7 +132,6 @@ export default function BuildingSearch({ buildings, selectedId, onSelect, onClea
             <li className="px-4 py-2 text-[15px] text-muted leading-[1.6]">No buildings found</li>
           )}
           {results.map((b, i) => {
-            const code = buildingCode(b)
             const disabled = !hasLocation(b)
             return (
               <li
@@ -152,19 +151,13 @@ export default function BuildingSearch({ buildings, selectedId, onSelect, onClea
                 onClick={() => choose(b)}
               >
                 <span className="shrink-0 text-[12px] font-bold bg-wash text-ink rounded-md px-2 py-1 tnum">
-                  {b.id}
+                  {mapLabel(b)}
                 </span>
                 <span className="flex-1 min-w-0 truncate text-[15px] font-medium leading-[1.6] text-ink">
                   {b.name}
                 </span>
-                {disabled ? (
+                {disabled && (
                   <span className="shrink-0 text-[13px] text-muted leading-[1.5]">No location yet</span>
-                ) : (
-                  code && (
-                    <span className="shrink-0 text-[13px] font-semibold text-muted leading-[1.5]">
-                      {code}
-                    </span>
-                  )
                 )}
               </li>
             )
