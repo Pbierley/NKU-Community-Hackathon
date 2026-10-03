@@ -1,9 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Event from '../Communication/Event'
 import EventCalendar from '../Communication/EventCalendar'
 import EventDetailsModal from '../Communication/EventDetailsModal'
 import EventModal from '../Communication/EventModal'
-import { eventDayKey, formatDayKey, searchEvents, sortEventsByDate, useEvents } from '../Communication/useEvents'
+import { buildEventShareUrl, eventDayKey, formatDayKey, isPastEvent, isRegistered, parseEventHash, searchEvents, sortEventsByDate, useEvents } from '../Communication/useEvents'
 import AppHeader from '../components/AppHeader'
 import Toast from '../components/Toast'
 
@@ -22,23 +22,94 @@ function groupByDay(events) {
   return groups
 }
 
-export default function EventsScreen({ onNavigate, user }) {
+export default function EventsScreen({ onNavigate, user, sharedEventId, onSharedEventOpened }) {
   const { events, addEvent, updateEvent, deleteEvent, toggleRegister, addComment } = useEvents()
   const [query, setQuery] = useState('')
   const [view, setView] = useState('list')
   const [selectedDay, setSelectedDay] = useState(null)
+  const [onlyMine, setOnlyMine] = useState(false)
+  const [onlyPast, setOnlyPast] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [eventToEdit, setEventToEdit] = useState(null)
   const [selectedEventId, setSelectedEventId] = useState(null)
   const [toast, setToast] = useState(null)
   // Soonest upcoming event first; search keeps that order.
   const results = useMemo(() => sortEventsByDate(searchEvents(events, query)), [events, query])
+  const mineCount = useMemo(() => results.filter((event) => isRegistered(event, user?.id)).length, [results, user?.id])
+  const pastCount = useMemo(() => results.filter(isPastEvent).length, [results])
+  // The two checkboxes combine: each checked box narrows the list further.
+  const filtered = useMemo(() => results.filter((event) =>
+    (!onlyMine || isRegistered(event, user?.id)) && (!onlyPast || isPastEvent(event)),
+  ), [results, onlyMine, onlyPast, user?.id])
   const visibleResults = useMemo(() => {
-    if (view === 'calendar' && selectedDay) return results.filter((event) => eventDayKey(event) === selectedDay)
-    return results
-  }, [results, view, selectedDay])
+    if (view === 'calendar' && selectedDay) return filtered.filter((event) => eventDayKey(event) === selectedDay)
+    return filtered
+  }, [filtered, view, selectedDay])
   const groups = useMemo(() => groupByDay(visibleResults), [visibleResults])
   const selectedEvent = events.find((event) => event.id === selectedEventId) ?? null
+  const hasActiveFilters = query.trim() !== '' || onlyMine || onlyPast || selectedDay !== null
+
+  // Open a shared-link event once the list has loaded, then consume it so
+  // it doesn't pop open again on later visits. This intentionally syncs the
+  // external shared-link state into local modal state exactly once.
+  useEffect(() => {
+    if (!sharedEventId || events.length === 0) return
+    if (events.some((event) => event.id === sharedEventId)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedEventId(sharedEventId)
+    } else {
+      setToast('That event link is no longer available.')
+    }
+    onSharedEventOpened?.()
+  }, [sharedEventId, events, onSharedEventOpened])
+
+  function openEvent(eventId) {
+    setSelectedEventId(eventId)
+    try {
+      window.history.replaceState(null, '', `#/events/${encodeURIComponent(eventId)}`)
+    } catch {
+      /* hash sync is best-effort */
+    }
+  }
+
+  function closeDetails() {
+    setSelectedEventId(null)
+    try {
+      if (parseEventHash()) {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search)
+      }
+    } catch {
+      /* hash sync is best-effort */
+    }
+  }
+
+  async function handleShare(eventToShare) {
+    const url = buildEventShareUrl(eventToShare.id)
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url)
+      } else {
+        const ta = document.createElement('textarea')
+        ta.value = url
+        ta.style.position = 'fixed'
+        ta.style.opacity = '0'
+        document.body.appendChild(ta)
+        ta.select()
+        document.execCommand('copy')
+        document.body.removeChild(ta)
+      }
+      setToast('Link copied ✓')
+    } catch {
+      setToast('Could not copy link.')
+    }
+  }
+
+  function clearFilters() {
+    setQuery('')
+    setOnlyMine(false)
+    setOnlyPast(false)
+    setSelectedDay(null)
+  }
 
   async function handlePost(newEvent) {
     try {
@@ -65,7 +136,7 @@ export default function EventsScreen({ onNavigate, user }) {
     if (!window.confirm(`Delete "${eventToDelete.title}"? This cannot be undone.`)) return
     try {
       await deleteEvent(eventToDelete.id)
-      if (selectedEventId === eventToDelete.id) setSelectedEventId(null)
+      if (selectedEventId === eventToDelete.id) closeDetails()
       setToast('Event deleted')
     } catch (err) {
       setToast(err.message || 'Could not delete event.')
@@ -119,19 +190,64 @@ export default function EventsScreen({ onNavigate, user }) {
           </button>
         </div>
         <p className="mt-2 text-[12px] text-muted leading-[1.5] tnum">
-          Sorted by soonest · {results.length} event{results.length === 1 ? '' : 's'}
+          Sorted by soonest · {filtered.length} event{filtered.length === 1 ? '' : 's'}
         </p>
+        <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Event filters">
+          <label
+            className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-[13px] font-semibold cursor-pointer ${
+              onlyMine ? 'bg-[#FFFBEB] border-nku text-ink' : 'bg-white border-line text-body'
+            }`}
+          >
+            <input
+              type="checkbox"
+              checked={onlyMine}
+              onChange={(e) => setOnlyMine(e.target.checked)}
+              className="h-5 w-5 shrink-0 accent-nku"
+              aria-label="Show only events I registered for"
+            />
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="m5 12.5 4.5 4.5L19 7.5" />
+            </svg>
+            My events
+            <span className="font-normal text-muted tnum">({mineCount})</span>
+          </label>
+          <label
+            className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-[13px] font-semibold cursor-pointer ${
+              onlyPast ? 'bg-[#FFFBEB] border-nku text-ink' : 'bg-white border-line text-body'
+            }`}
+          >
+            <input
+              type="checkbox"
+              checked={onlyPast}
+              onChange={(e) => setOnlyPast(e.target.checked)}
+              className="h-5 w-5 shrink-0 accent-nku"
+              aria-label="Show only previous events"
+            />
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="8.5" />
+              <path d="M12 7.5V12l3 2" />
+            </svg>
+            Previous events
+            <span className="font-normal text-muted tnum">({pastCount})</span>
+          </label>
+        </div>
         </div>
       </div>
 
       <main className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-4 space-y-4 pb-8 text-left w-full max-w-2xl md:mx-auto">
         {view === 'calendar' && (
-          <EventCalendar events={results} selectedDay={selectedDay} onSelectDay={setSelectedDay} />
+          <EventCalendar events={filtered} selectedDay={selectedDay} onSelectDay={setSelectedDay} />
         )}
         {visibleResults.length === 0 && (
           <div className="text-left">
             <p className="text-[15px] text-muted leading-[1.6]">
-              {selectedDay ? `No events on ${formatDayKey(selectedDay)}.` : 'No events found'}
+              {onlyMine && onlyPast
+                ? 'No previous events you registered for.'
+                : onlyMine
+                  ? 'You have not registered for any events yet.'
+                  : onlyPast
+                    ? 'No previous events.'
+                    : selectedDay ? `No events on ${formatDayKey(selectedDay)}.` : 'No events found'}
             </p>
             {selectedDay && (
               <button
@@ -140,6 +256,15 @@ export default function EventsScreen({ onNavigate, user }) {
                 className="mt-2 text-[13px] font-bold underline underline-offset-2"
               >
                 Show all dates
+              </button>
+            )}
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="mt-2 block text-[13px] font-bold underline underline-offset-2"
+              >
+                Clear search &amp; filters
               </button>
             )}
           </div>
@@ -163,7 +288,8 @@ export default function EventsScreen({ onNavigate, user }) {
                   user={user}
                   userId={user?.id}
                   onRegister={toggleRegister}
-                  onOpen={(openedEvent) => setSelectedEventId(openedEvent.id)}
+                  onOpen={(openedEvent) => openEvent(openedEvent.id)}
+                  onShare={handleShare}
                   onEdit={(eventToUpdate) => {
                     setEventToEdit(eventToUpdate)
                     setIsModalOpen(true)
@@ -204,11 +330,12 @@ export default function EventsScreen({ onNavigate, user }) {
       <EventDetailsModal
         event={selectedEvent}
         user={user}
-        onClose={() => setSelectedEventId(null)}
+        onClose={closeDetails}
         onAddComment={addComment}
         onRegister={toggleRegister}
+        onShare={handleShare}
         onEdit={(eventToUpdate) => {
-          setSelectedEventId(null)
+          closeDetails()
           setEventToEdit(eventToUpdate)
           setIsModalOpen(true)
         }}

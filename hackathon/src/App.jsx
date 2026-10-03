@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useAuth } from './auth/useAuth'
 import NavDrawer from './components/NavDrawer'
+import { parseEventHash } from './Communication/useEvents'
 import AccountScreen from './screens/AccountScreen'
 import EventsScreen from './screens/EventsScreen'
 import HomeScreen from './screens/HomeScreen'
@@ -15,12 +16,15 @@ const PROTECTED = new Set(['events', 'account'])
 
 function App() {
   const { user, loading, login, register, logout, updateProfile } = useAuth()
-  const [screen, setScreen] = useState('home')
+  // A shared event link boots straight into events so the event can open.
+  const [screen, setScreen] = useState(() => (parseEventHash() ? 'events' : 'home'))
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [authNotice, setAuthNotice] = useState(null)
   // Where a logged-out user was headed when they hit a protected screen,
   // so login/register can send them there afterwards instead of home.
-  const [pendingScreen, setPendingScreen] = useState(null)
+  const [pendingScreen, setPendingScreen] = useState(() => (parseEventHash() ? 'events' : null))
+  // A shared event id waiting to be opened once the events list loads.
+  const [pendingEventId, setPendingEventId] = useState(() => parseEventHash())
 
   // 'drawer' opens the overlay on top of the current screen instead of replacing it.
   const navigateTo = useCallback((id) => {
@@ -38,6 +42,26 @@ function App() {
     } else if (id === 'home') {
       setAuthNotice(null)
       setPendingScreen(null)
+      setPendingEventId(null)
+      try {
+        if (parseEventHash()) {
+          window.history.replaceState(null, '', window.location.pathname + window.location.search)
+        }
+      } catch {
+        /* hash cleanup is best-effort */
+      }
+    }
+  }, [])
+
+  // Consumed by EventsScreen after a shared event opens (or proves unknown).
+  const handleSharedEventOpened = useCallback(() => {
+    setPendingEventId(null)
+    try {
+      if (parseEventHash()) {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search)
+      }
+    } catch {
+      /* hash cleanup is best-effort */
     }
   }, [])
 
@@ -66,6 +90,7 @@ function App() {
     setDrawerOpen(false)
     setAuthNotice(null)
     setPendingScreen(null)
+    setPendingEventId(null)
     setScreen('home')
   }
 
@@ -99,7 +124,15 @@ function App() {
         )}
         {visibleScreen === 'home' && <HomeScreen key="home" onNavigate={navigateTo} user={user} />}
         {visibleScreen === 'parking' && <ParkingScreen key="parking" onNavigate={navigateTo} />}
-        {visibleScreen === 'events' && <EventsScreen key="events" onNavigate={navigateTo} user={user} />}
+        {visibleScreen === 'events' && (
+          <EventsScreen
+            key="events"
+            onNavigate={navigateTo}
+            user={user}
+            sharedEventId={user ? pendingEventId : null}
+            onSharedEventOpened={handleSharedEventOpened}
+          />
+        )}
         {visibleScreen === 'account' && (
           <AccountScreen
             key={`account-${user?.id}`}

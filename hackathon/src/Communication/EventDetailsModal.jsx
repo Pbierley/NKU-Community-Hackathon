@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { attendeeCount, commentAuthor, eventWhen, isEventCreator, isRegistered } from './useEvents'
 
-export default function EventDetailsModal({ event, user, onClose, onAddComment, onEdit, onDelete, onRegister }) {
+export default function EventDetailsModal({ event, user, onClose, onAddComment, onEdit, onDelete, onRegister, onShare }) {
   const [commentText, setCommentText] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
@@ -87,16 +87,29 @@ export default function EventDetailsModal({ event, user, onClose, onAddComment, 
             {totalAttendees} attendee{totalAttendees === 1 ? '' : 's'}
             {registered && <span className="ml-2 font-normal text-muted">· You&apos;re in ✓</span>}
           </p>
-          <button
-            type="button"
-            onClick={handleRegister}
-            disabled={isRegistering}
-            className={`text-[13px] font-bold rounded-md px-4 py-2 disabled:cursor-not-allowed disabled:opacity-50 ${
-              registered ? 'bg-nku text-ink' : 'bg-ink text-white'
-            }`}
-          >
-            {isRegistering ? 'Saving…' : registered ? 'Registered ✓' : 'Register'}
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onShare?.(event)}
+              aria-label={`Copy link to ${event.title}`}
+              className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-4 py-2 text-[13px] font-semibold text-body hover:bg-wash"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1.5-1.5" />
+              </svg>
+              Copy link
+            </button>
+            <button
+              type="button"
+              onClick={handleRegister}
+              disabled={isRegistering}
+              className={`text-[13px] font-bold rounded-md px-4 py-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+                registered ? 'bg-nku text-ink' : 'bg-ink text-white'
+              }`}
+            >
+              {isRegistering ? 'Saving…' : registered ? 'Registered ✓' : 'Register'}
+            </button>
+          </div>
         </div>
         {registerError && <p className="mt-2 text-[13px] text-red-700" role="alert">{registerError}</p>}
 

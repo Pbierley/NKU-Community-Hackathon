@@ -48,7 +48,7 @@ function EventPhotos({ event, onOpen }) {
   )
 }
 
-export default function Event({ event, onRegister, onOpen, userId, user, onEdit, onDelete }) {
+export default function Event({ event, onRegister, onOpen, onShare, userId, user, onEdit, onDelete }) {
   const currentUserId = user?.id ?? userId
   const registered = isRegistered(event, currentUserId)
   const canModify = isEventCreator(event, currentUserId)
@@ -113,15 +113,28 @@ export default function Event({ event, onRegister, onOpen, userId, user, onEdit,
             · {totalAttendees} attending
           </span>
         </span>
-        <button
-          type="button"
-          onClick={() => onRegister(event.id)}
-          className={`text-[13px] font-bold rounded-md px-4 py-2 ${
-            registered ? 'bg-nku text-ink' : 'bg-ink text-white'
-          }`}
-        >
-          {registered ? 'Registered ✓' : 'Register'}
-        </button>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => onShare?.(event)}
+            aria-label={`Copy link to ${event.title}`}
+            title="Copy link"
+            className="rounded-md border border-line bg-white px-3 py-2 text-body hover:bg-wash focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nku"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1.5-1.5" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            onClick={() => onRegister(event.id)}
+            className={`text-[13px] font-bold rounded-md px-4 py-2 ${
+              registered ? 'bg-nku text-ink' : 'bg-ink text-white'
+            }`}
+          >
+            {registered ? 'Registered ✓' : 'Register'}
+          </button>
+        </div>
       </div>
       </div>
     </article>

@@ -268,6 +268,39 @@ export function formatDayKey(dayKey) {
   })
 }
 
+// ─── Shareable event links ────────────────────────────────────────────
+// Links look like `<origin><path>#/events/<id>`. The hash never reaches
+// the server, so no routing or backend changes are needed to support them.
+
+// Extract an event id from a `#/events/<id>` hash; null when absent.
+export function parseEventHash(hash) {
+  const raw = hash ?? (typeof window === 'undefined' ? '' : window.location.hash)
+  const match = /^#\/events\/([^/?#]+)\/?$/.exec(raw ?? '')
+  if (!match) return null
+  try {
+    return decodeURIComponent(match[1]) || null
+  } catch {
+    return null
+  }
+}
+
+// Build an absolute share URL for an event id.
+export function buildEventShareUrl(eventId) {
+  const origin = typeof window === 'undefined' ? '' : window.location.origin
+  const path = typeof window === 'undefined' ? '/' : window.location.pathname
+  return `${origin}${path}#/events/${encodeURIComponent(eventId)}`
+}
+
+// True when the event started before today (same cutoff as
+// sortEventsByDate). Undated events are never "past".
+export function isPastEvent(event) {
+  const start = eventStart(event)
+  if (!start) return false
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return start.getTime() < today.getTime()
+}
+
 // Soonest upcoming event first. Past events sink to the bottom (most
 // recent past first) and undated events sit between the two groups.
 export function sortEventsByDate(input) {

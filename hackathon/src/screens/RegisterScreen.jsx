@@ -13,7 +13,7 @@ export default function RegisterScreen({ onNavigate, onRegister, next }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [year, setYear] = useState('Junior')
-  const [major, setMajor] = useState('Cybersecurity')
+  const [major, setMajor] = useState('')
   const [interests, setInterests] = useState(DEFAULT_INTERESTS)
   const [error, setError] = useState(null)
   const [busy, setBusy] = useState(false)
