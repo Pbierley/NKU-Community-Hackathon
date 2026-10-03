@@ -171,7 +171,7 @@ function MapControls({ onLocate }) {
         type="button"
         onPointerUp={() => map.zoomIn()}
         aria-label="Zoom in"
-        className="w-12 h-12 bg-white border border-line rounded-lg font-bold text-[16px] text-ink shadow-card"
+        className="w-10 h-10 bg-white border border-line rounded-lg font-bold text-[14px] text-ink shadow-card"
       >
         +
       </button>
@@ -179,7 +179,7 @@ function MapControls({ onLocate }) {
         type="button"
         onPointerUp={() => map.zoomOut()}
         aria-label="Zoom out"
-        className="w-12 h-12 bg-white border border-line rounded-lg font-bold text-[16px] text-ink shadow-card"
+        className="w-10 h-10 bg-white border border-line rounded-lg font-bold text-[14px] text-ink shadow-card"
       >
         −
       </button>
@@ -187,9 +187,9 @@ function MapControls({ onLocate }) {
         type="button"
         onPointerUp={onLocate}
         aria-label="Locate me"
-        className="w-12 h-12 bg-nku hover:bg-nkuDeep rounded-lg shadow-card flex items-center justify-center"
+        className="w-10 h-10 bg-nku hover:bg-nkuDeep rounded-lg shadow-card flex items-center justify-center"
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="1.8">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="1.8">
           <circle cx="12" cy="12" r="6.5" />
           <circle cx="12" cy="12" r="1.6" fill="#111827" />
           <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3" strokeLinecap="round" />

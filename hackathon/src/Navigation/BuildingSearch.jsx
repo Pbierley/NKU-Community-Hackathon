@@ -17,7 +17,7 @@ function ClearButton({ label, onClick }) {
       onMouseDown={(e) => e.preventDefault()}
       onClick={onClick}
       aria-label={label}
-      className="shrink-0 w-10 h-10 rounded-md text-muted hover:bg-wash flex items-center justify-center"
+      className="shrink-0 w-8 h-8 rounded-md text-muted hover:bg-wash flex items-center justify-center"
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
         <path d="M6 6l12 12M18 6 6 18" />
@@ -27,7 +27,7 @@ function ClearButton({ label, onClick }) {
 }
 
 const BOX =
-  'flex items-center gap-2 bg-white border border-line rounded-lg pl-4 pr-2 h-14 shadow-card'
+  'flex items-center gap-2 bg-white border border-line rounded-lg pl-4 pr-2 h-12 shadow-card'
 
 export default function BuildingSearch({ buildings, selectedId, onSelect, onClear }) {
   const [query, setQuery] = useState('')
@@ -69,7 +69,7 @@ export default function BuildingSearch({ buildings, selectedId, onSelect, onClea
 
   if (selected) {
     return (
-      <div className="absolute top-4 inset-x-4 z-[1000]">
+      <div className="absolute top-2 left-1/2 z-[1000] w-[min(28rem,calc(100%-1rem))] -translate-x-1/2">
         <div className={BOX}>
           <span className="shrink-0 text-[12px] font-bold bg-nku text-ink rounded-md px-2 py-1 tnum">
             {selected.id}
@@ -86,7 +86,7 @@ export default function BuildingSearch({ buildings, selectedId, onSelect, onClea
   const showList = open && query.trim() !== ''
 
   return (
-    <div className="absolute top-4 inset-x-4 z-[1000]">
+    <div className="absolute top-2 left-1/2 z-[1000] w-[min(28rem,calc(100%-1rem))] -translate-x-1/2">
       <div className={`field ${BOX}`}>
         <SearchIcon />
         <input
@@ -114,7 +114,7 @@ export default function BuildingSearch({ buildings, selectedId, onSelect, onClea
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => choose(results[active])}
           aria-label="Go"
-          className="shrink-0 w-10 h-10 rounded-md bg-ink text-white flex items-center justify-center"
+          className="shrink-0 w-8 h-8 rounded-md bg-ink text-white flex items-center justify-center"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <path d="M5 12h14m0 0-5-5m5 5-5 5" />

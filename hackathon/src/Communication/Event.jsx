@@ -1,6 +1,6 @@
 import { categoryTint, eventCategory, eventWhen, isRegistered } from './useEvents'
 
-export default function Event({ event, onRegister, userId }) {
+export default function Event({ event, onRegister, onOpen, userId }) {
   const registered = isRegistered(event, userId)
   const category = eventCategory(event)
   const venue = event.description
@@ -16,7 +16,15 @@ export default function Event({ event, onRegister, userId }) {
           </span>
         </div>
       )}
-      <h3 className="mt-4 text-base font-bold leading-[1.4]">{event.title}</h3>
+      <h3 className="mt-4 text-base font-bold leading-[1.4]">
+        <button
+          type="button"
+          className="text-left hover:text-nkuDeep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nku"
+          onClick={() => onOpen?.(event)}
+        >
+          {event.title}
+        </button>
+      </h3>
       <p className="mt-2 text-[15px] text-body leading-[1.6] max-w-[65ch]">{venue}</p>
       <div className="mt-4 pt-4 border-t border-line flex items-center justify-between gap-4">
         <span className="text-[13px] text-muted leading-[1.5] tnum">{eventWhen(event)}</span>

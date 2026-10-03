@@ -383,6 +383,33 @@ app.post('/api/events', async (req, res) => {
   }
 })
 
+app.post('/api/events/:id/comments', async (req, res) => {
+  try {
+    const text = String(req.body.text ?? '').trim()
+    if (!text) {
+      res.status(400).json({ error: 'Comment text is required.' })
+      return
+    }
+
+    const event = await events.findOne({ id: req.params.id })
+    if (!event) {
+      res.status(404).json({ error: 'Event not found.' })
+      return
+    }
+
+    const comment = {
+      id: `comment-${Date.now()}`,
+      author: 'You',
+      text,
+    }
+    await events.updateOne({ id: req.params.id }, { $push: { comments: comment } })
+    res.status(201).json(comment)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Could not add comment.' })
+  }
+})
+
 app.patch('/api/events/:id/register', async (req, res) => {
   try {
     // Prefer the signed-in user; fall back to the legacy demo id so old

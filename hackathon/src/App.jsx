@@ -51,10 +51,13 @@ function App() {
     setScreen('login')
   }
 
+  const shell =
+    'w-full h-full max-w-[480px] md:max-w-none bg-canvas relative overflow-hidden border-x border-line md:border-0 flex flex-col md:shadow-none'
+
   if (loading) {
     return (
-      <div className="bg-[#E9EAEC] min-h-[100dvh] flex justify-center md:items-center md:py-8">
-        <div className="w-full max-w-[480px] md:max-w-[560px] h-[100dvh] md:h-[92dvh] md:rounded-2xl bg-canvas flex items-center justify-center">
+      <div className="bg-[#E9EAEC] text-ink leading-[1.6] min-h-[100dvh] h-[100dvh] flex justify-center">
+        <div className={`${shell} items-center justify-center`}>
           <p className="text-[15px] text-muted font-medium">Loading Norse…</p>
         </div>
       </div>
@@ -62,16 +65,14 @@ function App() {
   }
 
   return (
-    <div className="bg-[#E9EAEC] text-ink leading-[1.6] min-h-[100dvh] flex justify-center md:items-center md:py-8">
-      <div className="w-full max-w-[480px] md:max-w-[560px] h-[100dvh] md:h-[92dvh] md:rounded-2xl bg-canvas relative overflow-hidden border border-line flex flex-col shadow-card">
+    <div className="bg-[#E9EAEC] text-ink leading-[1.6] min-h-[100dvh] h-[100dvh] flex justify-center">
+      <div className={shell}>
         {visibleScreen === 'login' && <LoginScreen key="login" onNavigate={navigateTo} onLogin={login} />}
         {visibleScreen === 'register' && (
           <RegisterScreen key="register" onNavigate={navigateTo} onRegister={register} />
         )}
         {visibleScreen === 'home' && <HomeScreen key="home" onNavigate={navigateTo} user={user} />}
-        {visibleScreen === 'events' && (
-          <EventsScreen key="events" onNavigate={navigateTo} user={user} />
-        )}
+        {visibleScreen === 'events' && <EventsScreen key="events" onNavigate={navigateTo} user={user} />}
         {visibleScreen === 'account' && (
           <AccountScreen key="account" onNavigate={navigateTo} user={user} onLogout={handleLogout} />
         )}

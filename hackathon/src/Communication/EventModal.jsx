@@ -7,6 +7,10 @@ export default function EventModal({ isOpen, onClose, onPost }) {
   const [name, setName] = useState('')
   const [location, setLocation] = useState('')
   const [description, setDescription] = useState('')
+  const [date, setDate] = useState('')
+  const [startTime, setStartTime] = useState('')
+  const [endTime, setEndTime] = useState('')
+  const [tags, setTags] = useState('')
   const [selectedFiles, setSelectedFiles] = useState([])
   const [isLocationOpen, setIsLocationOpen] = useState(false)
 
@@ -25,20 +29,36 @@ export default function EventModal({ isOpen, onClose, onPost }) {
     setName('')
     setLocation('')
     setDescription('')
+    setDate('')
+    setStartTime('')
+    setEndTime('')
+    setTags('')
     setSelectedFiles([])
     setIsLocationOpen(false)
   }
 
-  function handlePost() {
-    if (!name.trim() || !location.trim()) return
+  function handlePost(event) {
+    event.preventDefault()
+    if (!name.trim() || !location.trim() || !description.trim() || !date || !startTime || !endTime || !tags.trim()) return
+
+    const formattedDate = new Date(`${date}T00:00:00`).toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    })
+    const formatTime = (value) => new Date(`1970-01-01T${value}`).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+    })
+
     onPost({
       id: `event-${Date.now()}`,
       title: name.trim(),
       location: location.trim(),
       description: description.trim(),
-      date: 'Upcoming',
-      time: '',
-      tags: ['Campus'],
+      date: formattedDate,
+      time: `${formatTime(startTime)} - ${formatTime(endTime)}`,
+      tags: tags.split(',').map((tag) => tag.trim()).filter(Boolean),
       images: selectedFiles.map((file) => file.name),
     })
     reset()
@@ -66,14 +86,16 @@ export default function EventModal({ isOpen, onClose, onPost }) {
           </button>
         </div>
 
-        <div className="mt-6 space-y-4">
+        <form className="mt-6" onSubmit={handlePost}>
+          <div className="space-y-4">
           <div>
             <label htmlFor="event-name" className="text-[11px] font-bold tracking-[0.06em] uppercase text-body">
-              Event name
+              Event name <span aria-hidden="true">*</span>
             </label>
             <input
               id="event-name"
               type="text"
+              required
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="What's the event?"
@@ -83,12 +105,13 @@ export default function EventModal({ isOpen, onClose, onPost }) {
 
           <div>
             <label htmlFor="event-location" className="text-[11px] font-bold tracking-[0.06em] uppercase text-body">
-              Location
+              Location <span aria-hidden="true">*</span>
             </label>
             <div className="relative mt-2">
               <input
                 id="event-location"
                 type="text"
+                required
                 value={location}
                 onChange={(e) => {
                   setLocation(e.target.value)
@@ -127,10 +150,11 @@ export default function EventModal({ isOpen, onClose, onPost }) {
 
           <div>
             <label htmlFor="event-description" className="text-[11px] font-bold tracking-[0.06em] uppercase text-body">
-              Description
+              Description <span aria-hidden="true">*</span>
             </label>
             <textarea
               id="event-description"
+              required
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Tell people about the event..."
@@ -139,8 +163,67 @@ export default function EventModal({ isOpen, onClose, onPost }) {
             />
           </div>
 
+          <div>
+            <label htmlFor="event-date" className="text-[11px] font-bold tracking-[0.06em] uppercase text-body">
+              Date <span aria-hidden="true">*</span>
+            </label>
+            <input
+              id="event-date"
+              type="date"
+              required
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="field mt-2 w-full h-14 px-4 rounded-lg bg-white border border-line text-[15px] text-ink leading-[1.6]"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label htmlFor="event-start-time" className="text-[11px] font-bold tracking-[0.06em] uppercase text-body">
+                Start time <span aria-hidden="true">*</span>
+              </label>
+              <input
+                id="event-start-time"
+                type="time"
+                required
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+                className="field mt-2 w-full h-14 px-4 rounded-lg bg-white border border-line text-[15px] text-ink leading-[1.6]"
+              />
+            </div>
+            <div>
+              <label htmlFor="event-end-time" className="text-[11px] font-bold tracking-[0.06em] uppercase text-body">
+                End time <span aria-hidden="true">*</span>
+              </label>
+              <input
+                id="event-end-time"
+                type="time"
+                required
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+                className="field mt-2 w-full h-14 px-4 rounded-lg bg-white border border-line text-[15px] text-ink leading-[1.6]"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="event-tags" className="text-[11px] font-bold tracking-[0.06em] uppercase text-body">
+              Tags <span aria-hidden="true">*</span>
+            </label>
+            <input
+              id="event-tags"
+              type="text"
+              required
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
+              placeholder="Social, Games, Free Food"
+              className="field mt-2 w-full h-14 px-4 rounded-lg bg-white border border-line text-[15px] text-ink leading-[1.6] placeholder:text-faint"
+            />
+            <p className="mt-1 text-[12px] text-muted">Separate tags with commas.</p>
+          </div>
+
           <div className="border border-line rounded-lg p-4">
-            <p className="text-[11px] font-bold tracking-[0.06em] uppercase text-body">Files</p>
+            <p className="text-[11px] font-bold tracking-[0.06em] uppercase text-body">Images</p>
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
@@ -163,24 +246,17 @@ export default function EventModal({ isOpen, onClose, onPost }) {
               </ul>
             )}
           </div>
-        </div>
+          </div>
 
-        <div className="mt-8 space-y-4">
-          <button
-            type="button"
-            onClick={handlePost}
-            className="w-full h-14 px-8 rounded-lg bg-nku hover:bg-nkuDeep font-bold text-[15px] text-ink shadow-card"
-          >
-            Post
-          </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-full text-left text-[14px] font-semibold text-ink underline underline-offset-2"
-          >
-            Cancel
-          </button>
-        </div>
+          <div className="mt-8 space-y-4">
+            <button
+              type="submit"
+              className="w-full h-14 px-8 rounded-lg bg-nku hover:bg-nkuDeep font-bold text-[15px] text-ink shadow-card"
+            >
+              Post
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   )
