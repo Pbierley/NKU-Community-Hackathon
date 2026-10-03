@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { apiUrl } from '../api'
 
 export { isParkingPlace } from './parkingPlaces.js'
 
@@ -7,7 +8,7 @@ export function useBuildings() {
 
   useEffect(() => {
     const controller = new AbortController()
-    fetch('/api/buildings', { signal: controller.signal })
+    fetch(apiUrl('/api/buildings'), { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error(`Server responded ${res.status}`)
         return res.json()

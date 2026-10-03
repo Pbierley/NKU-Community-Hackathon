@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { apiUrl } from '../api'
 import { getAuthToken } from '../auth/useAuth'
 
 const CATEGORY_TINTS = {
@@ -84,7 +85,7 @@ export function useEvents() {
 
   useEffect(() => {
     const controller = new AbortController()
-    fetch('/api/events', { signal: controller.signal })
+    fetch(apiUrl('/api/events'), { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error(`Server responded ${res.status}`)
         return res.json()
@@ -101,7 +102,7 @@ export function useEvents() {
   }, [])
 
   async function addEvent(newEvent) {
-    const res = await fetch('/api/events', {
+    const res = await fetch(apiUrl('/api/events'), {
       method: 'POST',
       headers: authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(newEvent),
@@ -113,7 +114,7 @@ export function useEvents() {
   }
 
   async function updateEvent(updatedEvent) {
-    const res = await fetch(`/api/events/${encodeURIComponent(updatedEvent.id)}`, {
+    const res = await fetch(apiUrl(`/api/events/${encodeURIComponent(updatedEvent.id)}`), {
       method: 'PATCH',
       headers: authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(updatedEvent),
@@ -125,7 +126,7 @@ export function useEvents() {
   }
 
   async function deleteEvent(eventId) {
-    const res = await fetch(`/api/events/${encodeURIComponent(eventId)}`, {
+    const res = await fetch(apiUrl(`/api/events/${encodeURIComponent(eventId)}`), {
       method: 'DELETE',
       headers: authHeaders(),
     })
@@ -138,7 +139,7 @@ export function useEvents() {
 
   async function toggleRegister(eventId) {
     const token = getAuthToken()
-    const res = await fetch(`/api/events/${encodeURIComponent(eventId)}/register`, {
+    const res = await fetch(apiUrl(`/api/events/${encodeURIComponent(eventId)}/register`), {
       method: 'PATCH',
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     })
@@ -149,7 +150,7 @@ export function useEvents() {
   }
 
   async function addComment(eventId, text) {
-    const res = await fetch(`/api/events/${encodeURIComponent(eventId)}/comments`, {
+    const res = await fetch(apiUrl(`/api/events/${encodeURIComponent(eventId)}/comments`), {
       method: 'POST',
       headers: authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ text }),
