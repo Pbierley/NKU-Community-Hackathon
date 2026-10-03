@@ -1,11 +1,78 @@
-:root {
-  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
-  -webkit-font-smoothing: antialiased;
+@import 'tailwindcss';
+
+/* Tokens from design.md §7. `static` keeps them all emitted for the Leaflet overrides in App.css. */
+@theme static {
+  --color-nku: #ffc72c;
+  --color-nkuDeep: #eab308;
+  --color-ink: #111827;
+  --color-body: #374151;
+  --color-muted: #6b7280;
+  --color-faint: #9ca3af;
+  --color-line: #e5e7eb;
+  --color-canvas: #f9fafb;
+  --color-wash: #f3f4f6;
+  --font-inter: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-html,
-body,
-#root {
-  height: 100%;
-  margin: 0;
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    font-family: var(--font-inter);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  input,
+  select,
+  button {
+    font-family: inherit;
+  }
+
+  input:focus {
+    outline: none;
+  }
+
+  button {
+    cursor: pointer;
+  }
+}
+
+@utility tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility field {
+  &:focus-within {
+    border-color: var(--color-ink);
+    box-shadow: 0 0 0 2px var(--color-nku);
+  }
+}
+
+.screen {
+  animation: fade 0.22s ease;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0.4;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }

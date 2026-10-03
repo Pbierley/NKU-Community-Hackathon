@@ -1,6 +1,34 @@
 import { useId, useMemo, useState } from 'react'
 import { buildingCode, getBuildingById, hasLocation, searchBuildings } from './buildings'
 
+function SearchIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round" className="shrink-0">
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="m16 16 4.5 4.5" />
+    </svg>
+  )
+}
+
+function ClearButton({ label, onClick }) {
+  return (
+    <button
+      type="button"
+      onMouseDown={(e) => e.preventDefault()}
+      onClick={onClick}
+      aria-label={label}
+      className="shrink-0 w-10 h-10 rounded-md text-muted hover:bg-wash flex items-center justify-center"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+        <path d="M6 6l12 12M18 6 6 18" />
+      </svg>
+    </button>
+  )
+}
+
+const BOX =
+  'flex items-center gap-2 bg-white border border-line rounded-lg pl-4 pr-2 h-14 shadow-card'
+
 export default function BuildingSearch({ buildings, selectedId, onSelect, onClear }) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
@@ -11,7 +39,7 @@ export default function BuildingSearch({ buildings, selectedId, onSelect, onClea
   const results = useMemo(() => searchBuildings(buildings, query), [buildings, query])
 
   function choose(building) {
-    if (!hasLocation(building)) return
+    if (!building || !hasLocation(building)) return
     onSelect(building.id)
     setQuery('')
     setOpen(false)
@@ -41,18 +69,15 @@ export default function BuildingSearch({ buildings, selectedId, onSelect, onClea
 
   if (selected) {
     return (
-      <div className="building-search">
-        <div className="building-search__box building-search__box--selected">
-          <span className="building-search__badge">{selected.id}</span>
-          <span className="building-search__selected-name">{selected.name}</span>
-          <button
-            type="button"
-            className="building-search__clear"
-            onClick={clear}
-            aria-label="Clear selected building"
-          >
-            ×
-          </button>
+      <div className="absolute top-4 inset-x-4 z-[1000]">
+        <div className={BOX}>
+          <span className="shrink-0 text-[12px] font-bold bg-nku text-ink rounded-md px-2 py-1 tnum">
+            {selected.id}
+          </span>
+          <span className="flex-1 min-w-0 truncate text-[15px] font-semibold leading-[1.6] text-ink">
+            {selected.name}
+          </span>
+          <ClearButton label="Clear selected building" onClick={clear} />
         </div>
       </div>
     )
@@ -61,12 +86,14 @@ export default function BuildingSearch({ buildings, selectedId, onSelect, onClea
   const showList = open && query.trim() !== ''
 
   return (
-    <div className="building-search">
-      <div className="building-search__box">
+    <div className="absolute top-4 inset-x-4 z-[1000]">
+      <div className={`field ${BOX}`}>
+        <SearchIcon />
         <input
-          type="search"
-          className="building-search__input"
-          placeholder="Search buildings by name or code (e.g. GH)"
+          type="text"
+          placeholder="Where to? Halls, lots, shuttles"
+          className="bg-transparent w-full min-w-0 text-[15px] leading-[1.6] font-medium text-ink placeholder:text-faint"
+          aria-label="Navigate campus"
           value={query}
           onChange={(e) => {
             setQuery(e.target.value)
@@ -81,22 +108,29 @@ export default function BuildingSearch({ buildings, selectedId, onSelect, onClea
           aria-controls={listId}
           aria-autocomplete="list"
         />
-        {query && (
-          <button
-            type="button"
-            className="building-search__clear"
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={clear}
-            aria-label="Clear search"
-          >
-            ×
-          </button>
-        )}
+        {query && <ClearButton label="Clear search" onClick={clear} />}
+        <button
+          type="button"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => choose(results[active])}
+          aria-label="Go"
+          className="shrink-0 w-10 h-10 rounded-md bg-ink text-white flex items-center justify-center"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M5 12h14m0 0-5-5m5 5-5 5" />
+          </svg>
+        </button>
       </div>
 
       {showList && (
-        <ul className="building-search__results" id={listId} role="listbox">
-          {results.length === 0 && <li className="building-search__empty">No buildings found</li>}
+        <ul
+          id={listId}
+          role="listbox"
+          className="mt-2 max-h-80 overflow-y-auto no-scrollbar bg-white border border-line rounded-lg p-2 shadow-card"
+        >
+          {results.length === 0 && (
+            <li className="px-4 py-2 text-[15px] text-muted leading-[1.6]">No buildings found</li>
+          )}
           {results.map((b, i) => {
             const code = buildingCode(b)
             const disabled = !hasLocation(b)
@@ -107,9 +141,9 @@ export default function BuildingSearch({ buildings, selectedId, onSelect, onClea
                 aria-selected={i === active}
                 aria-disabled={disabled}
                 className={[
-                  'building-search__result',
-                  i === active && 'building-search__result--active',
-                  disabled && 'building-search__result--disabled',
+                  'flex items-center gap-4 px-4 h-12 rounded-md',
+                  i === active && 'bg-canvas',
+                  disabled ? 'opacity-50 cursor-default' : 'cursor-pointer',
                 ]
                   .filter(Boolean)
                   .join(' ')}
@@ -117,12 +151,20 @@ export default function BuildingSearch({ buildings, selectedId, onSelect, onClea
                 onMouseEnter={() => setActive(i)}
                 onClick={() => choose(b)}
               >
-                <span className="building-search__badge">{b.id}</span>
-                <span className="building-search__name">{b.name}</span>
+                <span className="shrink-0 text-[12px] font-bold bg-wash text-ink rounded-md px-2 py-1 tnum">
+                  {b.id}
+                </span>
+                <span className="flex-1 min-w-0 truncate text-[15px] font-medium leading-[1.6] text-ink">
+                  {b.name}
+                </span>
                 {disabled ? (
-                  <span className="building-search__code">No location yet</span>
+                  <span className="shrink-0 text-[13px] text-muted leading-[1.5]">No location yet</span>
                 ) : (
-                  code && <span className="building-search__code">{code}</span>
+                  code && (
+                    <span className="shrink-0 text-[13px] font-semibold text-muted leading-[1.5]">
+                      {code}
+                    </span>
+                  )
                 )}
               </li>
             )

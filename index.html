@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Norse — NKU Campus App</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        nku: '#FFC72C',
+        nkuDeep: '#EAB308',
+        ink: '#111827',
+        body: '#374151',
+        muted: '#6B7280',
+        faint: '#9CA3AF',
+        line: '#e5e7eb',
+        canvas: '#F9FAFB',
+        wash: '#F3F4F6',
+      },
+      fontFamily: { inter: ['Inter','ui-sans-serif','system-ui','sans-serif'] },
+      boxShadow: {
+        card: '0 12px 32px rgba(0,0,0,0.05), 0 2px 8px rgba(0,0,0,0.04)',
+      }
+    }
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+  html,body{height:100%}
+  @supports (height:100dvh){.h-\[100dvh\]{height:100dvh}.md\:h-\[92dvh\]{height:100dvh}}
+  @media (min-width:768px){@supports (height:100dvh){.md\:h-\[92dvh\]{height:92dvh}}}
+  .app-screen{min-height:0}
+  body{font-family:'Inter',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .tnum{font-variant-numeric:tabular-nums}
+  .no-scrollbar::-webkit-scrollbar{display:none}
+  .no-scrollbar{scrollbar-width:none;-ms-overflow-style:none}
+  .screen{animation:fade .22s ease}
+  @keyframes fade{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+  #nav-drawer aside{transition:transform .28s cubic-bezier(.32,.72,.24,1)}
+  #nav-drawer.drawer-closed aside{transform:translateX(-102%)}
+  input,select,button{font-family:inherit}
+  input:focus{outline:none}
+  .field:focus-within{border-color:#111827;box-shadow:0 0 0 2px #FFC72C}
+  .campus-map{
+    background-color:#EDF0F3;
+    background-image:linear-gradient(#fff,#fff),linear-gradient(#fff,#fff),linear-gradient(#fff,#fff);
+    background-size:100% 8px, 8px 100%, 100% 8px;
+    background-position:0 48%, 32% 0, 0 72%;
+    background-repeat:no-repeat;
+  }
+</style>
+</head>
+<body class="bg-[#E9EAEC] text-ink leading-[1.6] min-h-[100dvh] flex justify-center md:items-center md:py-8">
+
+<div class="w-full max-w-[480px] md:max-w-[560px] h-[100dvh] md:h-[92dvh] md:rounded-2xl bg-canvas relative overflow-hidden border border-line flex flex-col shadow-card">
+
+  <!-- ================= LOGIN ================= -->
+  <div id="login-screen" class="app-screen screen h-full flex flex-col bg-canvas">
+    <main class="flex-1 overflow-y-auto no-scrollbar px-6 pb-6 pt-12 flex flex-col items-start text-left max-w-[65ch]">
+      <button onclick="navigateTo('home-screen')" aria-label="NKU — go to home" class="rounded-lg shadow-card">
+        <img src="logo.avif" alt="Northern Kentucky University logo" class="h-16 w-auto rounded-lg" />
+      </button>
+      <h1 class="mt-8 text-3xl font-extrabold tracking-tight leading-[1.2]">Northern Kentucky University</h1>
+      <p class="mt-2 text-[15px] text-body leading-[1.6]">Campus Experience Portal</p>
+
+      <nav class="w-full mt-8 bg-wash rounded-lg p-1 grid grid-cols-2" aria-label="Authentication">
+        <button id="tab-login" onclick="switchAuthTab('login')" class="h-12 rounded-md bg-white shadow-card font-bold text-[14px]">Login</button>
+        <button id="tab-register" onclick="switchAuthTab('register')" class="h-12 rounded-md text-muted font-semibold text-[14px]">Register</button>
+      </nav>
+
+      <section class="w-full mt-8 space-y-4" aria-label="Login form">
+        <div>
+          <label for="login-email" class="text-[11px] font-bold tracking-[0.06em] uppercase text-body">NKU Username / Email</label>
+          <div class="field mt-2 flex items-center gap-2 h-14 bg-white border border-line rounded-lg px-4">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.4 4-5 7.5-5s6.3 1.6 7.5 5"/></svg>
+            <input id="login-email" type="email" value="jordan.norse@nku.edu" class="w-full bg-transparent text-[15px] font-medium leading-[1.6] placeholder:text-faint" autocomplete="email" />
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between">
+            <label for="login-pass" class="text-[11px] font-bold tracking-[0.06em] uppercase text-body">Password</label>
+            <button class="text-[13px] font-semibold text-body underline underline-offset-2">Forgot?</button>
+          </div>
+          <div class="field mt-2 flex items-center gap-2 h-14 bg-white border border-line rounded-lg px-4">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="15.5" r="3.5"/><path d="m11 12.5 8.5-8.5M15.5 7l3 3"/></svg>
+            <input id="login-pass" type="password" value="norse2025!!" class="w-full bg-transparent text-[15px] font-medium leading-[1.6] tracking-[0.2em]" autocomplete="current-password" />
+            <button onclick="togglePw()" aria-label="Show password" class="text-muted">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <button onclick="navigateTo('home-screen')" class="mt-8 w-full h-14 px-8 rounded-lg bg-nku hover:bg-nkuDeep font-bold text-[15px] shadow-card active:scale-[0.99] transition">LOGIN</button>
+
+      <p class="mt-6 text-[14px] text-body leading-[1.6] max-w-[65ch]">
+        <span>Don&rsquo;t have an account?</span>
+        <button onclick="navigateTo('register-screen')" class="ml-2 font-semibold underline underline-offset-2">Make Account</button>
+      </p>
+
+      <div class="flex-1 min-h-8"></div>
+      <footer class="w-full border-t border-line pt-4 text-left">
+        <p class="text-[13px] text-muted leading-[1.5]">Secured with NKU Duo MFA Protection</p>
+      </footer>
+    </main>
+  </div>
+
+  <!-- ================= REGISTER ================= -->
+  <div id="register-screen" class="hidden app-screen screen h-full flex flex-col bg-canvas">
+    <header class="px-6 pt-4 pb-4 bg-white border-b border-line flex items-center gap-4">
+      <button onclick="navigateTo('login-screen')" aria-label="Back" class="w-12 h-12 rounded-lg border border-line bg-white flex items-center justify-center">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <div class="flex-1 text-left">
+        <h1 class="text-xl font-bold tracking-tight leading-[1.3]">Make account</h1>
+      </div>
+      <span class="text-[12px] font-semibold text-body bg-wash border border-line rounded-md px-3 py-2">Registration</span>
+    </header>
+
+    <main class="flex-1 overflow-y-auto no-scrollbar p-6 pb-32 space-y-6 text-left">
+      <section class="bg-white border border-line rounded-xl p-6 shadow-card">
+        <div class="flex items-center justify-between gap-4">
+          <h2 class="flex items-center gap-2 text-xl font-bold tracking-tight leading-[1.3]"><span class="w-8 h-8 rounded-full bg-ink text-white text-[13px] font-bold flex items-center justify-center tnum shrink-0">1</span>Step 1: Credentials</h2>
+        </div>
+        <div class="mt-4 grid gap-2">
+          <div class="flex items-center justify-between gap-4 h-14 bg-white border border-line rounded-lg px-4">
+            <label class="text-[11px] font-bold tracking-[0.06em] uppercase text-body">Name:</label>
+            <input value="Jordan Taylor" class="text-right text-[15px] font-medium leading-[1.6] w-2/3 bg-transparent" aria-label="Full name" />
+          </div>
+          <div class="flex items-center justify-between gap-4 h-14 bg-white border border-line rounded-lg px-4">
+            <label class="text-[11px] font-bold tracking-[0.06em] uppercase text-body">Pswd:</label>
+            <input type="password" value="norse2025!!" class="text-right text-[15px] font-medium leading-[1.6] w-2/3 bg-transparent tracking-[0.2em]" aria-label="Password" />
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white border border-nku rounded-xl p-6 shadow-card">
+        <div class="flex items-center justify-between gap-4">
+          <h2 class="flex items-center gap-2 text-xl font-bold tracking-tight leading-[1.3]"><span class="w-8 h-8 rounded-full bg-nku text-ink text-[13px] font-bold flex items-center justify-center tnum shrink-0">2</span>Step 2: Profile &amp; Interests</h2>
+        </div>
+        <div class="mt-4 grid gap-2">
+          <label class="flex items-center justify-between gap-4 h-14 border border-line rounded-lg px-4 bg-white">
+            <span class="text-[11px] font-bold tracking-[0.06em] uppercase text-body">Year:</span>
+            <select id="reg-year" class="text-[15px] font-medium bg-transparent text-right" onchange="syncFinishLabel()">
+              <option>Junior (Select)</option><option>Freshman</option><option>Sophomore</option><option>Senior</option><option>Graduate</option>
+            </select>
+          </label>
+          <div class="flex items-center justify-between gap-4 h-14 border border-line rounded-lg px-4 bg-white">
+            <label for="reg-major" class="text-[11px] font-bold tracking-[0.06em] uppercase text-body">Major:</label>
+            <input id="reg-major" type="text" value="Cybersecurity" placeholder="e.g. Cybersecurity" class="text-[15px] font-medium bg-transparent text-right w-2/3" />
+          </div>
+          <div class="border border-line rounded-lg p-4">
+            <p class="text-[11px] font-bold tracking-[0.06em] uppercase text-body">Interests selected: <span id="int-count" class="tnum">3</span></p>
+            <div class="mt-4 flex flex-wrap gap-2" id="reg-interests">
+              <button onclick="toggleInterest(this)" data-on="1" data-c="bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]" class="interest text-[12px] font-semibold rounded-md px-3 py-2 border bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]">Sports ✓</button>
+              <button onclick="toggleInterest(this)" data-on="1" data-c="bg-[#F5F3FF] text-[#5B21B6] border-[#DDD6FE]" class="interest text-[12px] font-semibold rounded-md px-3 py-2 border bg-[#F5F3FF] text-[#5B21B6] border-[#DDD6FE]">Arts ✓</button>
+              <button onclick="toggleInterest(this)" data-on="1" data-c="bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]" class="interest text-[12px] font-semibold rounded-md px-3 py-2 border bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]">Music ✓</button>
+              <button onclick="toggleInterest(this)" data-on="0" data-c="bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]" class="interest text-[12px] font-semibold rounded-md px-3 py-2 border bg-wash text-body border-line">Tech +</button>
+            </div>
+            <div class="mt-4 flex items-center gap-2">
+              <input id="new-interest" type="text" placeholder="Type an interest, e.g. Chess" maxlength="24" class="h-12 px-4 flex-1 min-w-0 bg-white border border-line rounded-lg text-[15px] leading-[1.6]" onkeydown="if(event.key==='Enter'){event.preventDefault();addInterest();}" />
+              <button onclick="addInterest()" class="h-12 px-4 rounded-lg bg-ink text-white font-semibold text-[14px] shrink-0">Add</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="absolute bottom-0 inset-x-0 p-6 pt-8 bg-gradient-to-t from-white via-white to-transparent text-left">
+      <button id="finish-btn" onclick="navigateTo('home-screen')" class="w-full h-14 px-8 rounded-lg bg-nku font-bold text-[15px] shadow-card active:scale-[0.99] transition">FINISH</button>
+      <button onclick="navigateTo('login-screen')" class="w-full text-left mt-4 text-[14px] text-muted leading-[1.6]">Already have an account? <span class="font-semibold text-ink underline underline-offset-2">Login</span></button>
+    </footer>
+  </div>
+
+  <!-- ================= HOME ================= -->
+  <div id="home-screen" class="hidden app-screen screen h-full flex flex-col bg-canvas">
+    <header class="px-4 pt-4 pb-4 flex items-center justify-between gap-4 bg-white border-b border-line">
+      <button onclick="navigateTo('nav-drawer')" aria-label="Open navigation" class="w-12 h-12 rounded-lg hover:bg-wash flex items-center justify-center border border-transparent">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <button onclick="navigateTo('home-screen')" aria-label="NKU — go to home" class="rounded-lg shrink-0"><img src="logo.avif" alt="Northern Kentucky University logo" class="h-10 w-auto rounded-lg" /></button>
+      <button onclick="navigateTo('profile-screen')" aria-label="Account" class="w-12 h-12 rounded-full bg-[#FFFBEB] border border-line flex items-center justify-center shrink-0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#111827"><circle cx="12" cy="8.2" r="3.4"/><path d="M5 19.5c1.4-3.2 4-4.7 7-4.7s5.6 1.5 7 4.7" stroke="#111827" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+      </button>
+    </header>
+
+    <main class="relative flex-1 min-h-0 mx-4 mt-4 rounded-xl border border-line overflow-hidden campus-map text-left">
+      <!-- Navigation search, floating inside the map -->
+      <div class="absolute top-4 inset-x-4 z-20 flex items-center gap-2 bg-white border border-line rounded-lg pl-4 pr-2 h-14 shadow-card">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+        <input placeholder="Where to? Halls, lots, shuttles" class="bg-transparent w-full text-[15px] leading-[1.6] font-medium placeholder:text-faint" aria-label="Navigate campus" />
+        <button aria-label="Go" class="shrink-0 w-10 h-10 rounded-md bg-ink text-white flex items-center justify-center">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14m0 0-5-5m5 5-5 5"/></svg>
+        </button>
+      </div>
+      <div class="absolute left-[12%] top-[38%] w-16 h-24 bg-[#DBEAFE] rounded-lg"></div>
+      <p class="absolute left-[13%] top-[42%] text-[11px] font-bold tracking-[0.06em] uppercase text-muted leading-[1.5]">Loch<br>Norse</p>
+      <div class="absolute left-[36%] top-[24%]">
+        <div class="bg-ink text-white text-[12px] font-semibold rounded-md px-3 py-2 leading-[1.5] text-left shadow-card">Griffin Hall<br><span class="text-nku font-semibold">Hackathon Live</span></div>
+      </div>
+      <div class="absolute right-[8%] top-[30%]">
+        <div class="bg-white border border-line text-[12px] font-semibold rounded-md px-3 py-2 leading-[1.5] shadow-card">Truist Arena<br><span class="text-body font-medium">Game Tonight</span></div>
+      </div>
+      <div class="absolute left-[28%] top-[40%]">
+        <div class="bg-nku text-ink text-[12px] font-bold rounded-md px-3 py-2 shadow-card whitespace-nowrap">Student Union Plaza</div>
+      </div>
+      <div class="absolute left-[8%] bottom-[8%] bg-white border border-line rounded-lg px-4 py-2 shadow-card">
+        <p class="text-[13px] font-bold leading-[1.5]">Student Union<br><span class="font-normal text-muted">Dining &amp; Lounge</span></p>
+      </div>
+      <div class="absolute left-[52%] top-[62%]">
+        <div class="w-12 h-12 -ml-6 -mt-6 bg-[#2F7CF6]/20 rounded-full flex items-center justify-center">
+          <div class="w-[18px] h-[18px] bg-[#2563EB] border-[3px] border-white rounded-full"></div>
+        </div>
+      </div>
+      <div class="absolute right-4 bottom-4 flex flex-col gap-2">
+        <button aria-label="Zoom in" class="w-12 h-12 bg-white border border-line rounded-lg font-bold text-[16px] shadow-card">+</button>
+        <button aria-label="Zoom out" class="w-12 h-12 bg-white border border-line rounded-lg font-bold text-[16px] shadow-card">−</button>
+        <button aria-label="Locate me" class="w-12 h-12 bg-nku rounded-lg shadow-card flex items-center justify-center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="1.8"><circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="1.6" fill="#111827"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </main>
+
+    <section class="px-4 pt-4 pb-4 bg-white border-t border-line mt-4 text-left" aria-label="Featured events">
+      <div class="flex items-center justify-between gap-4 mb-2">
+        <h2 class="text-base font-bold tracking-tight leading-[1.4] flex items-center gap-2"><span class="w-1 h-5 bg-nku rounded-full inline-block"></span>Featured events</h2>
+        <button onclick="navigateTo('events-screen')" class="text-[12px] font-semibold bg-ink text-white rounded-md px-3 py-2 shrink-0">See All (9)</button>
+      </div>
+      <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 snap-x">
+        <article onclick="navigateTo('events-screen')" class="cursor-pointer snap-start shrink-0 w-[68%] sm:w-[48%] bg-white border border-line rounded-xl p-4 shadow-card">
+          <span class="inline-block text-[12px] font-semibold bg-[#FFFBEB] text-[#92400E] border border-[#FDE68A] rounded-md px-3 py-2">Athletics</span>
+          <p class="mt-2 text-[13px] text-muted leading-[1.5] tnum">Tonight • 7PM</p>
+          <h3 class="mt-1 text-[15px] font-bold leading-[1.5]">NKU Men&rsquo;s Basketball vs Oakland</h3>
+          <p class="mt-1 text-[13px] text-muted leading-[1.5]">Truist Arena</p>
+        </article>
+        <article onclick="navigateTo('events-screen')" class="cursor-pointer snap-start shrink-0 w-[68%] sm:w-[48%] bg-white border border-line rounded-xl p-4 shadow-card">
+          <span class="inline-block text-[12px] font-semibold bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0] rounded-md px-3 py-2">Tech / Hack</span>
+          <p class="mt-2 text-[13px] text-muted leading-[1.5] tnum">Sat • 10AM</p>
+          <h3 class="mt-1 text-[15px] font-bold leading-[1.5]">HackNKU 2025 Ceremony</h3>
+          <p class="mt-1 text-[13px] text-muted leading-[1.5]">Griffin Digitorium</p>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= NAV DRAWER ================= -->
+  <div id="nav-drawer" class="hidden drawer-closed absolute inset-0 z-50">
+    <div id="drawer-scrim" class="absolute inset-0 opacity-0 transition-opacity duration-200" style="background:rgba(17,24,39,0.45);backdrop-filter:blur(8px)" onclick="navigateTo('home-screen')"></div>
+    <aside class="absolute left-0 top-0 bottom-0 w-[85%] max-w-[340px] bg-white flex flex-col rounded-r-xl overflow-hidden shadow-card border-r border-line">
+      <header class="px-6 pt-8 pb-6 flex items-center gap-4 border-b border-line text-left">
+        <div class="w-12 h-12 rounded-full bg-ink text-white font-bold text-[15px] flex items-center justify-center shrink-0">AM</div>
+        <div class="min-w-0 text-left">
+          <h2 class="text-xl font-bold tracking-tight leading-[1.3]">Alex Morgan</h2>
+          <p class="text-[13px] text-muted leading-[1.5]">alex.morgan@nku.edu</p>
+          <span class="inline-block mt-2 text-[12px] font-semibold text-body bg-wash border border-line rounded-md px-3 py-2">Sophomore • Informatics</span>
+        </div>
+      </header>
+      <nav class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-2 text-left" aria-label="App navigation">
+        <button onclick="navigateTo('home-screen')" class="w-full flex items-center gap-4 px-4 h-12 rounded-lg hover:bg-canvas text-left font-semibold text-[15px] leading-[1.6]">
+          <span class="w-8 h-8 rounded-lg bg-wash flex items-center justify-center shrink-0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="1.8" stroke-linecap="round"><path d="m4 11 8-7 8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-9Z"/></svg>
+          </span>Home<span class="ml-auto text-faint">›</span>
+        </button>
+        <button onclick="navigateTo('events-screen')" class="w-full flex items-center gap-4 px-4 h-14 rounded-lg bg-[#FFFBEB] border border-nku text-left">
+          <span class="w-8 h-8 rounded-lg bg-nku flex items-center justify-center shrink-0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="1.8"><rect x="4" y="5.5" width="16" height="15" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4" stroke-linecap="round"/></svg>
+          </span>
+          <span class="font-bold text-[14px] tracking-wide">EVENTS</span>
+          <span class="ml-auto text-[12px] font-semibold bg-ink text-white rounded-md px-3 py-2 tnum">12 New</span>
+        </button>
+        <button onclick="navigateTo('events-screen')" class="w-full flex items-center gap-4 px-4 py-4 rounded-lg border border-dashed border-line text-left">
+          <span class="w-8 h-8 rounded-lg bg-ink text-white flex items-center justify-center shrink-0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="9" r="3.2"/><path d="M5.5 19.5c1.3-3 3.7-4.3 6.5-4.3s5.2 1.3 6.5 4.3" stroke-linecap="round"/></svg>
+          </span>
+          <span class="font-semibold text-[15px] leading-[1.5]">MY Engagement<br><span class="text-[13px] font-normal text-muted">Student Portal &amp; Clubs</span></span>
+        </button>
+        <p class="px-4 pt-6 pb-2 text-[11px] font-bold tracking-[0.06em] uppercase text-muted">Campus resources</p>
+        <button class="w-full flex items-center gap-4 px-4 h-12 rounded-lg hover:bg-canvas text-left text-[15px] leading-[1.6]">Norse Shuttle Tracker</button>
+        <button class="w-full flex items-center gap-4 px-4 h-12 rounded-lg hover:bg-canvas text-left text-[15px] leading-[1.6]">Campus Safety &amp; Escort</button>
+        <button onclick="navigateTo('profile-screen')" class="w-full flex items-center gap-4 px-4 h-12 rounded-lg hover:bg-canvas text-left text-[15px] leading-[1.6]">Preferences &amp; Settings</button>
+      </nav>
+      <footer class="p-6 pt-2 text-left">
+        <button onclick="navigateTo('login-screen')" class="w-full h-14 px-8 rounded-lg bg-[#FEF2F2] text-[#B91C1C] border border-[#FECACA] font-semibold text-[15px]">Sign Out (Alex M.)</button>
+      </footer>
+    </aside>
+  </div>
+
+  <!-- ================= EVENTS ================= -->
+  <div id="events-screen" class="hidden app-screen screen h-full flex flex-col bg-canvas">
+    <header class="px-4 pt-4 pb-4 flex items-center justify-between gap-4 bg-white border-b border-line">
+      <button onclick="navigateTo('nav-drawer')" aria-label="Open navigation" class="w-12 h-12 rounded-lg hover:bg-canvas flex items-center justify-center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <button onclick="navigateTo('home-screen')" aria-label="NKU — go to home" class="rounded-lg shrink-0"><img src="logo.avif" alt="Northern Kentucky University logo" class="h-10 w-auto rounded-lg" /></button>
+      <button onclick="navigateTo('profile-screen')" aria-label="Account" class="w-12 h-12 rounded-full bg-[#FFFBEB] border border-line flex items-center justify-center shrink-0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#111827"><circle cx="12" cy="8.2" r="3.4"/><path d="M5 19.5c1.4-3.2 4-4.7 7-4.7s5.6 1.5 7 4.7" stroke="#111827" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+      </button>
+    </header>
+
+    <div class="px-4 pt-4 text-left bg-white border-b border-line pb-4">
+      <div class="flex items-center gap-2 bg-white border border-line rounded-lg px-4 h-14 shadow-card">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+        <input placeholder="SEARCH events, workshops..." class="bg-transparent w-full text-[15px] leading-[1.6] font-medium placeholder:text-faint" aria-label="Search events" />
+      </div>
+    </div>
+
+    <main class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-4 space-y-4 pb-32 text-left">
+      <article class="border border-nku rounded-xl p-6 shadow-card bg-white">
+        <div class="flex items-center gap-2">
+          <span class="text-[12px] font-semibold text-body">Featured</span>
+        </div>
+        <h3 class="mt-4 text-base font-bold leading-[1.4]">Annual Norse Hackathon 2025</h3>
+        <p class="mt-2 text-[15px] text-body leading-[1.6] max-w-[65ch]">Griffin Hall Digitorium • 24hr project sprint &amp; showcase</p>
+        <div class="mt-4 pt-4 border-t border-line flex items-center justify-between gap-4">
+          <span class="text-[13px] text-muted leading-[1.5] tnum">Today, 6:00 PM</span>
+          <button onclick="toggleRegister(this)" class="text-[13px] font-bold bg-ink text-white rounded-md px-4 py-2">Register</button>
+        </div>
+      </article>
+
+      <article class="border border-line rounded-xl p-6 shadow-card bg-white">
+        <div class="flex items-center gap-2">
+          <span class="text-[12px] font-semibold text-[#1D4ED8] bg-[#EFF6FF] border border-[#BFDBFE] rounded-md px-3 py-2">Athletics</span>
+        </div>
+        <h3 class="mt-4 text-base font-bold leading-[1.4]">NKU vs Wright State - Men&rsquo;s Basketball</h3>
+        <p class="mt-2 text-[15px] text-body leading-[1.6] max-w-[65ch]">Truist Arena • Gold Out Game, free Norse t-shirts for...</p>
+        <div class="mt-4 pt-4 border-t border-line flex items-center justify-between gap-4">
+          <span class="text-[13px] text-muted leading-[1.5] tnum">Tomorrow, 7:00 PM</span>
+          <button onclick="toggleRegister(this)" class="text-[13px] font-bold bg-ink text-white rounded-md px-4 py-2">Register</button>
+        </div>
+      </article>
+
+      <article class="border border-line rounded-xl p-6 shadow-card bg-white">
+        <div class="flex items-center gap-2">
+          <span class="text-[12px] font-semibold text-[#047857] bg-[#ECFDF5] border border-[#A7F3D0] rounded-md px-3 py-2">Career</span>
+        </div>
+        <h3 class="mt-4 text-base font-bold leading-[1.4]">Spring STEM &amp; Tech Co-Op Fair</h3>
+        <p class="mt-2 text-[15px] text-body leading-[1.6] max-w-[65ch]">Student Union Ballroom • 45+ hiring employers</p>
+        <div class="mt-4 pt-4 border-t border-line flex items-center justify-between gap-4">
+          <span class="text-[13px] text-muted leading-[1.5] tnum">Thu, 11:00 AM</span>
+          <button onclick="toggleRegister(this)" class="text-[13px] font-bold bg-ink text-white rounded-md px-4 py-2">Register</button>
+        </div>
+      </article>
+    </main>
+
+    <footer class="absolute bottom-0 inset-x-0 p-6 pt-8 bg-gradient-to-t from-white via-white to-transparent text-left">
+      <button onclick="toast('Draft post started — prototype only')" class="w-full h-14 px-8 rounded-lg bg-nku hover:bg-nkuDeep font-bold text-[15px] shadow-card active:scale-[0.99] transition">+ MAKE POST</button>
+      <div class="mx-auto mt-4 w-8 h-1 rounded-full bg-line"></div>
+    </footer>
+  </div>
+
+  <!-- ================= PROFILE ================= -->
+  <div id="profile-screen" class="hidden app-screen screen h-full flex flex-col bg-canvas">
+    <header class="px-6 py-4 flex items-center gap-4 bg-white border-b border-line sticky top-0 z-10 text-left">
+      <button onclick="navigateTo('home-screen')" aria-label="Back" class="w-12 h-12 rounded-lg border border-line bg-white flex items-center justify-center shrink-0">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <h2 class="flex-1 text-xl font-bold tracking-tight leading-[1.3] text-left">Account</h2>
+      <span class="w-12 shrink-0"></span>
+    </header>
+
+    <main class="flex-1 overflow-y-auto no-scrollbar p-6 text-left">
+      <section class="bg-white border border-line rounded-xl p-8 shadow-card" aria-label="Account">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-ink text-white font-bold text-[16px] flex items-center justify-center shrink-0">JT</div>
+          <div class="min-w-0 text-left">
+            <h3 class="text-xl font-bold tracking-tight leading-[1.3]">Jordan Taylor</h3>
+            <p class="text-[13px] text-muted leading-[1.5]">jordan.norse@nku.edu</p>
+            <span class="inline-block mt-2 text-[12px] font-semibold bg-ink text-white rounded-md px-3 py-2">Class of 2026</span>
+          </div>
+        </div>
+
+        <dl class="mt-6 space-y-4">
+          <div class="bg-canvas border border-line rounded-lg px-4 h-14 flex items-center justify-between gap-4">
+            <dt class="text-[11px] font-bold tracking-[0.06em] uppercase text-body">Year</dt>
+            <dd class="text-[15px] font-semibold leading-[1.6] bg-white border border-line rounded-md px-3 py-2 tnum">Junior (Year 3)</dd>
+          </div>
+          <div class="bg-canvas border border-line rounded-lg px-4 py-4 flex items-center justify-between gap-4">
+            <dt class="text-[11px] font-bold tracking-[0.06em] uppercase text-body shrink-0">Major</dt>
+            <dd class="text-right text-[15px] font-semibold leading-[1.6]">College of Informatics<br><span class="text-[13px] font-medium text-body">Cybersecurity B.S.</span></dd>
+          </div>
+          <div class="bg-canvas border border-line rounded-lg p-4">
+            <dt class="text-[11px] font-bold tracking-[0.06em] uppercase text-body">Interests</dt>
+            <dd class="mt-4 flex flex-wrap gap-2 text-[12px] font-semibold">
+              <span class="bg-[#FFFBEB] text-[#92400E] border border-[#FDE68A] rounded-md px-3 py-2">SPORTS</span>
+              <span class="bg-[#F5F3FF] text-[#5B21B6] border border-[#DDD6FE] rounded-md px-3 py-2">ARTS</span>
+              <span class="bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE] rounded-md px-3 py-2">MUSIC</span>
+              <span class="bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0] rounded-md px-3 py-2">TECH</span>
+            </dd>
+          </div>
+        </dl>
+
+        <div class="mt-6">
+          <button class="w-full h-14 px-8 rounded-lg bg-ink text-white font-semibold text-[15px]">Edit Profile</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="absolute left-4 right-4 bottom-6 z-[60] hidden bg-ink text-white text-[13px] font-semibold leading-[1.5] rounded-lg px-4 py-4 shadow-card"></div>
+</div>
+
+<script>
+var lastScreen = 'login-screen';
+function navigateTo(screenId){
+  var drawer = document.getElementById('nav-drawer');
+  var scrim = document.getElementById('drawer-scrim');
+  if(screenId === 'nav-drawer'){
+    drawer.classList.remove('hidden');
+    requestAnimationFrame(function(){
+      drawer.classList.remove('drawer-closed');
+      if(scrim) scrim.classList.remove('opacity-0');
+    });
+    return;
+  }
+  if(!drawer.classList.contains('hidden')){
+    drawer.classList.add('drawer-closed');
+    if(scrim) scrim.classList.add('opacity-0');
+    setTimeout(function(){ drawer.classList.add('hidden'); }, 200);
+  }
+  if(document.getElementById(screenId)){
+    document.querySelectorAll('.app-screen').forEach(function(s){
+      s.classList.add('hidden'); s.classList.remove('flex');
+    });
+    var t = document.getElementById(screenId);
+    t.classList.remove('hidden'); t.classList.add('flex');
+    if(screenId !== 'nav-drawer') lastScreen = screenId;
+    t.scrollTop = 0;
+    var m = t.querySelector('main'); if(m) m.scrollTop = 0;
+  }
+}
+function switchAuthTab(which){
+  var l = document.getElementById('tab-login');
+  var r = document.getElementById('tab-register');
+  if(which === 'login'){
+    l.className = 'h-12 rounded-md bg-white shadow-card font-bold text-[14px]';
+    r.className = 'h-12 rounded-md text-muted font-semibold text-[14px]';
+    navigateTo('login-screen');
+  } else {
+    r.className = 'h-12 rounded-md bg-white shadow-card font-bold text-[14px]';
+    l.className = 'h-12 rounded-md text-muted font-semibold text-[14px]';
+    navigateTo('register-screen');
+  }
+}
+function togglePw(){
+  var i = document.getElementById('login-pass');
+  i.type = (i.type === 'password') ? 'text' : 'password';
+}
+function toggleInterest(btn){
+  var base = 'interest text-[12px] font-semibold rounded-md px-3 py-2 border ';
+  var on = btn.getAttribute('data-on') === '1';
+  if(on){
+    btn.setAttribute('data-on','0');
+    btn.className = base + 'bg-wash text-body border-line';
+    btn.textContent = btn.textContent.replace('✓','+').trim();
+    if(!btn.textContent.match(/[+✓]/)) btn.textContent += ' +';
+  } else {
+    btn.setAttribute('data-on','1');
+    btn.className = base + (btn.getAttribute('data-c') || 'bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]');
+    btn.textContent = btn.textContent.replace('+','✓').trim();
+    if(btn.textContent.indexOf('✓') < 0) btn.textContent += ' ✓';
+  }
+  var n = document.querySelectorAll('#reg-interests [data-on="1"]').length;
+  document.getElementById('int-count').textContent = n;
+  syncFinishLabel();
+}
+var interestPalette = [
+  'bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]',
+  'bg-[#F5F3FF] text-[#5B21B6] border-[#DDD6FE]',
+  'bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]',
+  'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]',
+  'bg-[#FEF2F2] text-[#B91C1C] border-[#FECACA]',
+  'bg-[#FDF4FF] text-[#A21CAF] border-[#F0ABFC]'
+];
+function addInterest(){
+  var input = document.getElementById('new-interest');
+  var name = input.value.trim().replace(/[✓+]/g,'').trim();
+  if(!name) return;
+  name = name.charAt(0).toUpperCase() + name.slice(1);
+  var exists = false;
+  document.querySelectorAll('#reg-interests .interest').forEach(function(b){
+    if(b.textContent.replace(/[✓+]/g,'').trim().toLowerCase() === name.toLowerCase()) exists = true;
+  });
+  if(exists){ input.value = ''; input.focus(); return; }
+  var colors = interestPalette[document.querySelectorAll('#reg-interests .interest').length % interestPalette.length];
+  var btn = document.createElement('button');
+  btn.setAttribute('onclick','toggleInterest(this)');
+  btn.setAttribute('data-on','1');
+  btn.setAttribute('data-c', colors);
+  btn.className = 'interest text-[12px] font-semibold rounded-md px-3 py-2 border ' + colors;
+  btn.textContent = name + ' ✓';
+  document.getElementById('reg-interests').appendChild(btn);
+  input.value = ''; input.focus();
+  var n = document.querySelectorAll('#reg-interests [data-on="1"]').length;
+  document.getElementById('int-count').textContent = n;
+  syncFinishLabel();
+}
+function syncFinishLabel(){
+  var n = document.querySelectorAll('#reg-interests [data-on="1"]').length;
+  document.getElementById('finish-btn').textContent = (n > 0) ? 'FINISH' : 'SKIP FOR NOW';
+}
+function toggleRegister(btn){
+  var registered = btn.getAttribute('data-registered') === '1';
+  if(registered){
+    btn.setAttribute('data-registered','0');
+    btn.className = 'text-[13px] font-bold bg-ink text-white rounded-md px-4 py-2';
+    btn.textContent = 'Register';
+  } else {
+    btn.setAttribute('data-registered','1');
+    btn.className = 'text-[13px] font-bold bg-nku text-ink rounded-md px-4 py-2';
+    btn.textContent = 'Registered ✓';
+  }
+}
+var toastTimer;
+function toast(msg){
+  var el = document.getElementById('toast');
+  el.textContent = msg; el.classList.remove('hidden');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.classList.add('hidden'); }, 1800);
+}
+['register-screen','home-screen','events-screen','profile-screen'].forEach(function(id){
+  document.getElementById(id).classList.add('flex-col');
+});
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') navigateTo(lastScreen === 'login-screen' ? 'login-screen' : 'home-screen');
+});
+</script>
+</body>
+</html>
