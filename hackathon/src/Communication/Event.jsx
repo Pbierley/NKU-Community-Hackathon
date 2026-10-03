@@ -1,4 +1,52 @@
+import { useState } from 'react'
 import { attendeeCount, categoryTint, eventCategory, eventWhen, isEventCreator, isRegistered } from './useEvents'
+
+function eventPhotos(event) {
+  if (!Array.isArray(event?.images)) return []
+  return event.images.filter((src) => typeof src === 'string' && src.trim())
+}
+
+function EventPhotos({ event, onOpen }) {
+  const photos = eventPhotos(event)
+  const [failed, setFailed] = useState(() => new Set())
+  const visible = photos.filter((_, index) => !failed.has(index))
+  if (visible.length === 0) return null
+
+  function hide(index) {
+    setFailed((current) => {
+      const next = new Set(current)
+      next.add(index)
+      return next
+    })
+  }
+
+  return (
+    <div className="grid grid-cols-2 gap-px bg-line">
+      {photos.map((src, index) => {
+        if (failed.has(index)) return null
+        const firstVisible = photos.findIndex((_, photoIndex) => !failed.has(photoIndex))
+        const span = visible.length === 1 || (visible.length % 2 === 1 && index === firstVisible)
+        return (
+          <button
+            key={`${src}-${index}`}
+            type="button"
+            onClick={() => onOpen?.(event)}
+            className={`block min-w-0 bg-wash ${span ? 'col-span-2' : ''}`}
+            aria-label={`View ${event.title}`}
+          >
+            <img
+              src={src}
+              alt={`${event.title} photo ${index + 1}`}
+              className={`w-full object-cover ${span ? 'h-48 sm:h-56' : 'h-28 sm:h-32'}`}
+              loading="lazy"
+              onError={() => hide(index)}
+            />
+          </button>
+        )
+      })}
+    </div>
+  )
+}
 
 export default function Event({ event, onRegister, onOpen, userId, user, onEdit, onDelete }) {
   const currentUserId = user?.id ?? userId
@@ -12,7 +60,9 @@ export default function Event({ event, onRegister, onOpen, userId, user, onEdit,
     : event.location
 
   return (
-    <article className="relative flex flex-col border border-line rounded-xl p-4 sm:p-6 shadow-card bg-white">
+    <article className="relative flex flex-col overflow-hidden border border-line rounded-xl shadow-card bg-white">
+      <EventPhotos event={event} onOpen={onOpen} />
+      <div className="relative flex flex-col p-4 sm:p-6">
       {canModify && (
         <div className="self-end flex flex-wrap items-center justify-end gap-2 sm:absolute sm:top-4 sm:right-4">
           <button
@@ -72,6 +122,7 @@ export default function Event({ event, onRegister, onOpen, userId, user, onEdit,
         >
           {registered ? 'Registered ✓' : 'Register'}
         </button>
+      </div>
       </div>
     </article>
   )
