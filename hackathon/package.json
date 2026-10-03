@@ -11,6 +11,7 @@
     "preview": "vite preview",
     "server": "node --env-file-if-exists=../.env --watch server/index.js",
     "seed:buildings": "node --env-file-if-exists=../.env scripts/seedBuildings.js",
+    "seed:walkways": "node --env-file-if-exists=../.env scripts/seedWalkways.js",
     "seed:events": "node --env-file-if-exists=../.env scripts/seedEvents.js",
     "fetch:events": "node scripts/fetchMyEngagementEvents.js",
     "fetch:truist": "node --env-file-if-exists=../.env scripts/fetchTruistEvents.js",
