@@ -71,6 +71,18 @@ export function useEvents() {
     return saved
   }
 
+  async function updateEvent(updatedEvent) {
+    const res = await fetch(`/api/events/${encodeURIComponent(updatedEvent.id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedEvent),
+    })
+    if (!res.ok) throw new Error('Could not update event.')
+    const saved = await res.json()
+    setEvents((current) => current.map((event) => (event.id === saved.id ? saved : event)))
+    return saved
+  }
+
   async function toggleRegister(eventId) {
     const res = await fetch(`/api/events/${encodeURIComponent(eventId)}/register`, { method: 'PATCH' })
     if (!res.ok) throw new Error('Could not update registration.')
@@ -94,7 +106,7 @@ export function useEvents() {
     return comment
   }
 
-  return { events, error, addEvent, toggleRegister, addComment }
+  return { events, error, addEvent, updateEvent, toggleRegister, addComment }
 }
 
 export function searchEvents(events, query) {

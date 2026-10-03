@@ -7,9 +7,10 @@ import AppHeader from '../components/AppHeader'
 import Toast from '../components/Toast'
 
 export default function EventsScreen({ onNavigate }) {
-  const { events, addEvent, toggleRegister, addComment } = useEvents()
+  const { events, addEvent, updateEvent, toggleRegister, addComment } = useEvents()
   const [query, setQuery] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [eventToEdit, setEventToEdit] = useState(null)
   const [selectedEventId, setSelectedEventId] = useState(null)
   const [toast, setToast] = useState(null)
   const results = searchEvents(events, query)
@@ -22,6 +23,17 @@ export default function EventsScreen({ onNavigate }) {
       setToast('Event posted')
     } catch {
       setToast('Could not post event.')
+    }
+  }
+
+  async function handleUpdate(updatedEvent) {
+    try {
+      await updateEvent(updatedEvent)
+      setIsModalOpen(false)
+      setEventToEdit(null)
+      setToast('Event updated')
+    } catch {
+      setToast('Could not update event.')
     }
   }
 
@@ -55,6 +67,10 @@ export default function EventsScreen({ onNavigate }) {
             event={event}
             onRegister={toggleRegister}
             onOpen={(openedEvent) => setSelectedEventId(openedEvent.id)}
+            onEdit={(eventToUpdate) => {
+              setEventToEdit(eventToUpdate)
+              setIsModalOpen(true)
+            }}
           />
         ))}
       </main>
@@ -62,7 +78,10 @@ export default function EventsScreen({ onNavigate }) {
       <footer className="absolute bottom-0 inset-x-0 p-6 pt-8 bg-gradient-to-t from-white via-white to-transparent text-left">
         <button
           type="button"
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setEventToEdit(null)
+            setIsModalOpen(true)
+          }}
           className="w-full h-14 px-8 rounded-lg bg-nku hover:bg-nkuDeep font-bold text-[15px] text-ink shadow-card active:scale-[0.99] transition"
         >
           + MAKE POST
@@ -70,7 +89,16 @@ export default function EventsScreen({ onNavigate }) {
         <div className="mx-auto mt-4 w-8 h-1 rounded-full bg-line" />
       </footer>
 
-      <EventModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onPost={handlePost} />
+      <EventModal
+        isOpen={isModalOpen}
+        eventToEdit={eventToEdit}
+        onClose={() => {
+          setIsModalOpen(false)
+          setEventToEdit(null)
+        }}
+        onPost={handlePost}
+        onUpdate={handleUpdate}
+      />
       <EventDetailsModal
         event={selectedEvent}
         onClose={() => setSelectedEventId(null)}

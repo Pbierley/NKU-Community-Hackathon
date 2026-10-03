@@ -16,7 +16,7 @@ const events = db.collection('Events')
 const CURRENT_USER = 'current-user'
 
 const app = express()
-app.use(express.json())
+app.use(express.json({ limit: '12mb' }))
 
 app.get('/api/buildings', async (req, res) => {
   try {
@@ -64,6 +64,41 @@ app.post('/api/events', async (req, res) => {
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Could not create event.' })
+  }
+})
+
+app.patch('/api/events/:id', async (req, res) => {
+  try {
+    const title = String(req.body.title ?? '').trim()
+    const location = String(req.body.location ?? '').trim()
+    if (!title || !location) {
+      res.status(400).json({ error: 'Title and location are required.' })
+      return
+    }
+
+    const update = {
+      title,
+      location,
+      description: String(req.body.description ?? '').trim(),
+      date: String(req.body.date ?? ''),
+      time: String(req.body.time ?? ''),
+      tags: Array.isArray(req.body.tags) ? req.body.tags : [],
+      images: Array.isArray(req.body.images) ? req.body.images : [],
+    }
+    const result = await events.updateOne({ id: req.params.id }, {
+      $set: update,
+      $unset: { when: '', category: '' },
+    })
+    if (!result.matchedCount) {
+      res.status(404).json({ error: 'Event not found.' })
+      return
+    }
+
+    const saved = await events.findOne({ id: req.params.id }, { projection: { _id: 0 } })
+    res.json(saved)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Could not update event.' })
   }
 })
 
