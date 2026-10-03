@@ -142,6 +142,14 @@ function FollowUser({ position, follow, onUserPan }) {
   return null
 }
 
+function FitMap({ full }) {
+  const map = useMap()
+  useEffect(() => {
+    map.invalidateSize()
+  }, [map, full])
+  return null
+}
+
 function MapControls({ onLocate }) {
   const map = useMap()
   const ref = useRef(null)
@@ -156,7 +164,7 @@ function MapControls({ onLocate }) {
     <div ref={ref} className="absolute right-4 bottom-4 z-[1000] flex flex-col gap-2">
       <button
         type="button"
-        onClick={() => map.zoomIn()}
+        onPointerUp={() => map.zoomIn()}
         aria-label="Zoom in"
         className="w-12 h-12 bg-white border border-line rounded-lg font-bold text-[16px] text-ink shadow-card"
       >
@@ -164,7 +172,7 @@ function MapControls({ onLocate }) {
       </button>
       <button
         type="button"
-        onClick={() => map.zoomOut()}
+        onPointerUp={() => map.zoomOut()}
         aria-label="Zoom out"
         className="w-12 h-12 bg-white border border-line rounded-lg font-bold text-[16px] text-ink shadow-card"
       >
@@ -172,7 +180,7 @@ function MapControls({ onLocate }) {
       </button>
       <button
         type="button"
-        onClick={onLocate}
+        onPointerUp={onLocate}
         aria-label="Locate me"
         className="w-12 h-12 bg-nku hover:bg-nkuDeep rounded-lg shadow-card flex items-center justify-center"
       >
@@ -195,6 +203,7 @@ export default function CampusMap({
   onUserPan,
   onLocate,
   selectedId,
+  full,
 }) {
   return (
     <MapContainer
@@ -213,6 +222,7 @@ export default function CampusMap({
         maxZoom={19}
       />
       <AttributionControl position="bottomleft" prefix={false} />
+      <FitMap full={full} />
       <LimitZoomToCampus />
       <BuildingMarkers buildings={buildings} selectedId={selectedId} />
       <FlyToBuilding buildings={buildings} selectedId={selectedId} />
