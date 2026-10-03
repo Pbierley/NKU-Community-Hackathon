@@ -38,6 +38,46 @@ export function isRegistered(event, userId) {
   return event.attendeeIds?.includes('current-user')
 }
 
+// Total attendees for an event, tolerant of older shapes.
+export function attendeeCount(event) {
+  if (Array.isArray(event?.attendeeIds)) return event.attendeeIds.length
+  if (Array.isArray(event?.attendees)) return event.attendees.length
+  if (typeof event?.attendeeCount === 'number') return event.attendeeCount
+  if (typeof event?.attendees === 'number') return event.attendees
+  return 0
+}
+
+export function eventCreatorId(event) {
+  return event?.creatorId ?? event?.createdBy ?? event?.authorId ?? event?.userId ?? null
+}
+
+// True when `user` created the event. Accepts either a user object or a raw
+// id so call sites can pass whichever is handy. Legacy seed events carry no
+// creator info, so they never match — nobody sees edit/delete for them.
+export function isEventCreator(event, userOrId) {
+  const userId = typeof userOrId === 'object' ? userOrId?.id : userOrId
+  if (!event || !userId) return false
+  return eventCreatorId(event) === userId
+}
+
+// Display name for a comment, tolerant of older shapes that stored the
+// author under different keys.
+export function commentAuthor(comment) {
+  return (
+    comment?.author ||
+    comment?.authorName ||
+    comment?.name ||
+    comment?.userName ||
+    comment?.createdBy ||
+    'Anonymous'
+  )
+}
+
+function authHeaders(extra = {}) {
+  const token = getAuthToken()
+  return token ? { ...extra, Authorization: `Bearer ${token}` } : extra
+}
+
 export function useEvents() {
   const [events, setEvents] = useState([])
   const [error, setError] = useState(null)
@@ -63,7 +103,7 @@ export function useEvents() {
   async function addEvent(newEvent) {
     const res = await fetch('/api/events', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(newEvent),
     })
     if (!res.ok) throw new Error('Could not post event.')
@@ -75,13 +115,25 @@ export function useEvents() {
   async function updateEvent(updatedEvent) {
     const res = await fetch(`/api/events/${encodeURIComponent(updatedEvent.id)}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(updatedEvent),
     })
     if (!res.ok) throw new Error('Could not update event.')
     const saved = await res.json()
     setEvents((current) => current.map((event) => (event.id === saved.id ? saved : event)))
     return saved
+  }
+
+  async function deleteEvent(eventId) {
+    const res = await fetch(`/api/events/${encodeURIComponent(eventId)}`, {
+      method: 'DELETE',
+      headers: authHeaders(),
+    })
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      throw new Error(body.error || 'Could not delete event.')
+    }
+    setEvents((current) => current.filter((event) => event.id !== eventId))
   }
 
   async function toggleRegister(eventId) {
@@ -93,12 +145,13 @@ export function useEvents() {
     if (!res.ok) throw new Error('Could not update registration.')
     const saved = await res.json()
     setEvents((current) => current.map((event) => (event.id === saved.id ? saved : event)))
+    return saved
   }
 
   async function addComment(eventId, text) {
     const res = await fetch(`/api/events/${encodeURIComponent(eventId)}/comments`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ text }),
     })
     if (!res.ok) throw new Error('Could not add comment.')
@@ -111,7 +164,7 @@ export function useEvents() {
     return comment
   }
 
-  return { events, error, addEvent, updateEvent, toggleRegister, addComment }
+  return { events, error, addEvent, updateEvent, deleteEvent, toggleRegister, addComment }
 }
 
 export function searchEvents(events, query) {

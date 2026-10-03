@@ -214,6 +214,51 @@ async function setEventAttendees(id, attendeeIds) {
   }
 }
 
+function eventCreatorId(event) {
+  return event?.creatorId ?? event?.createdBy ?? event?.authorId ?? event?.userId ?? null
+}
+
+function canModifyEvent(event, requesterId) {
+  // Legacy seed events carry no creator info — leave them modifiable so
+  // older clients keep working. Once an event has a creator, only that
+  // creator may edit/delete it.
+  const creatorId = eventCreatorId(event)
+  if (!creatorId) return true
+  return Boolean(requesterId) && creatorId === requesterId
+}
+
+async function updateEventDoc(id, update) {
+  if (mongoActive()) {
+    await eventsColl.updateOne({ id }, {
+      $set: update,
+      $unset: { when: '', category: '' },
+    })
+    return eventsColl.findOne({ id }, { projection: { _id: 0 } })
+  }
+  const events = await readJson(EVENTS_JSON, [])
+  const idx = events.findIndex((e) => e.id === id)
+  if (idx === -1) return null
+  // Drop legacy display-only fields; the editable shape uses date/time/tags.
+  // eslint-disable-next-line no-unused-vars
+  const { when: _when, category: _category, ...rest } = events[idx]
+  events[idx] = { ...rest, ...update }
+  await writeJson(EVENTS_JSON, events)
+  return events[idx]
+}
+
+async function deleteEventDoc(id) {
+  if (mongoActive()) {
+    const result = await eventsColl.deleteOne({ id })
+    return result.deletedCount > 0
+  }
+  const events = await readJson(EVENTS_JSON, [])
+  const idx = events.findIndex((e) => e.id === id)
+  if (idx === -1) return false
+  events.splice(idx, 1)
+  await writeJson(EVENTS_JSON, events)
+  return true
+}
+
 async function appendEventComment(id, comment) {
   if (mongoActive()) {
     const result = await eventsColl.updateOne({ id }, { $push: { comments: comment } })
@@ -378,6 +423,10 @@ app.post('/api/events', async (req, res) => {
       res.status(400).json({ error: 'Title and location are required.' })
       return
     }
+    // Attribute the event to its creator when the request is authenticated.
+    // The server derives this from the session token — never trust a
+    // client-supplied creator id.
+    const creator = await authUser(req)
     const doc = {
       id: req.body.id || `event-${Date.now()}`,
       title,
@@ -390,6 +439,10 @@ app.post('/api/events', async (req, res) => {
       attendeeIds: [],
       reactions: { like: 0, love: 0, interested: 0 },
       comments: [],
+      creatorId: creator?.id ?? req.body.creatorId ?? null,
+      creatorName: creator?.name ?? null,
+      creatorEmail: creator?.email ?? null,
+      createdAt: new Date().toISOString(),
     }
     const saved = await saveEvent(doc)
     // MongoDB injects `_id`; strip it so the API shape stays stable.
@@ -411,6 +464,17 @@ app.patch('/api/events/:id', async (req, res) => {
       return
     }
 
+    const existing = await getEvent(req.params.id)
+    if (!existing) {
+      res.status(404).json({ error: 'Event not found.' })
+      return
+    }
+    const requester = await authUser(req)
+    if (!canModifyEvent(existing, requester?.id)) {
+      res.status(403).json({ error: 'Only the creator of this event can edit it.' })
+      return
+    }
+
     const update = {
       title,
       location,
@@ -420,20 +484,42 @@ app.patch('/api/events/:id', async (req, res) => {
       tags: Array.isArray(req.body.tags) ? req.body.tags : [],
       images: Array.isArray(req.body.images) ? req.body.images : [],
     }
-    const result = await events.updateOne({ id: req.params.id }, {
-      $set: update,
-      $unset: { when: '', category: '' },
-    })
-    if (!result.matchedCount) {
+    const saved = await updateEventDoc(req.params.id, update)
+    if (!saved) {
       res.status(404).json({ error: 'Event not found.' })
       return
     }
 
-    const saved = await events.findOne({ id: req.params.id }, { projection: { _id: 0 } })
-    res.json(saved)
+    // eslint-disable-next-line no-unused-vars
+    const { _id, ...rest } = saved
+    res.json(rest)
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Could not update event.' })
+  }
+})
+
+app.delete('/api/events/:id', async (req, res) => {
+  try {
+    const existing = await getEvent(req.params.id)
+    if (!existing) {
+      res.status(404).json({ error: 'Event not found.' })
+      return
+    }
+    const requester = await authUser(req)
+    if (!canModifyEvent(existing, requester?.id)) {
+      res.status(403).json({ error: 'Only the creator of this event can delete it.' })
+      return
+    }
+    const deleted = await deleteEventDoc(req.params.id)
+    if (!deleted) {
+      res.status(404).json({ error: 'Event not found.' })
+      return
+    }
+    res.json({ ok: true, id: req.params.id })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Could not delete event.' })
   }
 })
 
@@ -445,9 +531,11 @@ app.post('/api/events/:id/comments', async (req, res) => {
       return
     }
 
+    const commenter = await authUser(req)
     const comment = {
       id: `comment-${Date.now()}`,
-      author: 'You',
+      author: commenter?.name?.trim() || String(req.body.author ?? '').trim() || 'Anonymous',
+      authorId: commenter?.id ?? null,
       text,
     }
     const appended = await appendEventComment(req.params.id, comment)

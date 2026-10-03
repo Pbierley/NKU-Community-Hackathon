@@ -1,7 +1,10 @@
-import { categoryTint, eventCategory, eventWhen, isRegistered } from './useEvents'
+import { attendeeCount, categoryTint, eventCategory, eventWhen, isEventCreator, isRegistered } from './useEvents'
 
-export default function Event({ event, onRegister, onOpen, userId, onEdit }) {
-  const registered = isRegistered(event, userId)
+export default function Event({ event, onRegister, onOpen, userId, user, onEdit, onDelete }) {
+  const currentUserId = user?.id ?? userId
+  const registered = isRegistered(event, currentUserId)
+  const canModify = isEventCreator(event, currentUserId)
+  const totalAttendees = attendeeCount(event)
 
   const category = eventCategory(event)
   const venue = event.description
@@ -10,19 +13,34 @@ export default function Event({ event, onRegister, onOpen, userId, onEdit }) {
 
   return (
     <article className="relative border border-line rounded-xl p-6 shadow-card bg-white">
-      <button
-        type="button"
-        onClick={() => onEdit(event)}
-        aria-label={`Edit ${event.title}`}
-        className="absolute top-4 right-4 inline-flex items-center gap-2 rounded-md border border-line bg-white px-3 py-2 text-[12px] font-semibold text-body hover:bg-wash focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nku"
-      >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="m16 4 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z" />
-        </svg>
-        Edit
-      </button>
+      {canModify && (
+        <div className="absolute top-4 right-4 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => onEdit?.(event)}
+            aria-label={`Edit ${event.title}`}
+            className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-3 py-2 text-[12px] font-semibold text-body hover:bg-wash focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nku"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="m16 4 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z" />
+            </svg>
+            Edit
+          </button>
+          <button
+            type="button"
+            onClick={() => onDelete?.(event)}
+            aria-label={`Delete ${event.title}`}
+            className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-3 py-2 text-[12px] font-semibold text-red-700 hover:bg-red-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-9 0 1 13h10l1-13" />
+            </svg>
+            Delete
+          </button>
+        </div>
+      )}
       {category && (
-        <div className="flex items-center gap-2 pr-20">
+        <div className={`flex items-center gap-2 ${canModify ? 'pr-40' : ''}`}>
           <span className={`text-[12px] font-semibold border rounded-md px-3 py-2 ${categoryTint(category)}`}>
             {category}
           </span>
@@ -39,7 +57,12 @@ export default function Event({ event, onRegister, onOpen, userId, onEdit }) {
       </h3>
       <p className="mt-2 text-[15px] text-body leading-[1.6] max-w-[65ch]">{venue}</p>
       <div className="mt-4 pt-4 border-t border-line flex items-center justify-between gap-4">
-        <span className="text-[13px] text-muted leading-[1.5] tnum">{eventWhen(event)}</span>
+        <span className="text-[13px] text-muted leading-[1.5] tnum">
+          {eventWhen(event)}
+          <span className="ml-2 font-semibold text-body" aria-live="polite">
+            · {totalAttendees} attending
+          </span>
+        </span>
         <button
           type="button"
           onClick={() => onRegister(event.id)}

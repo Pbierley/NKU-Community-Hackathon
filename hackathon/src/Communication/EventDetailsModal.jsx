@@ -1,12 +1,31 @@
 import { useState } from 'react'
-import { eventWhen } from './useEvents'
+import { attendeeCount, commentAuthor, eventWhen, isEventCreator, isRegistered } from './useEvents'
 
-export default function EventDetailsModal({ event, onClose, onAddComment }) {
+export default function EventDetailsModal({ event, user, onClose, onAddComment, onEdit, onDelete, onRegister }) {
   const [commentText, setCommentText] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [isRegistering, setIsRegistering] = useState(false)
+  const [registerError, setRegisterError] = useState('')
+  const canModify = isEventCreator(event, user)
+  const currentUserId = user?.id
+  const registered = event ? isRegistered(event, currentUserId) : false
+  const totalAttendees = attendeeCount(event)
 
   if (!event) return null
+
+  async function handleRegister() {
+    if (!onRegister || isRegistering) return
+    setIsRegistering(true)
+    setRegisterError('')
+    try {
+      await onRegister(event.id)
+    } catch {
+      setRegisterError('Could not update registration. Please try again.')
+    } finally {
+      setIsRegistering(false)
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -62,6 +81,44 @@ export default function EventDetailsModal({ event, onClose, onAddComment }) {
           <p className="mt-5 text-[15px] text-body leading-[1.6] whitespace-pre-wrap">{event.description}</p>
         )}
 
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-wash px-4 py-3">
+          <p className="text-[13px] font-semibold text-body tnum" aria-live="polite">
+            <span aria-hidden="true">👥 </span>
+            {totalAttendees} attendee{totalAttendees === 1 ? '' : 's'}
+            {registered && <span className="ml-2 font-normal text-muted">· You&apos;re in ✓</span>}
+          </p>
+          <button
+            type="button"
+            onClick={handleRegister}
+            disabled={isRegistering}
+            className={`text-[13px] font-bold rounded-md px-4 py-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+              registered ? 'bg-nku text-ink' : 'bg-ink text-white'
+            }`}
+          >
+            {isRegistering ? 'Saving…' : registered ? 'Registered ✓' : 'Register'}
+          </button>
+        </div>
+        {registerError && <p className="mt-2 text-[13px] text-red-700" role="alert">{registerError}</p>}
+
+        {canModify && (
+          <div className="mt-5 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => onEdit?.(event)}
+              className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-4 py-2 text-[13px] font-semibold text-body hover:bg-wash"
+            >
+              Edit event
+            </button>
+            <button
+              type="button"
+              onClick={() => onDelete?.(event)}
+              className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-4 py-2 text-[13px] font-semibold text-red-700 hover:bg-red-50"
+            >
+              Delete event
+            </button>
+          </div>
+        )}
+
         {event.tags?.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
             {event.tags.map((tag) => (
@@ -93,7 +150,7 @@ export default function EventDetailsModal({ event, onClose, onAddComment }) {
           <div className="mt-3 space-y-3">
             {event.comments?.length ? event.comments.map((comment) => (
               <article key={comment.id} className="rounded-lg bg-wash px-4 py-3">
-                <p className="text-[13px] font-semibold text-body">{comment.author}</p>
+                <p className="text-[13px] font-semibold text-body">{commentAuthor(comment)}</p>
                 <p className="mt-1 text-[14px] text-body leading-[1.5] whitespace-pre-wrap">{comment.text}</p>
               </article>
             )) : (
