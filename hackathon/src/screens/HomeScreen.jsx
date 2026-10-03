@@ -82,6 +82,7 @@ export default function HomeScreen({ onNavigate, user }) {
           }}
           full={mapFull}
           route={route}
+          bottomInset={destination && isParkingPlace(destination) ? 176 : 0}
         />
         <button
           type="button"
