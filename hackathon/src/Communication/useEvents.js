@@ -125,3 +125,121 @@ export function searchEvents(events, query) {
     return hay.includes(q)
   })
 }
+
+// ─── Dates: soonest-first sorting + calendar grouping ───────────────
+// Events carry human-written `date` ("October 5, 2026") and `time`
+// ("11 AM - 2 PM") strings, so parsing has to be forgiving. Anything
+// without a readable date sorts after dated events.
+
+function parseDateTime(value) {
+  if (!value) return null
+  if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value
+  const parsed = new Date(value)
+  return Number.isNaN(parsed.getTime()) ? null : parsed
+}
+
+const TIME_RE = /(\d{1,2})(?::(\d{2}))?\s*([AP])\.?\s*M\.?/i
+const WEEKDAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+
+function applyTime(base, timeText) {
+  const match = String(timeText ?? '').match(TIME_RE)
+  if (!match) return base
+  let hours = Number(match[1]) % 12
+  if (match[3].toUpperCase() === 'P') hours += 12
+  const out = new Date(base)
+  out.setHours(hours, Number(match[2] ?? 0), 0, 0)
+  return out
+}
+
+function relativeWhen(text) {
+  // Handles legacy `when` labels like "Today, 6:00 PM", "Tomorrow, 7:00 PM"
+  // and "Thu, 11:00 AM" (next occurrence of that weekday).
+  const match = String(text ?? '').match(/^\s*(today|tomorrow|[a-z]{3,9})[,.]?\s*(.*)$/i)
+  if (!match) return null
+  const word = match[1].toLowerCase()
+  const now = new Date()
+  const base = new Date(now)
+  base.setHours(0, 0, 0, 0)
+  if (word === 'tomorrow') {
+    base.setDate(base.getDate() + 1)
+  } else if (word !== 'today') {
+    const target = WEEKDAYS.findIndex((day) => day === word || day.startsWith(word.slice(0, 3)))
+    if (target < 0) return null
+    let delta = (target - base.getDay() + 7) % 7
+    if (delta === 0 && applyTime(base, match[2]) <= now) delta = 7
+    base.setDate(base.getDate() + delta)
+  }
+  if (!TIME_RE.test(match[2])) return base
+  return applyTime(base, match[2])
+}
+
+// Start of the event as a Date, or null when it has no readable date/time.
+export function eventStart(event) {
+  if (!event) return null
+  for (const key of ['startAt', 'startsAt', 'start', 'datetime', 'dateTime']) {
+    const parsed = event[key] != null && !(typeof event[key] === 'string' && !event[key].trim())
+      ? parseDateTime(event[key])
+      : null
+    if (parsed) return parsed
+  }
+  if (event.when) {
+    const direct = parseDateTime(event.when)
+    if (direct) return direct
+    const relative = relativeWhen(event.when)
+    if (relative) return relative
+  }
+  const rawDate = typeof event.date === 'string' ? event.date.trim() : event.date
+  const day = parseDateTime(rawDate)
+  if (!day) return null
+  const startText = String(event.time ?? '').split(/\s+-\s+/)[0].trim()
+  if (!startText || !TIME_RE.test(startText)) return day
+  return applyTime(day, startText)
+}
+
+// Calendar day key "YYYY-MM-DD" (local time) for grouping, or null.
+export function eventDayKey(event) {
+  const start = eventStart(event)
+  if (!start) return null
+  const month = String(start.getMonth() + 1).padStart(2, '0')
+  const day = String(start.getDate()).padStart(2, '0')
+  return `${start.getFullYear()}-${month}-${day}`
+}
+
+export function formatDayKey(dayKey) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dayKey ?? '')
+  if (!match) return dayKey ?? ''
+  return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])).toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  })
+}
+
+// Soonest upcoming event first. Past events sink to the bottom (most
+// recent past first) and undated events sit between the two groups.
+export function sortEventsByDate(input) {
+  const events = Array.isArray(input) ? input : []
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const cutoff = today.getTime()
+  const upcoming = []
+  const undated = []
+  const past = []
+  events.forEach((event, index) => {
+    const start = eventStart(event)
+    if (!start) {
+      undated.push({ event, index })
+    } else if (start.getTime() < cutoff) {
+      past.push({ event, time: start.getTime(), index })
+    } else {
+      upcoming.push({ event, time: start.getTime(), index })
+    }
+  })
+  upcoming.sort((a, b) => a.time - b.time || a.index - b.index)
+  past.sort((a, b) => b.time - a.time || a.index - b.index)
+  return [
+    ...upcoming.map((entry) => entry.event),
+    ...undated.map((entry) => entry.event),
+    ...past.map((entry) => entry.event),
+  ]
+}

@@ -1,19 +1,43 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import Event from '../Communication/Event'
+import EventCalendar from '../Communication/EventCalendar'
 import EventDetailsModal from '../Communication/EventDetailsModal'
 import EventModal from '../Communication/EventModal'
-import { searchEvents, useEvents } from '../Communication/useEvents'
+import { eventDayKey, formatDayKey, searchEvents, sortEventsByDate, useEvents } from '../Communication/useEvents'
 import AppHeader from '../components/AppHeader'
 import Toast from '../components/Toast'
+
+function groupByDay(events) {
+  const groups = []
+  const byKey = new Map()
+  for (const event of events) {
+    const key = eventDayKey(event)
+    if (!byKey.has(key)) {
+      const group = { key, label: key ? formatDayKey(key) : 'Date to be announced', items: [] }
+      byKey.set(key, group)
+      groups.push(group)
+    }
+    byKey.get(key).items.push(event)
+  }
+  return groups
+}
 
 export default function EventsScreen({ onNavigate, user }) {
   const { events, addEvent, updateEvent, toggleRegister, addComment } = useEvents()
   const [query, setQuery] = useState('')
+  const [view, setView] = useState('list')
+  const [selectedDay, setSelectedDay] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [eventToEdit, setEventToEdit] = useState(null)
   const [selectedEventId, setSelectedEventId] = useState(null)
   const [toast, setToast] = useState(null)
-  const results = searchEvents(events, query)
+  // Soonest upcoming event first; search keeps that order.
+  const results = useMemo(() => sortEventsByDate(searchEvents(events, query)), [events, query])
+  const visibleResults = useMemo(() => {
+    if (view === 'calendar' && selectedDay) return results.filter((event) => eventDayKey(event) === selectedDay)
+    return results
+  }, [results, view, selectedDay])
+  const groups = useMemo(() => groupByDay(visibleResults), [visibleResults])
   const selectedEvent = events.find((event) => event.id === selectedEventId) ?? null
 
   async function handlePost(newEvent) {
@@ -49,30 +73,91 @@ export default function EventsScreen({ onNavigate, user }) {
           </svg>
           <input
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              setSelectedDay(null)
+            }}
             placeholder="SEARCH events, workshops..."
             className="bg-transparent w-full text-[15px] leading-[1.6] font-medium text-ink placeholder:text-faint"
             aria-label="Search events"
           />
         </div>
+        <div className="mt-3 grid grid-cols-2 gap-1 rounded-lg bg-wash p-1" role="tablist" aria-label="Events view">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={view === 'list'}
+            onClick={() => setView('list')}
+            className={`h-11 rounded-md text-[13px] font-bold tracking-wide ${
+              view === 'list' ? 'bg-white shadow-card text-ink' : 'text-muted'
+            }`}
+          >
+            LIST
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={view === 'calendar'}
+            onClick={() => setView('calendar')}
+            className={`h-11 rounded-md text-[13px] font-bold tracking-wide ${
+              view === 'calendar' ? 'bg-white shadow-card text-ink' : 'text-muted'
+            }`}
+          >
+            CALENDAR
+          </button>
+        </div>
+        <p className="mt-2 text-[12px] text-muted leading-[1.5] tnum">
+          Sorted by soonest · {results.length} event{results.length === 1 ? '' : 's'}
+        </p>
       </div>
 
       <main className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-4 space-y-4 pb-32 text-left">
-        {results.length === 0 && (
-          <p className="text-[15px] text-muted leading-[1.6]">No events found</p>
+        {view === 'calendar' && (
+          <EventCalendar events={results} selectedDay={selectedDay} onSelectDay={setSelectedDay} />
         )}
-        {results.map((event) => (
-          <Event
-            key={event.id}
-            event={event}
-            userId={user?.id}
-            onRegister={toggleRegister}
-            onOpen={(openedEvent) => setSelectedEventId(openedEvent.id)}
-            onEdit={(eventToUpdate) => {
-              setEventToEdit(eventToUpdate)
-              setIsModalOpen(true)
-            }}
-          />
+        {visibleResults.length === 0 && (
+          <div className="text-left">
+            <p className="text-[15px] text-muted leading-[1.6]">
+              {selectedDay ? `No events on ${formatDayKey(selectedDay)}.` : 'No events found'}
+            </p>
+            {selectedDay && (
+              <button
+                type="button"
+                onClick={() => setSelectedDay(null)}
+                className="mt-2 text-[13px] font-bold underline underline-offset-2"
+              >
+                Show all dates
+              </button>
+            )}
+          </div>
+        )}
+        {groups.map((group) => (
+          <section key={group.key ?? 'undated'} aria-label={group.label}>
+            <div className="flex items-center gap-2">
+              <span className="w-1 h-5 bg-nku rounded-full inline-block" aria-hidden="true" />
+              <h2 className="text-[13px] font-bold tracking-wide leading-[1.4] tnum">
+                {group.label}{' '}
+                <span className="font-semibold text-muted">
+                  ({group.items.length})
+                </span>
+              </h2>
+            </div>
+            <div className="mt-2 space-y-4">
+              {group.items.map((event) => (
+                <Event
+                  key={event.id}
+                  event={event}
+                  userId={user?.id}
+                  onRegister={toggleRegister}
+                  onOpen={(openedEvent) => setSelectedEventId(openedEvent.id)}
+                  onEdit={(eventToUpdate) => {
+                    setEventToEdit(eventToUpdate)
+                    setIsModalOpen(true)
+                  }}
+                />
+              ))}
+            </div>
+          </section>
         ))}
       </main>
 

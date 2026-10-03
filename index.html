@@ -306,46 +306,31 @@ tailwind.config = {
     <div class="px-4 pt-4 text-left bg-white border-b border-line pb-4">
       <div class="flex items-center gap-2 bg-white border border-line rounded-lg px-4 h-14 shadow-card">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
-        <input placeholder="SEARCH events, workshops..." class="bg-transparent w-full text-[15px] leading-[1.6] font-medium placeholder:text-faint" aria-label="Search events" />
+        <input id="events-search" oninput="renderEventsList()" placeholder="SEARCH events, workshops..." class="bg-transparent w-full text-[15px] leading-[1.6] font-medium placeholder:text-faint" aria-label="Search events" />
       </div>
+      <div class="mt-3 grid grid-cols-2 gap-1 rounded-lg bg-wash p-1" role="tablist" aria-label="Events view">
+        <button id="view-list-btn" type="button" role="tab" aria-selected="true" onclick="setEventsView('list')" class="h-11 rounded-md text-[13px] font-bold tracking-wide bg-white shadow-card text-ink">LIST</button>
+        <button id="view-cal-btn" type="button" role="tab" aria-selected="false" onclick="setEventsView('calendar')" class="h-11 rounded-md text-[13px] font-bold tracking-wide text-muted">CALENDAR</button>
+      </div>
+      <p id="events-sort-note" class="mt-2 text-[12px] text-muted leading-[1.5] tnum">Sorted by soonest</p>
     </div>
 
     <main class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 py-4 space-y-4 pb-32 text-left">
-      <article class="border border-nku rounded-xl p-6 shadow-card bg-white">
-        <div class="flex items-center gap-2">
-          <span class="text-[12px] font-semibold text-body">Featured</span>
+      <section id="events-calendar" class="hidden border border-line rounded-xl p-4 shadow-card bg-white" aria-label="Events calendar">
+        <div class="flex items-center justify-between gap-2">
+          <button type="button" onclick="eventsShiftMonth(-1)" aria-label="Previous month" class="w-11 h-11 rounded-lg border border-line bg-white flex items-center justify-center font-bold">‹</button>
+          <h3 id="ev-cal-title" class="text-base font-bold tracking-tight leading-[1.4] tnum"></h3>
+          <button type="button" onclick="eventsShiftMonth(1)" aria-label="Next month" class="w-11 h-11 rounded-lg border border-line bg-white flex items-center justify-center font-bold">›</button>
         </div>
-        <h3 class="mt-4 text-base font-bold leading-[1.4]">Annual Norse Hackathon 2025</h3>
-        <p class="mt-2 text-[15px] text-body leading-[1.6] max-w-[65ch]">Griffin Hall Digitorium • 24hr project sprint &amp; showcase</p>
-        <div class="mt-4 pt-4 border-t border-line flex items-center justify-between gap-4">
-          <span class="text-[13px] text-muted leading-[1.5] tnum">Today, 6:00 PM</span>
-          <button onclick="toggleRegister(this)" class="text-[13px] font-bold bg-ink text-white rounded-md px-4 py-2">Register</button>
+        <button type="button" onclick="eventsJumpToday()" class="mt-2 text-[12px] font-semibold text-body underline underline-offset-2">Jump to today</button>
+        <div id="ev-cal-grid" class="mt-3 grid grid-cols-7 gap-1" role="grid"></div>
+        <p id="ev-cal-note" class="mt-3 text-[13px] text-muted leading-[1.5]"></p>
+        <div id="ev-cal-selected" class="hidden mt-3 items-center justify-between gap-3 rounded-lg bg-canvas border border-line px-4 py-3">
+          <p id="ev-cal-selected-label" class="text-[13px] font-semibold leading-[1.5]"></p>
+          <button type="button" onclick="eventsClearDay()" class="shrink-0 text-[12px] font-bold underline underline-offset-2">Clear</button>
         </div>
-      </article>
-
-      <article class="border border-line rounded-xl p-6 shadow-card bg-white">
-        <div class="flex items-center gap-2">
-          <span class="text-[12px] font-semibold text-[#1D4ED8] bg-[#EFF6FF] border border-[#BFDBFE] rounded-md px-3 py-2">Athletics</span>
-        </div>
-        <h3 class="mt-4 text-base font-bold leading-[1.4]">NKU vs Wright State - Men&rsquo;s Basketball</h3>
-        <p class="mt-2 text-[15px] text-body leading-[1.6] max-w-[65ch]">Truist Arena • Gold Out Game, free Norse t-shirts for...</p>
-        <div class="mt-4 pt-4 border-t border-line flex items-center justify-between gap-4">
-          <span class="text-[13px] text-muted leading-[1.5] tnum">Tomorrow, 7:00 PM</span>
-          <button onclick="toggleRegister(this)" class="text-[13px] font-bold bg-ink text-white rounded-md px-4 py-2">Register</button>
-        </div>
-      </article>
-
-      <article class="border border-line rounded-xl p-6 shadow-card bg-white">
-        <div class="flex items-center gap-2">
-          <span class="text-[12px] font-semibold text-[#047857] bg-[#ECFDF5] border border-[#A7F3D0] rounded-md px-3 py-2">Career</span>
-        </div>
-        <h3 class="mt-4 text-base font-bold leading-[1.4]">Spring STEM &amp; Tech Co-Op Fair</h3>
-        <p class="mt-2 text-[15px] text-body leading-[1.6] max-w-[65ch]">Student Union Ballroom • 45+ hiring employers</p>
-        <div class="mt-4 pt-4 border-t border-line flex items-center justify-between gap-4">
-          <span class="text-[13px] text-muted leading-[1.5] tnum">Thu, 11:00 AM</span>
-          <button onclick="toggleRegister(this)" class="text-[13px] font-bold bg-ink text-white rounded-md px-4 py-2">Register</button>
-        </div>
-      </article>
+      </section>
+      <div id="events-list" class="space-y-4"></div>
     </main>
 
     <footer class="absolute bottom-0 inset-x-0 p-6 pt-8 bg-gradient-to-t from-white via-white to-transparent text-left">
@@ -516,6 +501,149 @@ function toggleRegister(btn){
     btn.textContent = 'Registered ✓';
   }
 }
+/* ---- Events: soonest-first list + calendar toggle (static prototype data) ---- */
+var PROTO_EVENTS = [
+  { id:'proto-hack', title:'Annual Norse Hackathon 2025', sub:'Griffin Hall Digitorium • 24hr project sprint & showcase', whenLabel:'Today, 6:00 PM', start:'2026-10-03T18:00', tag:'Featured', tagCls:'text-body', tagBox:'', featured:true },
+  { id:'proto-hoops', title:'NKU vs Wright State - Men\u2019s Basketball', sub:'Truist Arena • Gold Out Game, free Norse t-shirts for...', whenLabel:'Tomorrow, 7:00 PM', start:'2026-10-04T19:00', tag:'Athletics', tagCls:'text-[#1D4ED8] bg-[#EFF6FF]', tagBox:'border-[#BFDBFE]' },
+  { id:'proto-fair', title:'Spring STEM & Tech Co-Op Fair', sub:'Student Union Ballroom • 45+ hiring employers', whenLabel:'Thu, 11:00 AM', start:'2026-10-08T11:00', tag:'Career', tagCls:'text-[#047857] bg-[#ECFDF5]', tagBox:'border-[#A7F3D0]' }
+];
+var eventsView = 'list';
+var eventsDay = null; /* 'YYYY-MM-DD' filter or null */
+var evCalCursor = null; /* {y, m} or null = auto */
+function protoDayKey(iso){ return String(iso).slice(0,10); }
+function protoDayLabel(key){
+  var d = new Date(Number(key.slice(0,4)), Number(key.slice(5,7))-1, Number(key.slice(8,10)));
+  return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+}
+function protoSorted(){
+  var q = (document.getElementById('events-search').value || '').trim().toLowerCase();
+  return PROTO_EVENTS
+    .filter(function(e){
+      if(!q) return true;
+      return (e.title+' '+e.sub+' '+e.tag).toLowerCase().indexOf(q) >= 0;
+    })
+    .slice()
+    .sort(function(a,b){ return new Date(a.start) - new Date(b.start); });
+}
+function setEventsView(which){
+  eventsView = which;
+  var l = document.getElementById('view-list-btn'), c = document.getElementById('view-cal-btn');
+  l.setAttribute('aria-selected', which === 'list' ? 'true' : 'false');
+  c.setAttribute('aria-selected', which === 'calendar' ? 'true' : 'false');
+  l.className = 'h-11 rounded-md text-[13px] font-bold tracking-wide ' + (which === 'list' ? 'bg-white shadow-card text-ink' : 'text-muted');
+  c.className = 'h-11 rounded-md text-[13px] font-bold tracking-wide ' + (which === 'calendar' ? 'bg-white shadow-card text-ink' : 'text-muted');
+  document.getElementById('events-calendar').classList.toggle('hidden', which !== 'calendar');
+  renderEventsList();
+  if(which === 'calendar') renderEventsCalendar();
+}
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function renderEventsList(){
+  var list = document.getElementById('events-list');
+  if(!list) return;
+  var items = protoSorted();
+  if(eventsView === 'calendar' && eventsDay) items = items.filter(function(e){ return protoDayKey(e.start) === eventsDay; });
+  var note = document.getElementById('events-sort-note');
+  if(note) note.textContent = 'Sorted by soonest \u00B7 ' + items.length + ' event' + (items.length === 1 ? '' : 's');
+  if(!items.length){
+    list.innerHTML = '<p class="text-[15px] text-muted leading-[1.6]">' +
+      (eventsDay ? 'No events on ' + escHtml(protoDayLabel(eventsDay)) + '.' : 'No events found') + '</p>' +
+      (eventsDay ? '<button onclick="eventsClearDay()" class="mt-2 text-[13px] font-bold underline underline-offset-2">Show all dates</button>' : '');
+    return;
+  }
+  var html = '', lastDay = null;
+  items.forEach(function(e){
+    var key = protoDayKey(e.start);
+    if(key !== lastDay){
+      lastDay = key;
+      html += '<div class="flex items-center gap-2"><span class="w-1 h-5 bg-nku rounded-full inline-block"></span>' +
+        '<h2 class="text-[13px] font-bold tracking-wide leading-[1.4] tnum">' + escHtml(protoDayLabel(key)) + '</h2></div>';
+    }
+    var border = e.featured ? 'border-nku' : 'border-line';
+    var tag = e.tagBox
+      ? '<span class="text-[12px] font-semibold ' + e.tagCls + ' border ' + e.tagBox + ' rounded-md px-3 py-2">' + escHtml(e.tag) + '</span>'
+      : '<span class="text-[12px] font-semibold text-body">' + escHtml(e.tag) + '</span>';
+    html += '<article class="border ' + border + ' rounded-xl p-6 shadow-card bg-white">' +
+      '<div class="flex items-center gap-2">' + tag + '</div>' +
+      '<h3 class="mt-4 text-base font-bold leading-[1.4]">' + escHtml(e.title) + '</h3>' +
+      '<p class="mt-2 text-[15px] text-body leading-[1.6] max-w-[65ch]">' + escHtml(e.sub) + '</p>' +
+      '<div class="mt-4 pt-4 border-t border-line flex items-center justify-between gap-4">' +
+      '<span class="text-[13px] text-muted leading-[1.5] tnum">' + escHtml(e.whenLabel) + '</span>' +
+      '<button onclick="toggleRegister(this)" class="text-[13px] font-bold bg-ink text-white rounded-md px-4 py-2">Register</button>' +
+      '</div></article>';
+  });
+  list.innerHTML = html;
+}
+var EV_CAL_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+function evCounts(){
+  var map = {};
+  protoSorted().forEach(function(e){ var k = protoDayKey(e.start); map[k] = (map[k] || 0) + 1; });
+  return map;
+}
+function evCursor(){
+  if(evCalCursor) return evCalCursor;
+  if(eventsDay) return { y:Number(eventsDay.slice(0,4)), m:Number(eventsDay.slice(5,7))-1 };
+  var items = protoSorted();
+  if(items.length){ var k = protoDayKey(items[0].start); return { y:Number(k.slice(0,4)), m:Number(k.slice(5,7))-1 }; }
+  var t = new Date(); return { y:t.getFullYear(), m:t.getMonth() };
+}
+function eventsShiftMonth(d){
+  var c = evCursor(); var dt = new Date(c.y, c.m + d, 1);
+  evCalCursor = { y:dt.getFullYear(), m:dt.getMonth() };
+  renderEventsCalendar();
+}
+function eventsJumpToday(){
+  var t = new Date(); evCalCursor = { y:t.getFullYear(), m:t.getMonth() };
+  renderEventsCalendar();
+}
+function eventsPickDay(key){
+  evCalCursor = null;
+  eventsDay = (eventsDay === key) ? null : key;
+  renderEventsCalendar(); renderEventsList();
+}
+function eventsClearDay(){ eventsDay = null; renderEventsCalendar(); renderEventsList(); }
+function renderEventsCalendar(){
+  var sec = document.getElementById('events-calendar');
+  if(!sec || sec.classList.contains('hidden')) return;
+  var counts = evCounts(), c = evCursor();
+  document.getElementById('ev-cal-title').textContent = EV_CAL_MONTHS[c.m] + ' ' + c.y;
+  var t = new Date();
+  var todayKey = t.getFullYear() + '-' + String(t.getMonth()+1).padStart(2,'0') + '-' + String(t.getDate()).padStart(2,'0');
+  var first = new Date(c.y, c.m, 1).getDay();
+  var days = new Date(c.y, c.m + 1, 0).getDate();
+  var html = ['Su','Mo','Tu','We','Th','Fr','Sa'].map(function(d){
+    return '<span class="h-8 flex items-center justify-center text-[11px] font-bold uppercase text-muted">' + d + '</span>';
+  }).join('');
+  var cells = [];
+  for(var i=0;i<first;i++) cells.push(null);
+  for(var d=1;d<=days;d++) cells.push(d);
+  while(cells.length % 7 !== 0) cells.push(null);
+  cells.forEach(function(day){
+    if(day === null){ html += '<span></span>'; return; }
+    var key = c.y + '-' + String(c.m+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+    var n = counts[key] || 0, sel = eventsDay === key;
+    var cls = sel ? 'bg-ink text-white border-ink font-bold'
+      : n > 0 ? 'bg-white border-line font-bold'
+      : 'bg-white border-transparent text-muted';
+    if(key === todayKey && !sel) cls += ' border-nku';
+    html += '<button type="button" onclick="eventsPickDay(\'' + key + '\')" aria-label="' + protoDayLabel(key) + (n ? ', ' + n + ' events' : ', no events') + '"' +
+      ' class="min-h-11 rounded-lg border px-1 py-1 flex flex-col items-center justify-center gap-0.5 tnum ' + cls + '">' +
+      '<span class="text-[13px] leading-[1.4]">' + day + '</span>' +
+      (n ? '<span class="h-1.5 rounded-full bg-nkuDeep" style="width:' + Math.min(4 + n*3, 20) + 'px"></span>' : '') + '</button>';
+  });
+  document.getElementById('ev-cal-grid').innerHTML = html;
+  var prefix = c.y + '-' + String(c.m+1).padStart(2,'0');
+  var withEvents = Object.keys(counts).filter(function(k){ return k.indexOf(prefix) === 0; }).length;
+  document.getElementById('ev-cal-note').textContent = withEvents === 0 ? 'No events this month.'
+    : withEvents + ' day' + (withEvents === 1 ? '' : 's') + ' with events this month. Tap a day to filter the list.';
+  var selBox = document.getElementById('ev-cal-selected');
+  if(eventsDay){
+    selBox.classList.remove('hidden'); selBox.classList.add('flex');
+    document.getElementById('ev-cal-selected-label').textContent = protoDayLabel(eventsDay) + ' (' + (counts[eventsDay] || 0) + ' events)';
+  } else {
+    selBox.classList.add('hidden'); selBox.classList.remove('flex');
+  }
+}
+renderEventsList();
 var toastTimer;
 function toast(msg){
   var el = document.getElementById('toast');
