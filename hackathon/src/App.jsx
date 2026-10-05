@@ -11,21 +11,23 @@ import LoginScreen from './screens/LoginScreen'
 import ParkingScreen from './screens/ParkingScreen'
 import RegisterScreen from './screens/RegisterScreen'
 import SuggestedParkingScreen from './screens/SuggestedParkingScreen'
+import ScheduleScreen from './screens/ScheduleScreen'
 import './App.css'
 
-// Home (map), parking & rec, and suggested parking are public. Events, account, and admin
-// redirect to login when logged out. Admin stays hidden unless the
-// signed-in account is an admin or developer.
-const PROTECTED = new Set(['events', 'account', 'admin'])
+// Home (map), parking & rec, and suggested parking are public. Events, account,
+// admin, and schedule upload redirect to login when logged out. Admin stays
+// hidden unless the signed-in account is an admin or developer.
+const PROTECTED = new Set(['events', 'account', 'admin', 'schedule'])
 
 const AUTH_NOTICE = {
   events: 'To view events, sign in',
   account: 'To view your account, sign in',
   admin: 'To open admin, sign in',
+  schedule: 'To upload a schedule, sign in',
 }
 
 function App() {
-  const { user, loading, login, register, logout, updateProfile, inviteAdmin, removeRole } = useAuth()
+  const { user, loading, login, register, logout, updateProfile, inviteAdmin, removeRole, uploadSchedule } = useAuth()
   // A shared event link boots straight into events so the event can open.
   const [screen, setScreen] = useState(() => (parseEventHash() ? 'events' : 'home'))
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -71,6 +73,15 @@ function App() {
   const showEventOnMap = useCallback((buildingId, eventId) => {
     setMapBuildingId(buildingId)
     setMapReturnEventId(eventId ?? null)
+    setDrawerOpen(false)
+    setAuthNotice(null)
+    setPendingScreen(null)
+    setScreen('home')
+  }, [])
+
+  const showScheduleOnMap = useCallback((buildingId) => {
+    setMapBuildingId(buildingId)
+    setMapReturnEventId(null)
     setDrawerOpen(false)
     setAuthNotice(null)
     setPendingScreen(null)
@@ -175,6 +186,9 @@ function App() {
         )}
         {visibleScreen === 'parking' && <ParkingScreen key="parking" onNavigate={navigateTo} user={user} />}
         {visibleScreen === 'suggest' && <SuggestedParkingScreen key="suggest" onNavigate={navigateTo} />}
+        {visibleScreen === 'schedule' && (
+          <ScheduleScreen key="schedule" onNavigate={navigateTo} user={user} onUpload={uploadSchedule} onShowOnMap={showScheduleOnMap} />
+        )}
         {visibleScreen === 'events' && (
           <EventsScreen
             key="events"

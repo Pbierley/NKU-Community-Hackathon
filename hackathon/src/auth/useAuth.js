@@ -156,5 +156,15 @@ export function useAuth() {
     return result
   }, [])
 
-  return { user, token, loading, login, register, logout, updateProfile, inviteAdmin, removeRole, authFetch: request }
+  const uploadSchedule = useCallback(async ({ text, pdf, filename }) => {
+    const { user: nextUser } = await request('/api/auth/schedule', {
+      method: 'POST',
+      body: JSON.stringify({ text, pdf, filename }),
+    })
+    setUser(nextUser)
+    localStorage.setItem(USER_KEY, JSON.stringify(nextUser))
+    return nextUser
+  }, [])
+
+  return { user, token, loading, login, register, logout, updateProfile, inviteAdmin, removeRole, uploadSchedule, authFetch: request }
 }

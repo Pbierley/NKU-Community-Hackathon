@@ -7,6 +7,8 @@ import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import { accountTypeOf, canCreateEvents, canGrantElevatedRoles, canInviteAdmins, canManageLocations, canModerateEvents, canRemoveAdmins, isDeveloper } from '../src/auth/accountTypes.js'
 import { isParkingPlace, isRecreationCenter } from '../src/Navigation/parkingPlaces.js'
+import { extractPdfText } from './extractPdfText.js'
+import { parseSchedule } from './parseSchedule.js'
 
 const scrypt = promisify(_scrypt)
 
@@ -119,6 +121,23 @@ async function verifyPassword(password, stored) {
 }
 
 // ─── User / session store (MongoDB primary, JSON fallback) ──────────
+function publicSemesters(value) {
+  if (!Array.isArray(value)) return []
+  return value.slice(0, 12).map((semester) => ({
+    name: String(semester?.name ?? 'Schedule'),
+    updatedAt: semester?.updatedAt ?? '',
+    classes: (Array.isArray(semester?.classes) ? semester.classes : []).slice(0, 40).map((item) => ({
+      code: String(item?.code ?? ''),
+      title: String(item?.title ?? ''),
+      days: String(item?.days ?? ''),
+      time: String(item?.time ?? ''),
+      location: String(item?.location ?? ''),
+      buildingId: Number.isFinite(item?.buildingId) ? item.buildingId : null,
+      buildingName: String(item?.buildingName ?? ''),
+    })),
+  }))
+}
+
 function publicUser(doc) {
   if (!doc) return null
   return {
@@ -129,6 +148,7 @@ function publicUser(doc) {
     major: doc.major ?? '',
     interests: Array.isArray(doc.interests) ? doc.interests : [],
     accountType: accountTypeOf(doc),
+    semesters: publicSemesters(doc.semesters),
   }
 }
 
@@ -581,6 +601,54 @@ app.patch('/api/auth/me', async (req, res) => {
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Could not save account.' })
+  }
+})
+
+app.post('/api/auth/schedule', async (req, res) => {
+  try {
+    const user = await authUser(req)
+    if (!user) return res.status(401).json({ error: 'Sign in to upload a schedule.' })
+
+    const filename = String(req.body.filename ?? '')
+    let text = String(req.body.text ?? '')
+    if (req.body.pdf) {
+      const buffer = Buffer.from(String(req.body.pdf), 'base64')
+      if (buffer.length < 5 || buffer.length > 8_000_000) {
+        return res.status(400).json({ error: 'That PDF could not be read.' })
+      }
+      try {
+        text = await extractPdfText(buffer)
+      } catch (err) {
+        console.error(err)
+        return res.status(400).json({ error: 'That PDF could not be read.' })
+      }
+    }
+    if (!text.trim()) return res.status(400).json({ error: 'Choose a schedule file.' })
+    if (text.length > 400_000) return res.status(400).json({ error: 'That file is too large.' })
+
+    let parsed
+    try {
+      parsed = parseSchedule(text, await listBuildings(), filename)
+    } catch (err) {
+      return res.status(err.status || 400).json({ error: err.message || 'Could not read that schedule.' })
+    }
+    if (parsed.length === 0 || parsed.every((semester) => semester.classes.length === 0)) {
+      return res.status(400).json({
+        error: 'No classes were found. Include a course, such as CSC 402, and a location, such as Griffin Hall 250.',
+      })
+    }
+
+    const now = new Date().toISOString()
+    const incoming = parsed.map((semester) => ({ ...semester, updatedAt: now }))
+    const kept = publicSemesters(user.semesters).filter(
+      (semester) => !incoming.some((next) => next.name.toLowerCase() === semester.name.toLowerCase()),
+    )
+    const updated = await updateUser(user.id, { semesters: [...incoming, ...kept].slice(0, 12) })
+    if (!updated) return res.status(404).json({ error: 'Account not found.' })
+    res.json({ user: publicUser(updated) })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Could not save that schedule.' })
   }
 })
 
