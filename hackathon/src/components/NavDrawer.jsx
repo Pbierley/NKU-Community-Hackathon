@@ -1,4 +1,4 @@
-import { accountTypeLabel, canInviteAdmins } from '../auth/accountTypes'
+import { accountTypeLabel, canInviteAdmins, isDeveloper } from '../auth/accountTypes'
 import { useEvents } from '../Communication/useEvents'
 
 function initials(name) {
@@ -140,6 +140,25 @@ export default function NavDrawer({ open, user, onNavigate, onClose, onLogout })
               </span>
               Admin
               <span className="ml-auto text-faint">›</span>
+            </button>
+          )}
+
+          {isDeveloper(user) && (
+            <button
+              type="button"
+              onClick={() => onNavigate('customization')}
+              className="w-full flex items-center gap-4 px-4 h-12 rounded-lg hover:bg-canvas text-left font-semibold text-[15px] leading-[1.6]"
+            >
+              <span className="w-8 h-8 rounded-lg bg-wash flex items-center justify-center shrink-0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3h.1a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.5h.1a1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.4 1Z" />
+                </svg>
+              </span>
+              Customization
+              <span className="ml-auto text-[11px] font-bold uppercase tracking-wide text-body bg-wash border border-line rounded-md px-2 py-1">
+                Dev
+              </span>
             </button>
           )}
 

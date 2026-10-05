@@ -54,6 +54,12 @@ export function canGrantElevatedRoles(user) {
   return isDeveloper(user)
 }
 
+// Only a developer can open the Customization tab and change branding
+// (colors, logo, school name, map location) for white-labeling.
+export function canCustomize(user) {
+  return isDeveloper(user)
+}
+
 // Superadmins can remove admins. Developers can remove admins, superadmins, and developers.
 export function canRemoveAdmins(user) {
   const type = accountTypeOf(user)

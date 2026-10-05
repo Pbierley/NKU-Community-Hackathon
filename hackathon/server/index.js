@@ -7,8 +7,11 @@ import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import { accountTypeOf, campusRoleOf, canCreateEvents, canGrantElevatedRoles, canInviteAdmins, canManageLocations, canModerateEvents, canRemoveAdmins, isDeveloper, isNkuEmail } from '../src/auth/accountTypes.js'
 import { isParkingPlace, isRecreationCenter } from '../src/Navigation/parkingPlaces.js'
-import { extractPdfText } from './extractPdfText.js'
 import { parseSchedule } from './parseSchedule.js'
+
+// extractPdfText is imported lazily inside the schedule-upload route so a
+// missing or broken pdfjs install returns a 503 for PDF uploads instead of
+// crashing the whole API at boot.
 
 const scrypt = promisify(_scrypt)
 
@@ -33,6 +36,7 @@ const SESSIONS_JSON = join(DATA_DIR, 'sessions.json')
 const ADMIN_INVITES_JSON = join(DATA_DIR, 'admin-invites.json')
 const SEED_EVENTS_JSON = join(__dirname, '..', 'src', 'Communication', 'events.json')
 const SEED_BUILDINGS_JSON = join(__dirname, '..', '..', 'Buildings.json')
+const BRANDING_JSON = join(DATA_DIR, 'branding.json')
 
 let db = null
 let usersColl = null
@@ -456,6 +460,244 @@ async function addBuilding(building) {
   return saved
 }
 
+function withoutMongoError() {
+  const error = new Error('Locations are stored in MongoDB, and the database is not connected.')
+  error.status = 503
+  return error
+}
+
+function buildingsColl() {
+  if (!mongoActive()) throw withoutMongoError()
+  const coll = db.collection('buildings')
+  return coll
+}
+
+async function updateBuilding(id, patch) {
+  const coll = buildingsColl()
+  const existing = await coll.findOne({ id }, { projection: { _id: 0 } })
+  if (!existing) {
+    const error = new Error('That location was not found.')
+    error.status = 404
+    throw error
+  }
+  if (patch.name && existing && buildingNameKey(patch.name) !== buildingNameKey(existing.name)) {
+    const clash = await coll.findOne({ name: patch.name })
+    if (clash) {
+      const error = new Error('A location with that name already exists.')
+      error.status = 409
+      throw error
+    }
+  }
+  const next = {
+    ...existing,
+    ...(patch.name !== undefined ? { name: patch.name } : {}),
+    ...(patch.Alias !== undefined ? { Alias: patch.Alias } : {}),
+    ...(patch.Location !== undefined ? { Location: patch.Location } : {}),
+    ...(patch.parking !== undefined ? { parking: patch.parking } : {}),
+  }
+  await coll.updateOne(
+    { id },
+    { $set: { name: next.name, Alias: next.Alias, Location: next.Location, parking: next.parking } },
+  )
+  return next
+}
+
+async function deleteBuilding(id) {
+  const coll = buildingsColl()
+  const result = await coll.deleteOne({ id })
+  if (result.deletedCount === 0) {
+    const error = new Error('That location was not found.')
+    error.status = 404
+    throw error
+  }
+  return { ok: true, id }
+}
+
+// ─── Branding (white-label customization, developer-only writes) ────
+// A single document shared by every client. Stored in Mongo when connected,
+// otherwise in server/data/branding.json. New collection + new file only —
+// existing users/events/buildings data is never migrated or rewritten.
+const DEFAULT_BRANDING = {
+  schoolName: 'Northern Kentucky University',
+  portalTagline: 'Campus Experience Portal',
+  colors: {
+    nku: '#FFC72C',
+    nkuDeep: '#EAB308',
+    ink: '#111827',
+    body: '#374151',
+    muted: '#6B7280',
+    faint: '#9CA3AF',
+    line: '#e5e7eb',
+    canvas: '#F9FAFB',
+    wash: '#F3F4F6',
+  },
+  logoUrl: '',
+  map: {
+    center: [39.0325, -84.4615],
+    bounds: [
+      [39.0245, -84.4725],
+      [39.0425, -84.45],
+    ],
+  },
+}
+
+const BRANDING_COLOR_KEYS = Object.keys(DEFAULT_BRANDING.colors)
+const HEX_COLOR = /^#[0-9a-fA-F]{6}$/
+
+function isValidLat(lat) {
+  return Number.isFinite(lat) && lat >= -90 && lat <= 90
+}
+
+function isValidLng(lng) {
+  return Number.isFinite(lng) && lng >= -180 && lng <= 180
+}
+
+function sanitizeBranding(input) {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) {
+    const error = new Error('Branding must be an object.')
+    error.status = 400
+    throw error
+  }
+  const out = {}
+  if (input.schoolName !== undefined) {
+    const schoolName = String(input.schoolName).trim()
+    if (!schoolName || schoolName.length > 120) {
+      const error = new Error('Enter a school name (120 characters or fewer).')
+      error.status = 400
+      throw error
+    }
+    out.schoolName = schoolName
+  }
+  if (input.portalTagline !== undefined) {
+    const portalTagline = String(input.portalTagline).trim()
+    if (portalTagline.length > 160) {
+      const error = new Error('Keep the tagline to 160 characters or fewer.')
+      error.status = 400
+      throw error
+    }
+    out.portalTagline = portalTagline
+  }
+  if (input.colors !== undefined) {
+    if (!input.colors || typeof input.colors !== 'object' || Array.isArray(input.colors)) {
+      const error = new Error('Colors must be an object.')
+      error.status = 400
+      throw error
+    }
+    const colors = {}
+    for (const [key, value] of Object.entries(input.colors)) {
+      if (!BRANDING_COLOR_KEYS.includes(key)) {
+        const error = new Error(`Unknown color "${key}".`)
+        error.status = 400
+        throw error
+      }
+      if (!HEX_COLOR.test(String(value))) {
+        const error = new Error(`Color "${key}" must be a hex value like #FFC72C.`)
+        error.status = 400
+        throw error
+      }
+      colors[key] = String(value).toUpperCase()
+    }
+    out.colors = colors
+  }
+  if (input.logoUrl !== undefined) {
+    const logoUrl = String(input.logoUrl).trim()
+    if (logoUrl.length > 3_500_000) {
+      const error = new Error('That logo is too large. Use an image under 2 MB.')
+      error.status = 400
+      throw error
+    }
+    const ok =
+      logoUrl === '' ||
+      logoUrl.startsWith('/') ||
+      logoUrl.startsWith('http://') ||
+      logoUrl.startsWith('https://') ||
+      /^data:image\/(png|jpeg|webp|gif|svg\+xml|avif);base64,/.test(logoUrl)
+    if (!ok) {
+      const error = new Error('Logo must be an uploaded image, an https URL, or a site path.')
+      error.status = 400
+      throw error
+    }
+    out.logoUrl = logoUrl
+  }
+  if (input.map !== undefined) {
+    if (!input.map || typeof input.map !== 'object' || Array.isArray(input.map)) {
+      const error = new Error('Map must be an object.')
+      error.status = 400
+      throw error
+    }
+    const map = {}
+    if (input.map.center !== undefined) {
+      const [lat, lng] = [Number(input.map.center?.[0]), Number(input.map.center?.[1])]
+      if (!isValidLat(lat) || !isValidLng(lng)) {
+        const error = new Error('Enter a valid map center latitude and longitude.')
+        error.status = 400
+        throw error
+      }
+      map.center = [lat, lng]
+    }
+    if (input.map.bounds !== undefined) {
+      const [[s, w], [n, e]] = [
+        [Number(input.map.bounds?.[0]?.[0]), Number(input.map.bounds?.[0]?.[1])],
+        [Number(input.map.bounds?.[1]?.[0]), Number(input.map.bounds?.[1]?.[1])],
+      ]
+      if (!isValidLat(s) || !isValidLng(w) || !isValidLat(n) || !isValidLng(e) || !(s < n) || !(w < e)) {
+        const error = new Error('Enter valid map bounds with south < north and west < east.')
+        error.status = 400
+        throw error
+      }
+      map.bounds = [
+        [s, w],
+        [n, e],
+      ]
+    }
+    out.map = map
+  }
+  return out
+}
+
+async function readBranding() {
+  let stored = null
+  if (mongoActive()) {
+    try {
+      stored = await db.collection('branding').findOne({ _id: 'current' })
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  if (!stored) stored = await readJson(BRANDING_JSON, null)
+  if (!stored || typeof stored !== 'object') return structuredClone(DEFAULT_BRANDING)
+  return {
+    schoolName: typeof stored.schoolName === 'string' && stored.schoolName ? stored.schoolName : DEFAULT_BRANDING.schoolName,
+    portalTagline: typeof stored.portalTagline === 'string' ? stored.portalTagline : DEFAULT_BRANDING.portalTagline,
+    colors: { ...DEFAULT_BRANDING.colors, ...stored.colors },
+    logoUrl: typeof stored.logoUrl === 'string' ? stored.logoUrl : '',
+    map: {
+      center: Array.isArray(stored.map?.center) ? stored.map.center : [...DEFAULT_BRANDING.map.center],
+      bounds: Array.isArray(stored.map?.bounds) ? stored.map.bounds : DEFAULT_BRANDING.map.bounds.map((c) => [...c]),
+    },
+  }
+}
+
+async function writeBranding(patch) {
+  const current = await readBranding()
+  const next = {
+    ...current,
+    ...patch,
+    colors: { ...current.colors, ...(patch.colors ?? {}) },
+    map: { ...current.map, ...(patch.map ?? {}) },
+    updatedAt: new Date().toISOString(),
+  }
+  if (mongoActive()) {
+    try {
+      await db.collection('branding').updateOne({ _id: 'current' }, { $set: next }, { upsert: true })
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  await writeJson(BRANDING_JSON, next)
+  return next
+}
+
 // ─── App ────────────────────────────────────────────────────────────
 const app = express()
 app.use(express.json({ limit: '12mb' }))
@@ -632,6 +874,13 @@ app.post('/api/auth/schedule', async (req, res) => {
       const buffer = Buffer.from(String(req.body.pdf), 'base64')
       if (buffer.length < 5 || buffer.length > 8_000_000) {
         return res.status(400).json({ error: 'That PDF could not be read.' })
+      }
+      let extractPdfText
+      try {
+        ;({ extractPdfText } = await import('./extractPdfText.js'))
+      } catch (err) {
+        console.error(err)
+        return res.status(503).json({ error: 'PDF uploads are unavailable right now.' })
       }
       try {
         text = await extractPdfText(buffer)
@@ -866,6 +1115,129 @@ app.post('/api/buildings', async (req, res) => {
     res.status(status).json({
       error: status === 500 ? 'Could not add the location.' : err.message,
     })
+  }
+})
+
+app.patch('/api/buildings/:id', async (req, res) => {
+  try {
+    const actor = await authUser(req)
+    if (!actor) {
+      res.status(401).json({ error: 'Sign in to edit a location.' })
+      return
+    }
+    if (!canManageLocations(actor)) {
+      res.status(403).json({ error: 'Only an admin or developer can edit a location.' })
+      return
+    }
+    const id = Number(req.params.id)
+    if (!Number.isInteger(id)) {
+      res.status(400).json({ error: 'That location was not found.' })
+      return
+    }
+    const patch = {}
+    if (req.body.name !== undefined) {
+      const name = String(req.body.name).trim()
+      if (!name || name.length > 120) {
+        res.status(400).json({ error: 'Enter a full name (120 characters or fewer).' })
+        return
+      }
+      patch.name = name
+    }
+    if (req.body.alias !== undefined || req.body.Alias !== undefined) {
+      const aliasRaw = req.body.alias ?? req.body.Alias ?? ''
+      const aliases = (Array.isArray(aliasRaw) ? aliasRaw : String(aliasRaw).split(','))
+        .map((alias) => String(alias).trim())
+        .filter(Boolean)
+      if (aliases.length > 20 || aliases.some((alias) => alias.length > 80)) {
+        res.status(400).json({ error: 'Use up to 20 aliases, each 80 characters or fewer.' })
+        return
+      }
+      patch.Alias = [...new Set(aliases)]
+    }
+    if (req.body.lat !== undefined || req.body.lng !== undefined) {
+      const lat = Number(req.body.lat)
+      const lng = Number(req.body.lng)
+      if (!isValidLat(lat) || !isValidLng(lng)) {
+        res.status(400).json({ error: 'Enter latitude and longitude as numbers.' })
+        return
+      }
+      patch.Location = { lat, lng }
+    }
+    if (req.body.parking !== undefined) {
+      patch.parking = req.body.parking === true
+    }
+    if (Object.keys(patch).length === 0) {
+      res.status(400).json({ error: 'Nothing to update.' })
+      return
+    }
+    res.json(await updateBuilding(id, patch))
+  } catch (err) {
+    console.error(err)
+    const status = Number(err.status) || 500
+    res.status(status).json({
+      error: status === 500 ? 'Could not update the location.' : err.message,
+    })
+  }
+})
+
+app.delete('/api/buildings/:id', async (req, res) => {
+  try {
+    const actor = await authUser(req)
+    if (!actor) {
+      res.status(401).json({ error: 'Sign in to remove a location.' })
+      return
+    }
+    if (!canManageLocations(actor)) {
+      res.status(403).json({ error: 'Only an admin or developer can remove a location.' })
+      return
+    }
+    const id = Number(req.params.id)
+    if (!Number.isInteger(id)) {
+      res.status(400).json({ error: 'That location was not found.' })
+      return
+    }
+    res.json(await deleteBuilding(id))
+  } catch (err) {
+    console.error(err)
+    const status = Number(err.status) || 500
+    res.status(status).json({
+      error: status === 500 ? 'Could not remove the location.' : err.message,
+    })
+  }
+})
+
+// ─── Branding (white-label customization) ───────────────────────
+app.get('/api/branding', async (req, res) => {
+  try {
+    res.json(await readBranding())
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Could not load branding.' })
+  }
+})
+
+app.put('/api/branding', async (req, res) => {
+  try {
+    const actor = await authUser(req)
+    if (!actor) {
+      res.status(401).json({ error: 'Sign in to change branding.' })
+      return
+    }
+    if (!isDeveloper(actor)) {
+      res.status(403).json({ error: 'Only a developer can change branding.' })
+      return
+    }
+    let patch
+    try {
+      patch = sanitizeBranding(req.body)
+    } catch (err) {
+      res.status(Number(err.status) || 400).json({ error: err.message })
+      return
+    }
+    res.json(await writeBranding(patch))
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Could not save branding.' })
   }
 })
 

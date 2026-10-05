@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useBranding } from '../branding/useBranding.js'
 import AppHeader from '../components/AppHeader'
 import FeaturedEvents from '../components/FeaturedEvents'
 import Toast from '../components/Toast'
@@ -35,6 +36,12 @@ function eventsOnMapToday(events, buildings) {
 
 export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFocusHandled, onOpenEvent, returnEventId, onBackToEvent }) {
   const { buildings, error: buildingsError } = useBuildings()
+  const { branding } = useBranding()
+  const mapCenter = branding.map?.center ?? [39.0325, -84.4615]
+  const mapBounds = branding.map?.bounds ?? [
+    [39.0245, -84.4725],
+    [39.0425, -84.45],
+  ]
   const { events } = useEvents()
   const { summary, rate } = useParkingFullness()
   const { summary: recSummary, rate: rateRec } = useRecBusyness()
@@ -119,6 +126,8 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
           bottomInset={destination && (isParkingPlace(destination) || isRecreationCenter(destination)) ? 176 : 0}
           eventSpots={showTodayEvents ? todaySpots : []}
           onOpenEvent={onOpenEvent}
+          center={mapCenter}
+          bounds={mapBounds}
         />
         <button
           type="button"

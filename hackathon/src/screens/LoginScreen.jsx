@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { isNkuEmail } from '../auth/accountTypes'
+import { logoSrc } from '../branding/branding'
+import { useBranding } from '../branding/useBranding.js'
 import CampusRoleFields from '../components/CampusRoleFields'
 
 export default function LoginScreen({ onNavigate, onLogin, notice, next }) {
@@ -9,6 +11,7 @@ export default function LoginScreen({ onNavigate, onLogin, notice, next }) {
   const [showPw, setShowPw] = useState(false)
   const [error, setError] = useState(null)
   const [busy, setBusy] = useState(false)
+  const { branding } = useBranding()
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -28,11 +31,11 @@ export default function LoginScreen({ onNavigate, onLogin, notice, next }) {
     <div className="screen h-full flex flex-col bg-canvas">
       <main className="flex-1 overflow-y-auto no-scrollbar px-4 sm:px-6 pb-6 pt-8 sm:pt-12 flex flex-col items-center">
         <div className="w-full max-w-md flex flex-col text-left">
-          <img src={`${import.meta.env.BASE_URL}logo.avif`} alt="Northern Kentucky University logo" className="h-16 w-auto rounded-lg shadow-card mx-auto" />
+          <img src={logoSrc(branding)} alt={`${branding.schoolName} logo`} className="h-16 w-auto rounded-lg shadow-card mx-auto" />
           <h1 className="mt-8 text-3xl sm:text-4xl font-extrabold tracking-tight leading-[1.2] text-center">
-            Northern Kentucky University
+            {branding.schoolName}
           </h1>
-          <p className="mt-2 text-[15px] text-body leading-[1.6] text-center">Campus Experience Portal</p>
+          <p className="mt-2 text-[15px] text-body leading-[1.6] text-center">{branding.portalTagline}</p>
 
         <nav className="w-full mt-8 bg-wash rounded-lg p-1 grid grid-cols-2" aria-label="Authentication">
           <button

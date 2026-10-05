@@ -208,7 +208,7 @@ function routeIsFramed(map, route, frame) {
   return L.latLngBounds(northWest, southEast).contains(L.latLngBounds(route))
 }
 
-function FlyToBuilding({ buildings, selectedId, route, bottomInset }) {
+function FlyToBuilding({ buildings, selectedId, route, bottomInset, bounds }) {
   const map = useMap()
   const framed = useRef('')
 
@@ -221,17 +221,17 @@ function FlyToBuilding({ buildings, selectedId, route, bottomInset }) {
       const end = route[route.length - 1]
       const key = `${end[0].toFixed(5)},${end[1].toFixed(5)}|${Math.round(size.x)}x${Math.round(size.y)}|${bottomInset}`
       const frame = routeFrame(map, bottomInset)
-      const bounds = L.latLngBounds(route)
+      const routeBounds = L.latLngBounds(route)
       // Campus min zoom and max bounds are what keep an empty map filled with
       // campus. Both stop a padded route from fitting on a short phone map.
       map.setMaxBounds(null)
       map.setMinZoom(12)
-      const campusMin = map.getBoundsZoom(L.latLngBounds(NKU_BOUNDS), true)
+      const campusMin = map.getBoundsZoom(L.latLngBounds(bounds), true)
       map.setMinZoom(Math.max(12, campusMin - 3))
       // A new destination or a resized phone map always reframes. Later location
       // ticks only reframe once the path would leave the padded screen.
       if (!force && framed.current === key && routeIsFramed(map, route, frame)) return
-      map.fitBounds(bounds, frame)
+      map.fitBounds(routeBounds, frame)
       framed.current = key
     }
 
@@ -245,27 +245,27 @@ function FlyToBuilding({ buildings, selectedId, route, bottomInset }) {
     const b = selectedId != null ? getBuildingById(buildings, selectedId) : null
     if (b && hasLocation(b)) map.flyTo([b.Location.lat, b.Location.lng], Math.max(map.getZoom(), 17))
     return undefined
-  }, [map, buildings, selectedId, route, bottomInset])
+  }, [map, buildings, selectedId, route, bottomInset, bounds])
   return null
 }
 
 // Stops zooming out past the point where the campus bounds no longer fill the screen.
 // While a route is on screen the fit is allowed to zoom out a step further so the
 // whole path stays visible on a short phone map.
-function LimitZoomToCampus({ routeActive }) {
+function LimitZoomToCampus({ routeActive, bounds }) {
   const map = useMap()
   useEffect(() => {
-    const bounds = L.latLngBounds(NKU_BOUNDS)
+    const campus = L.latLngBounds(bounds)
     const update = () => {
       if (routeActive) return
-      map.setMaxBounds(NKU_BOUNDS)
-      map.setMinZoom(map.getBoundsZoom(bounds, true))
-      map.panInsideBounds(bounds, { animate: false })
+      map.setMaxBounds(bounds)
+      map.setMinZoom(map.getBoundsZoom(campus, true))
+      map.panInsideBounds(campus, { animate: false })
     }
     update()
     map.on('resize', update)
     return () => map.off('resize', update)
-  }, [map, routeActive])
+  }, [map, routeActive, bounds])
   return null
 }
 
@@ -359,13 +359,16 @@ export default function CampusMap({
   bottomInset = 0,
   eventSpots = [],
   onOpenEvent,
+  center = NKU_CENTER,
+  bounds = NKU_BOUNDS,
 }) {
   return (
     <MapContainer
-      center={NKU_CENTER}
+      key={JSON.stringify([center, bounds])}
+      center={center}
       zoom={16}
       maxZoom={19}
-      maxBounds={NKU_BOUNDS}
+      maxBounds={bounds}
       maxBoundsViscosity={1}
       zoomControl={false}
       attributionControl={false}
@@ -378,11 +381,11 @@ export default function CampusMap({
       />
       <AttributionControl position="bottomleft" prefix={false} />
       <FitMap full={full} />
-      <LimitZoomToCampus routeActive={route?.length > 1} />
+      <LimitZoomToCampus routeActive={route?.length > 1} bounds={bounds} />
       <BuildingMarkers buildings={buildings} selectedId={selectedId} highlightIds={highlightIds} onSelect={onSelect} />
       <CloseEventPopups spots={eventSpots} />
       <EventMarkers spots={eventSpots} onOpenEvent={onOpenEvent} />
-      <FlyToBuilding buildings={buildings} selectedId={selectedId} route={route} bottomInset={bottomInset} />
+      <FlyToBuilding buildings={buildings} selectedId={selectedId} route={route} bottomInset={bottomInset} bounds={bounds} />
       {route?.length > 1 && (
         <Polyline
           positions={route}

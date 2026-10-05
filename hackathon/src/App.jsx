@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
-import { canInviteAdmins } from './auth/accountTypes'
+import { canCustomize, canInviteAdmins } from './auth/accountTypes'
 import { useAuth } from './auth/useAuth'
 import NavDrawer from './components/NavDrawer'
 import { parseEventHash } from './Communication/useEvents'
 import AccountScreen from './screens/AccountScreen'
 import AdminScreen from './screens/AdminScreen'
+import CustomizationScreen from './screens/CustomizationScreen'
 import EventsScreen from './screens/EventsScreen'
 import HomeScreen from './screens/HomeScreen'
 import LoginScreen from './screens/LoginScreen'
@@ -15,14 +16,16 @@ import ScheduleScreen from './screens/ScheduleScreen'
 import './App.css'
 
 // Home (map), parking & rec, and suggested parking are public. Events, account,
-// admin, and schedule upload redirect to login when logged out. Admin stays
-// hidden unless the signed-in account is an admin or developer.
-const PROTECTED = new Set(['events', 'account', 'admin', 'schedule'])
+// admin, customization, and schedule upload redirect to login when logged out.
+// Admin stays hidden unless the signed-in account is an admin or developer.
+// Customization is stricter: developer role only.
+const PROTECTED = new Set(['events', 'account', 'admin', 'customization', 'schedule'])
 
 const AUTH_NOTICE = {
   events: 'To view events, sign in',
   account: 'To view your account, sign in',
   admin: 'To open admin, sign in',
+  customization: 'To open customization, sign in',
   schedule: 'To upload a schedule, sign in',
 }
 
@@ -122,7 +125,9 @@ function App() {
         ? 'home'
         : screen === 'admin' && !canInviteAdmins(user)
           ? 'home'
-          : screen
+          : screen === 'customization' && !canCustomize(user)
+            ? 'home'
+            : screen
 
   useEffect(() => {
     const onKeyDown = (e) => {
@@ -201,6 +206,9 @@ function App() {
         )}
         {visibleScreen === 'admin' && (
           <AdminScreen key="admin" onNavigate={navigateTo} user={user} onInvite={inviteAdmin} onRemove={removeRole} />
+        )}
+        {visibleScreen === 'customization' && (
+          <CustomizationScreen key="customization" onNavigate={navigateTo} user={user} />
         )}
         {visibleScreen === 'account' && (
           <AccountScreen
