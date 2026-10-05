@@ -185,7 +185,7 @@ function App() {
           />
         )}
         {visibleScreen === 'parking' && <ParkingScreen key="parking" onNavigate={navigateTo} user={user} />}
-        {visibleScreen === 'suggest' && <SuggestedParkingScreen key="suggest" onNavigate={navigateTo} />}
+        {visibleScreen === 'suggest' && <SuggestedParkingScreen key="suggest" onNavigate={navigateTo} user={user} />}
         {visibleScreen === 'schedule' && (
           <ScheduleScreen key="schedule" onNavigate={navigateTo} user={user} onUpload={uploadSchedule} onShowOnMap={showScheduleOnMap} />
         )}

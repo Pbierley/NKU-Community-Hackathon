@@ -338,7 +338,7 @@ export default function EventsScreen({ onNavigate, user, sharedEventId, onShared
             </button>
           ) : (
             <p className="text-[14px] text-muted leading-[1.5]">
-              An @nku.edu email is required to post an event.
+              An @nku.edu email is required to create an event.
             </p>
           )}
         </div>

@@ -3,11 +3,12 @@ import AppHeader from '../components/AppHeader'
 import BuildingSearch from '../Navigation/BuildingSearch'
 import CampusMap from '../Navigation/CampusMap'
 import { closestParkingRoute, formatWalk } from '../Navigation/closestParking'
-import { getBuildingById, hasLocation, isParkingPlace, mapLabel, parkingPermitLabel, useBuildings } from '../Navigation/buildings'
+import { campusRoleOf } from '../auth/accountTypes'
+import { getBuildingById, hasLocation, isParkingPlace, lotSuggestedFor, mapLabel, parkingPermitLabel, useBuildings } from '../Navigation/buildings'
 import { useUserLocation } from '../Navigation/useUserLocation'
 import { useWalkGraph } from '../Navigation/useWalkingRoute'
 
-export default function SuggestedParkingScreen({ onNavigate }) {
+export default function SuggestedParkingScreen({ onNavigate, user }) {
   const { buildings, error: buildingsError } = useBuildings()
   const nodes = useWalkGraph()
   const { position, accuracy, heading, compassEnabled, enableCompass } = useUserLocation()
@@ -17,9 +18,10 @@ export default function SuggestedParkingScreen({ onNavigate }) {
     () => buildings.filter((building) => !isParkingPlace(building) && hasLocation(building)),
     [buildings],
   )
+  const campusRole = campusRoleOf(user?.campusRole)
   const lots = useMemo(
-    () => buildings.filter((building) => isParkingPlace(building) && hasLocation(building)),
-    [buildings],
+    () => buildings.filter((building) => isParkingPlace(building) && hasLocation(building) && lotSuggestedFor(campusRole, building)),
+    [buildings, campusRole],
   )
   const destination = selectedId != null ? getBuildingById(buildings, selectedId) : null
   const suggestion = useMemo(
@@ -48,7 +50,11 @@ export default function SuggestedParkingScreen({ onNavigate }) {
   if (buildingsError) detail = buildingsError
   else if (destination && !nodes) detail = 'Finding the closest lot…'
   else if (destination && lots.length === 0) detail = 'No parking lots are on the map yet.'
-  else if (destination && !suggestion) detail = 'No walking path from a lot to this building.'
+  else if (destination && !suggestion) {
+    detail = campusRole === 'student'
+      ? 'No lot open to students has a walking path to this building.'
+      : 'No walking path from a lot to this building.'
+  }
   else if (suggestion) {
     detail = `Walk to ${destination.name}. ${formatWalk(suggestion.meters)}.`
   }

@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react'
+import { isNkuEmail } from '../auth/accountTypes'
+import CampusRoleFields from '../components/CampusRoleFields'
 import InterestsEditor from './InterestsEditor'
 
 const DEFAULT_INTERESTS = [
@@ -15,6 +17,7 @@ export default function RegisterScreen({ onNavigate, onRegister, next }) {
   const [year, setYear] = useState('Junior')
   const [major, setMajor] = useState('')
   const [interests, setInterests] = useState(DEFAULT_INTERESTS)
+  const [campusRole, setCampusRole] = useState('')
   const [error, setError] = useState(null)
   const [busy, setBusy] = useState(false)
 
@@ -39,7 +42,11 @@ export default function RegisterScreen({ onNavigate, onRegister, next }) {
     e.preventDefault()
     setError(null)
     if (!email.trim()) {
-      setError('Enter your NKU email.')
+      setError('Enter your email.')
+      return
+    }
+    if (isNkuEmail(email) && !campusRole) {
+      setError('Choose student or staff.')
       return
     }
     setBusy(true)
@@ -51,6 +58,7 @@ export default function RegisterScreen({ onNavigate, onRegister, next }) {
         year,
         major: major.trim(),
         interests: interests.filter((i) => i.on).map((i) => i.name),
+        campusRole: isNkuEmail(email) ? campusRole : '',
       })
       onNavigate(next ?? 'home')
     } catch (err) {
@@ -113,14 +121,18 @@ export default function RegisterScreen({ onNavigate, onRegister, next }) {
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  if (!isNkuEmail(e.target.value)) setCampusRole('')
+                }}
                 required
                 placeholder="you@nku.edu"
                 autoComplete="email"
                 className="text-right text-[15px] font-medium leading-[1.6] text-ink w-2/3 bg-transparent placeholder:text-faint"
-                aria-label="NKU email"
+                aria-label="Email"
               />
             </label>
+            {isNkuEmail(email) && <CampusRoleFields value={campusRole} onChange={setCampusRole} />}
             <label className="flex items-center justify-between gap-4 min-h-14 bg-white border border-line rounded-lg px-4 py-2">
               <span className="text-[11px] font-bold tracking-[0.06em] uppercase text-body shrink-0">Pswd:</span>
               <input

@@ -5,7 +5,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
-import { accountTypeOf, canCreateEvents, canGrantElevatedRoles, canInviteAdmins, canManageLocations, canModerateEvents, canRemoveAdmins, isDeveloper } from '../src/auth/accountTypes.js'
+import { accountTypeOf, campusRoleOf, canCreateEvents, canGrantElevatedRoles, canInviteAdmins, canManageLocations, canModerateEvents, canRemoveAdmins, isDeveloper, isNkuEmail } from '../src/auth/accountTypes.js'
 import { isParkingPlace, isRecreationCenter } from '../src/Navigation/parkingPlaces.js'
 import { extractPdfText } from './extractPdfText.js'
 import { parseSchedule } from './parseSchedule.js'
@@ -148,6 +148,7 @@ function publicUser(doc) {
     major: doc.major ?? '',
     interests: Array.isArray(doc.interests) ? doc.interests : [],
     accountType: accountTypeOf(doc),
+    campusRole: isNkuEmail(doc.email) ? campusRoleOf(doc.campusRole) : '',
     semesters: publicSemesters(doc.semesters),
   }
 }
@@ -508,6 +509,12 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(409).json({ error: 'An account with that email already exists.' })
     }
 
+    const nku = isNkuEmail(email)
+    const campusRole = nku ? campusRoleOf(req.body.campusRole) : ''
+    if (nku && !campusRole) {
+      return res.status(400).json({ error: 'Choose student or staff.' })
+    }
+
     // Signup never accepts an account type. Developer emails come from
     // server config. Everyone else is basic unless an invite is waiting.
     const invited = await findAdminInvite(email)
@@ -524,6 +531,7 @@ app.post('/api/auth/register', async (req, res) => {
       year,
       major,
       interests,
+      campusRole,
       createdAt: new Date().toISOString(),
       accountType: developerEmails().includes(email) ? 'developer' : invitedType,
     }
@@ -545,9 +553,13 @@ app.post('/api/auth/login', async (req, res) => {
     if (!emailIsValid(email) || !password) {
       return res.status(400).json({ error: 'Enter your email and password.' })
     }
-    const user = await ensureAccountType(await findUserByEmail(email))
+    let user = await ensureAccountType(await findUserByEmail(email))
     if (!user || !(await verifyPassword(password, user.passwordHash))) {
       return res.status(401).json({ error: 'Invalid email or password.' })
+    }
+    const campusRole = isNkuEmail(email) ? campusRoleOf(req.body.campusRole) : ''
+    if (campusRole && user.campusRole !== campusRole) {
+      user = (await updateUser(user.id, { campusRole })) ?? { ...user, campusRole }
     }
     const token = await createSession(user.id)
     res.json({ token, user: publicUser(user) })
@@ -594,6 +606,11 @@ app.patch('/api/auth/me', async (req, res) => {
       interests: Array.isArray(req.body.interests)
         ? req.body.interests.map((i) => String(i).trim()).filter(Boolean).slice(0, 50)
         : [],
+    }
+    if (isNkuEmail(user.email)) {
+      const campusRole = campusRoleOf(req.body.campusRole)
+      if (!campusRole) return res.status(400).json({ error: 'Choose student or staff.' })
+      patch.campusRole = campusRole
     }
     const updated = await updateUser(user.id, patch)
     if (!updated) return res.status(404).json({ error: 'Account not found.' })
@@ -878,7 +895,7 @@ app.post('/api/events', async (req, res) => {
       return
     }
     if (!canCreateEvents(creator)) {
-      res.status(403).json({ error: 'An @nku.edu email is required to post an event.' })
+      res.status(403).json({ error: 'An @nku.edu email is required to create an event.' })
       return
     }
     const doc = {

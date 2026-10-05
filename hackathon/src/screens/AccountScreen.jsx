@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { accountTypeLabel } from '../auth/accountTypes'
+import { accountTypeLabel, campusRoleOf, isNkuEmail } from '../auth/accountTypes'
+import CampusRoleFields from '../components/CampusRoleFields'
 import InterestsEditor from './InterestsEditor'
 
 function initials(name) {
@@ -25,6 +26,7 @@ export default function AccountScreen({ onNavigate, user, onLogout, onUpdateProf
   const [year, setYear] = useState(user?.year || 'Junior')
   const [major, setMajor] = useState(user?.major ?? '')
   const [interests, setInterests] = useState(() => interestsFromUser(user))
+  const [campusRole, setCampusRole] = useState(() => campusRoleOf(user?.campusRole))
   const [error, setError] = useState(null)
   const [saved, setSaved] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -57,6 +59,10 @@ export default function AccountScreen({ onNavigate, user, onLogout, onUpdateProf
       setError('Name is required.')
       return
     }
+    if (isNkuEmail(email) && !campusRole) {
+      setError('Choose student or staff.')
+      return
+    }
     setBusy(true)
     try {
       await onUpdateProfile({
@@ -64,6 +70,7 @@ export default function AccountScreen({ onNavigate, user, onLogout, onUpdateProf
         year,
         major: major.trim(),
         interests: interests.filter((i) => i.on).map((i) => i.name),
+        campusRole: isNkuEmail(email) ? campusRole : '',
       })
       setSaved(true)
     } catch (err) {
@@ -139,6 +146,15 @@ export default function AccountScreen({ onNavigate, user, onLogout, onUpdateProf
               <span className="text-[11px] font-bold tracking-[0.06em] uppercase text-body shrink-0">Email:</span>
               <span className="text-right text-[15px] font-medium leading-[1.6] text-muted w-2/3 break-all">{email}</span>
             </div>
+            {isNkuEmail(email) && (
+              <CampusRoleFields
+                value={campusRole}
+                onChange={(role) => {
+                  setCampusRole(role)
+                  markEdited()
+                }}
+              />
+            )}
           </div>
         </section>
 

@@ -11,6 +11,14 @@ export function isRecreationCenter(building) {
   return String(building?.name ?? '').trim().toLowerCase() === 'campus rec center'
 }
 
+// Students are not offered faculty/staff lots. Everyone else can use any lot.
+export function lotSuggestedFor(campusRole, building) {
+  if (campusRole === 'student' && String(building?.permit ?? '').trim().toLowerCase() === 'faculty/staff') {
+    return false
+  }
+  return true
+}
+
 // Permit comes from the June 2025 NKU campus map legend.
 export function parkingPermitLabel(building) {
   const permit = String(building?.permit ?? '').trim()

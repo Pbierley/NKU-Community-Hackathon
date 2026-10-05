@@ -18,20 +18,22 @@ export function isNkuEmail(email) {
   return String(email ?? '').trim().toLowerCase().endsWith('@nku.edu')
 }
 
+export function campusRoleOf(value) {
+  const role = String(value ?? '').trim().toLowerCase()
+  return role === 'student' || role === 'staff' ? role : ''
+}
+
 export function isDeveloper(user) {
   return accountTypeOf(user) === 'developer'
 }
 
-// Admins and developers can post with any email. Basic accounts need @nku.edu.
 function isStaff(user) {
   const type = accountTypeOf(user)
   return type === 'admin' || type === 'superadmin' || type === 'developer'
 }
 
 export function canCreateEvents(user) {
-  if (!user) return false
-  if (isStaff(user)) return true
-  return isNkuEmail(user.email)
+  return isNkuEmail(user?.email)
 }
 
 export function canModerateEvents(user) {

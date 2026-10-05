@@ -77,10 +77,10 @@ export function useAuth() {
   }, [])
 
   const login = useCallback(
-    async (email, password) => {
+    async (email, password, campusRole) => {
       const session = await request('/api/auth/login', {
         method: 'POST',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, campusRole }),
       })
       return saveSession(session)
     },

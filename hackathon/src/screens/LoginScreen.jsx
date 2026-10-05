@@ -1,8 +1,11 @@
 import { useState } from 'react'
+import { isNkuEmail } from '../auth/accountTypes'
+import CampusRoleFields from '../components/CampusRoleFields'
 
 export default function LoginScreen({ onNavigate, onLogin, notice, next }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [campusRole, setCampusRole] = useState('')
   const [showPw, setShowPw] = useState(false)
   const [error, setError] = useState(null)
   const [busy, setBusy] = useState(false)
@@ -12,7 +15,7 @@ export default function LoginScreen({ onNavigate, onLogin, notice, next }) {
     setError(null)
     setBusy(true)
     try {
-      await onLogin(email.trim(), password)
+      await onLogin(email.trim(), password, isNkuEmail(email) ? campusRole : '')
       onNavigate(next ?? 'home')
     } catch (err) {
       setError(err.message || 'Could not log in.')
@@ -71,13 +74,17 @@ export default function LoginScreen({ onNavigate, onLogin, notice, next }) {
                 type="email"
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  if (!isNkuEmail(e.target.value)) setCampusRole('')
+                }}
                 autoComplete="email"
                 placeholder="Email"
                 className="w-full bg-transparent text-[15px] font-medium leading-[1.6] text-ink placeholder:text-faint"
               />
             </div>
           </div>
+          {isNkuEmail(email) && <CampusRoleFields value={campusRole} onChange={setCampusRole} />}
           <div>
             <div className="flex items-center justify-between">
               <label
