@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { mapLabel } from './buildings'
+import { mapLabel, parkingPermitLabel } from './buildings'
 
 export const FULLNESS_LEVELS = [
   { value: 1, label: 'Empty' },
@@ -82,6 +82,9 @@ export default function ParkingFullness({
       <p className="text-[13px] font-bold text-ink leading-[1.4]">
         {mapLabel(place)} · {place.name}
       </p>
+      {parkingPermitLabel(place) && (
+        <p className="mt-0.5 text-[13px] font-semibold text-ink leading-[1.4]">{parkingPermitLabel(place)}</p>
+      )}
       <p className="mt-0.5 text-[13px] text-muted leading-[1.4]">{prompt} {today}</p>
       {showScale ? (
         <div className="mt-2">

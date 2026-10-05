@@ -10,3 +10,12 @@ export function isParkingPlace(building) {
 export function isRecreationCenter(building) {
   return String(building?.name ?? '').trim().toLowerCase() === 'campus rec center'
 }
+
+// Permit comes from the June 2025 NKU campus map legend.
+export function parkingPermitLabel(building) {
+  const permit = String(building?.permit ?? '').trim()
+  if (!permit) return ''
+  const ev = (building.Alias ?? []).some((alias) => /ev charging/i.test(alias))
+  const label = `${permit} parking`
+  return ev ? `${label} · EV charging` : label
+}

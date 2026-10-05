@@ -3,7 +3,7 @@ import AppHeader from '../components/AppHeader'
 import BuildingSearch from '../Navigation/BuildingSearch'
 import CampusMap from '../Navigation/CampusMap'
 import { closestParkingRoute, formatWalk } from '../Navigation/closestParking'
-import { getBuildingById, hasLocation, isParkingPlace, mapLabel, useBuildings } from '../Navigation/buildings'
+import { getBuildingById, hasLocation, isParkingPlace, mapLabel, parkingPermitLabel, useBuildings } from '../Navigation/buildings'
 import { useUserLocation } from '../Navigation/useUserLocation'
 import { useWalkGraph } from '../Navigation/useWalkingRoute'
 
@@ -80,7 +80,9 @@ export default function SuggestedParkingScreen({ onNavigate }) {
         />
         <section className="absolute bottom-4 left-4 right-16 z-[1000] bg-white border border-line rounded-lg shadow-card p-3 text-left">
           <p className="text-[13px] font-bold text-ink leading-[1.4]">
-            {suggestion ? `Park at ${mapLabel(suggestion.lot)} · ${suggestion.lot.name}` : 'Suggested parking'}
+            {suggestion
+              ? `Park at ${mapLabel(suggestion.lot)} · ${suggestion.lot.name}${parkingPermitLabel(suggestion.lot) ? ` · ${parkingPermitLabel(suggestion.lot)}` : ''}`
+              : 'Suggested parking'}
           </p>
           <p className="mt-0.5 text-[13px] text-muted leading-[1.4]">{detail}</p>
         </section>

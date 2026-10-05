@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import AppHeader from '../components/AppHeader'
-import { hasLocation, isParkingPlace, isRecreationCenter, mapLabel, useBuildings } from '../Navigation/buildings'
+import { hasLocation, isParkingPlace, isRecreationCenter, mapLabel, parkingPermitLabel, useBuildings } from '../Navigation/buildings'
 import { BUSYNESS_LEVELS, FULLNESS_LEVELS, formatReportedAt } from '../Navigation/ParkingFullness'
 import { useParkingFullness } from '../Navigation/useParkingFullness'
 import { useRecBusyness } from '../Navigation/useRecBusyness'
@@ -188,6 +188,9 @@ export default function ParkingScreen({ onNavigate, user }) {
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-[15px] font-semibold leading-[1.5]">{place.name}</span>
+                        {parkingPermitLabel(place) && (
+                          <span className="block text-[13px] font-semibold text-ink leading-[1.4]">{parkingPermitLabel(place)}</span>
+                        )}
                         <span className="block text-[13px] text-muted leading-[1.4]">
                           {report
                             ? reportedAt

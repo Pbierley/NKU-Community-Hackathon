@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { apiUrl } from '../api'
 
-export { isParkingPlace, isRecreationCenter } from './parkingPlaces.js'
+export { isParkingPlace, isRecreationCenter, parkingPermitLabel } from './parkingPlaces.js'
 
 export function useBuildings() {
   const [state, setState] = useState({ buildings: [], loading: true, error: null })
