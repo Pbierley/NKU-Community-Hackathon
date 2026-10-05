@@ -5,7 +5,7 @@ export default function FeaturedEvents({ onNavigate }) {
   const featured = events.slice(0, 4)
 
   return (
-    <section className="px-4 pt-4 pb-4 bg-white border-t border-line mt-4 text-left shrink-0 min-w-0 max-w-full" aria-label="Featured events">
+    <section className="px-4 pt-4 pb-4 bg-white border-t border-line mt-4 text-left shrink-0 min-w-0 max-w-full md:mt-0 md:my-4 md:mr-4 md:min-h-0 md:overflow-y-auto md:rounded-xl md:border md:border-line" aria-label="Featured events">
       <div className="flex items-center justify-between gap-4 mb-2 min-w-0">
         <h2 className="text-base font-bold tracking-tight leading-[1.4] flex items-center gap-2 min-w-0">
           <span className="w-1 h-5 bg-nku rounded-full inline-block shrink-0" />
@@ -19,12 +19,12 @@ export default function FeaturedEvents({ onNavigate }) {
           See All ({events.length})
         </button>
       </div>
-      <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 snap-x max-w-full">
+      <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 snap-x max-w-full md:flex-col md:overflow-visible md:snap-none">
         {featured.map((event) => (
           <article
             key={event.id}
             onClick={() => onNavigate('events')}
-            className="cursor-pointer snap-start shrink-0 min-w-0 w-[68%] sm:w-[48%] md:w-[32%] lg:w-[24%] bg-white border border-line rounded-xl p-4 shadow-card"
+            className="cursor-pointer snap-start shrink-0 min-w-0 w-[68%] sm:w-[48%] md:w-full bg-white border border-line rounded-xl p-4 shadow-card"
           >
             {eventCategory(event) && (
               <span className={`inline-block text-[12px] font-semibold border rounded-md px-3 py-2 ${categoryTint(eventCategory(event))}`}>

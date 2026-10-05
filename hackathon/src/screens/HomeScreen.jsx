@@ -91,14 +91,14 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
       className={`screen h-full w-full max-w-full bg-canvas ${
         mapFull
           ? 'grid grid-cols-[minmax(0,1fr)] grid-rows-1'
-          : 'grid grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto]'
+          : 'flex flex-col home-split'
       }`}
     >
       {!mapFull && <AppHeader onNavigate={onNavigate} />}
 
       <main
         className={`relative isolate min-h-0 min-w-0 max-w-full overflow-hidden text-left ${
-          mapFull ? '' : 'mx-4 mt-4 rounded-xl border border-line'
+          mapFull ? '' : 'mx-4 mt-4 flex-1 rounded-xl border border-line md:mb-4 md:mr-0'
         }`}
       >
         <CampusMap

@@ -1,5 +1,18 @@
 /* Leaflet's own CSS is unlayered, so it wins over Tailwind utilities; overrides live here. */
 
+/* Desktop home: map stays about as tall as it is wide, with events beside it. */
+@media (min-width: 768px) {
+  .home-split {
+    display: grid;
+    grid-template-columns: minmax(0, min(100%, calc(100dvh - 5rem))) minmax(18rem, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .home-split > header {
+    grid-column: 1 / -1;
+  }
+}
+
 .campus-map.leaflet-container {
   background: #edf0f3;
   font-family: var(--font-inter);
