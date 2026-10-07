@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import { accountTypeOf, canCreateEvents, canGrantElevatedRoles, canInviteAdmins, canManageLocations, canModerateEvents, canRemoveAdmins, isDeveloper } from '../src/auth/accountTypes.js'
 import { isParkingPlace, isRecreationCenter } from '../src/Navigation/parkingPlaces.js'
-
+const cron = require("node-cron");
 const scrypt = promisify(_scrypt)
 
 // ─── MongoDB connection ─────────────────────────────────────────────
@@ -462,6 +462,32 @@ app.use((req, res, next) => {
   }
   next()
 })
+
+//CRON JOB API PING:
+const HEARTBEAT_URL = process.env.BETTER_STACK_URL;
+
+cron.schedule("*/10 * * * *", async () => {
+  try {
+    console.log("[Heartbeat] Pinging Better Stack...");
+
+    const response = await fetch(HEARTBEAT_URL, {
+      method: "GET",
+      headers: {
+        "User-Agent": "Render-Node-Backend"
+      }
+    });
+
+    if (response.ok) {
+      console.log("[Heartbeat] Check-in successful");
+    } else {
+      console.error(`[Heartbeat] Failed with status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error(
+      `[Heartbeat] Network error while checking in: ${error.message}`
+    );
+  }
+});
 
 app.get('/api/health', (req, res) => {
   res.json({ ok: true, store: mongoActive() ? 'mongodb' : 'json' })
