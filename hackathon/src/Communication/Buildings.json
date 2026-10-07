@@ -40,6 +40,6 @@
         { "id": 38, "name": "Intramural Field Complex", "Alias": ["IM", "Intramural Fields"], "Location": { "lat": 39.037921, "lng": -84.467109 } },
         { "id": 39, "name": "Outdoor Space", "Alias": ["OD"], "Location": null },
         { "id": 40, "name": "Opportunity House", "Alias": ["OH"], "Location": null },
-        { "id": 41, "name": "Welcome Center Garage", "Alias": ["WG"], "Location": null }
+        { "id": 41, "name": "Welcome Center Garage", "Alias": ["WG"], "Location": null } 
     ]
 }
