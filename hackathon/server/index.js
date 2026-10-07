@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import { accountTypeOf, campusRoleOf, canCreateEvents, canGrantElevatedRoles, canInviteAdmins, canManageLocations, canModerateEvents, canRemoveAdmins, isDeveloper, isNkuEmail } from '../src/auth/accountTypes.js'
 import { isParkingPlace, isRecreationCenter } from '../src/Navigation/parkingPlaces.js'
+import cron from 'node-cron'
 import { extractPdfText } from './extractPdfText.js'
 import { parseSchedule } from './parseSchedule.js'
 
@@ -483,6 +484,30 @@ app.use((req, res, next) => {
   }
   next()
 })
+const HEARTBEAT_URL = process.env.BETTER_STACK_URL;
+
+cron.schedule("*/10 * * * *", async () => {
+  try {
+    console.log("[Heartbeat] Pinging Better Stack...");
+
+    const response = await fetch(HEARTBEAT_URL, {
+      method: "GET",
+      headers: {
+        "User-Agent": "Render-Node-Backend"
+      }
+    });
+
+    if (response.ok) {
+      console.log("[Heartbeat] Check-in successful");
+    } else {
+      console.error(`[Heartbeat] Failed with status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error(
+      `[Heartbeat] Network error while checking in: ${error.message}`
+    );
+  }
+});
 
 app.get('/api/health', (req, res) => {
   res.json({ ok: true, store: mongoActive() ? 'mongodb' : 'json' })
