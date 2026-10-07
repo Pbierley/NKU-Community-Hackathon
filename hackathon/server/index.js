@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import { accountTypeOf, canCreateEvents, canGrantElevatedRoles, canInviteAdmins, canManageLocations, canModerateEvents, canRemoveAdmins, isDeveloper } from '../src/auth/accountTypes.js'
 import { isParkingPlace, isRecreationCenter } from '../src/Navigation/parkingPlaces.js'
-const cron = require("node-cron");
+import cron from 'node-cron'
 const scrypt = promisify(_scrypt)
 
 // ─── MongoDB connection ─────────────────────────────────────────────
