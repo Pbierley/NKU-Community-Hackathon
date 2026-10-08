@@ -3,6 +3,7 @@ import { canInviteAdmins } from './auth/accountTypes'
 import { useAuth } from './auth/useAuth'
 import NavDrawer from './components/NavDrawer'
 import { parseEventHash } from './Communication/useEvents'
+import { clearRouteHash, parseRouteHash } from './Navigation/shareRoute'
 import AccountScreen from './screens/AccountScreen'
 import AdminScreen from './screens/AdminScreen'
 import EventsScreen from './screens/EventsScreen'
@@ -29,7 +30,10 @@ const AUTH_NOTICE = {
 function App() {
   const { user, loading, login, register, logout, updateProfile, inviteAdmin, removeRole, uploadSchedule } = useAuth()
   // A shared event link boots straight into events so the event can open.
-  const [screen, setScreen] = useState(() => (parseEventHash() ? 'events' : 'home'))
+  const [screen, setScreen] = useState(() => {
+    if (parseRouteHash()?.kind === 'park') return 'suggest'
+    return parseEventHash() ? 'events' : 'home'
+  })
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [authNotice, setAuthNotice] = useState(null)
   // Where a logged-out user was headed when they hit a protected screen,
@@ -50,6 +54,11 @@ function App() {
     }
     setDrawerOpen(false)
     setScreen(id)
+    const sharedRoute = parseRouteHash()
+    const leavingSharedRoute =
+      (sharedRoute?.kind === 'go' && id !== 'home') ||
+      (sharedRoute?.kind === 'park' && id !== 'suggest')
+    if (leavingSharedRoute) clearRouteHash()
     // Remember why a logged-out user was sent to login so the login
     // screen can explain (e.g. "To view events, sign in").
     if (PROTECTED.has(id)) {

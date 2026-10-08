@@ -34,6 +34,7 @@ export default function BuildingSearch({
   selectedId,
   onSelect,
   onClear,
+  onShare,
   placeholder = 'Where to? Halls, lots, shuttles',
 }) {
   const [query, setQuery] = useState('')
@@ -83,6 +84,17 @@ export default function BuildingSearch({
           <span className="flex-1 min-w-0 truncate text-[15px] font-semibold leading-[1.6] text-ink">
             {selected.name}
           </span>
+          {onShare && (
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={onShare}
+              aria-label="Share route"
+              className="shrink-0 h-8 px-2 rounded-md text-[13px] font-bold text-ink hover:bg-wash"
+            >
+              Share
+            </button>
+          )}
           <ClearButton label="Clear selected building" onClick={clear} />
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import Toast from '../components/Toast'
 import AppHeader from '../components/AppHeader'
 import BuildingSearch from '../Navigation/BuildingSearch'
 import CampusMap from '../Navigation/CampusMap'
@@ -6,6 +7,7 @@ import { closestParkingRoute, formatWalk } from '../Navigation/closestParking'
 import { campusRoleOf } from '../auth/accountTypes'
 import { getBuildingById, hasLocation, isParkingPlace, lotSuggestedFor, mapLabel, parkingPermitLabel, useBuildings } from '../Navigation/buildings'
 import { useUserLocation } from '../Navigation/useUserLocation'
+import { buildParkUrl, clearRouteHash, copyShareUrl, parseRouteHash } from '../Navigation/shareRoute'
 import { useWalkGraph } from '../Navigation/useWalkingRoute'
 
 export default function SuggestedParkingScreen({ onNavigate, user }) {
@@ -13,7 +15,15 @@ export default function SuggestedParkingScreen({ onNavigate, user }) {
   const nodes = useWalkGraph()
   const { position, accuracy, heading, compassEnabled, enableCompass } = useUserLocation()
   const [follow, setFollow] = useState(false)
-  const [selectedId, setSelectedId] = useState(null)
+  const [notice, setNotice] = useState(null)
+  const [selectedId, setSelectedId] = useState(() => {
+    const shared = parseRouteHash()
+    return shared?.kind === 'park' ? shared.toId : null
+  })
+  const [pinnedLotId, setPinnedLotId] = useState(() => {
+    const shared = parseRouteHash()
+    return shared?.kind === 'park' ? shared.fromId : null
+  })
   const destinations = useMemo(
     () => buildings.filter((building) => !isParkingPlace(building) && hasLocation(building)),
     [buildings],
@@ -24,16 +34,35 @@ export default function SuggestedParkingScreen({ onNavigate, user }) {
     [buildings, campusRole],
   )
   const destination = selectedId != null ? getBuildingById(buildings, selectedId) : null
-  const suggestion = useMemo(
-    () => (destination && !isParkingPlace(destination) ? closestParkingRoute(nodes, lots, destination) : null),
-    [nodes, lots, destination],
-  )
+  const pinnedLot = pinnedLotId != null ? getBuildingById(buildings, pinnedLotId) : null
+  const suggestion = useMemo(() => {
+    if (!destination || isParkingPlace(destination)) return null
+    if (pinnedLot && isParkingPlace(pinnedLot)) {
+      const shared = closestParkingRoute(nodes, [pinnedLot], destination)
+      if (shared) return shared
+    }
+    return closestParkingRoute(nodes, lots, destination)
+  }, [nodes, lots, destination, pinnedLot])
 
   function chooseBuilding(id) {
     const building = getBuildingById(buildings, id)
     if (!building || isParkingPlace(building) || !hasLocation(building)) return
+    setPinnedLotId(null)
     setSelectedId(id)
     setFollow(false)
+    clearRouteHash()
+  }
+
+  function clearBuilding() {
+    setPinnedLotId(null)
+    setSelectedId(null)
+    clearRouteHash()
+  }
+
+  async function shareRoute() {
+    if (!suggestion || !destination) return
+    const copied = await copyShareUrl(buildParkUrl(suggestion.lot.id, destination.id))
+    setNotice(copied ? 'Link copied' : 'Could not copy the link. It is in the address bar.')
   }
 
   function locate() {
@@ -75,13 +104,13 @@ export default function SuggestedParkingScreen({ onNavigate, user }) {
           highlightIds={highlightIds}
           onSelect={chooseBuilding}
           route={route}
-          bottomInset={128}
+          bottomInset={suggestion ? 176 : 128}
         />
         <BuildingSearch
           buildings={destinations}
           selectedId={selectedId}
           onSelect={chooseBuilding}
-          onClear={() => setSelectedId(null)}
+          onClear={clearBuilding}
           placeholder="Which building?"
         />
         <section className="absolute bottom-4 left-4 right-16 z-[1000] bg-white border border-line rounded-lg shadow-card p-3 text-left">
@@ -91,8 +120,18 @@ export default function SuggestedParkingScreen({ onNavigate, user }) {
               : 'Suggested parking'}
           </p>
           <p className="mt-0.5 text-[13px] text-muted leading-[1.4]">{detail}</p>
+          {suggestion && (
+            <button
+              type="button"
+              onClick={shareRoute}
+              className="mt-2 h-8 px-3 rounded-md border border-line bg-white text-[13px] font-bold text-ink"
+            >
+              Share route
+            </button>
+          )}
         </section>
       </main>
+      <Toast message={notice} onDone={() => setNotice(null)} />
     </div>
   )
 }

@@ -10,6 +10,7 @@ import { findBuildingForLocation, getBuildingById, hasLocation, isParkingPlace, 
 import { useParkingFullness } from '../Navigation/useParkingFullness'
 import { useRecBusyness } from '../Navigation/useRecBusyness'
 import { useUserLocation } from '../Navigation/useUserLocation'
+import { buildGoUrl, clearRouteHash, copyShareUrl, parseRouteHash } from '../Navigation/shareRoute'
 import { useWalkingRoute } from '../Navigation/useWalkingRoute'
 
 function todayKey() {
@@ -41,7 +42,11 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
   const { position, accuracy, heading, error: locationError, compassEnabled, enableCompass } =
     useUserLocation()
   const [follow, setFollow] = useState(focusBuildingId == null)
-  const [selectedId, setSelectedId] = useState(focusBuildingId ?? null)
+  const [selectedId, setSelectedId] = useState(() => {
+    if (focusBuildingId != null) return focusBuildingId
+    const shared = parseRouteHash()
+    return shared?.kind === 'go' ? shared.toId : null
+  })
   const [notice, setNotice] = useState(null)
   const [dismissedError, setDismissedError] = useState(null)
   const [mapFull, setMapFull] = useState(false)
@@ -79,6 +84,24 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
     return () => document.removeEventListener('keydown', onKeyDown, true)
   }, [mapFull])
 
+  function selectPlace(id) {
+    setSelectedId(id)
+    setFollow(false)
+    const shared = parseRouteHash()
+    if (shared?.kind === 'go' && shared.toId !== id) clearRouteHash()
+  }
+
+  function clearPlace() {
+    setSelectedId(null)
+    clearRouteHash()
+  }
+
+  async function sharePlace() {
+    if (!destination) return
+    const copied = await copyShareUrl(buildGoUrl(destination.id))
+    setNotice(copied ? 'Link copied' : 'Could not copy the link. It is in the address bar.')
+  }
+
   function locate() {
     // iOS only grants compass access from a tap, so the locate button doubles as the opt-in.
     if (!compassEnabled) enableCompass()
@@ -110,10 +133,7 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
           onUserPan={stopFollowing}
           onLocate={locate}
           selectedId={selectedId}
-          onSelect={(id) => {
-            setSelectedId(id)
-            setFollow(false)
-          }}
+          onSelect={selectPlace}
           full={mapFull}
           route={route}
           bottomInset={destination && (isParkingPlace(destination) || isRecreationCenter(destination)) ? 176 : 0}
@@ -170,11 +190,9 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
         <BuildingSearch
           buildings={buildings}
           selectedId={selectedId}
-          onSelect={(id) => {
-            setSelectedId(id)
-            setFollow(false)
-          }}
-          onClear={() => setSelectedId(null)}
+          onSelect={selectPlace}
+          onClear={clearPlace}
+          onShare={destination ? sharePlace : undefined}
         />
         {destination && isParkingPlace(destination) && (
           <ParkingFullness
