@@ -34,7 +34,7 @@ function eventsOnMapToday(events, buildings) {
   return [...groups.values()]
 }
 
-export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFocusHandled, onOpenEvent, returnEventId, onBackToEvent }) {
+export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFocusHandled, onOpenEvent, returnEventId, onBackToEvent, onVisitorParking }) {
   const { buildings, error: buildingsError } = useBuildings()
   const { events } = useEvents()
   const { summary, rate } = useParkingFullness()
@@ -136,7 +136,13 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
           onSelect={selectPlace}
           full={mapFull}
           route={route}
-          bottomInset={destination && (isParkingPlace(destination) || isRecreationCenter(destination)) ? 176 : 0}
+          bottomInset={
+            destination && (isParkingPlace(destination) || isRecreationCenter(destination))
+              ? 176
+              : !user && destination
+                ? 112
+                : 0
+          }
           eventSpots={showTodayEvents ? todaySpots : []}
           onOpenEvent={onOpenEvent}
         />
@@ -194,6 +200,19 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
           onClear={clearPlace}
           onShare={destination ? sharePlace : undefined}
         />
+        {!user && destination && !isParkingPlace(destination) && !isRecreationCenter(destination) && (
+          <section className="absolute bottom-4 left-4 right-16 z-[1000] bg-white border border-line rounded-lg shadow-card p-3 text-left">
+            <p className="text-[13px] font-bold text-ink leading-[1.4]">{destination.name}</p>
+            <label className="mt-2 flex items-center gap-2 text-[13px] font-semibold text-ink">
+              <input
+                type="checkbox"
+                checked={false}
+                onChange={() => onVisitorParking?.(destination.id)}
+              />
+              Visitor — park in a garage
+            </label>
+          </section>
+        )}
         {destination && isParkingPlace(destination) && (
           <ParkingFullness
             place={destination}

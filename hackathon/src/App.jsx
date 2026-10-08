@@ -45,6 +45,8 @@ function App() {
   const [mapBuildingId, setMapBuildingId] = useState(null)
   // Event to reopen when the map was opened from that event's location.
   const [mapReturnEventId, setMapReturnEventId] = useState(null)
+  // A logged-out visitor asked for a garage route to this building.
+  const [visitorParking, setVisitorParking] = useState(null)
 
   // 'drawer' opens the overlay on top of the current screen instead of replacing it.
   const navigateTo = useCallback((id) => {
@@ -59,6 +61,7 @@ function App() {
       (sharedRoute?.kind === 'go' && id !== 'home') ||
       (sharedRoute?.kind === 'park' && id !== 'suggest')
     if (leavingSharedRoute) clearRouteHash()
+    if (id !== 'suggest') setVisitorParking(null)
     // Remember why a logged-out user was sent to login so the login
     // screen can explain (e.g. "To view events, sign in").
     if (PROTECTED.has(id)) {
@@ -98,6 +101,11 @@ function App() {
   }, [])
 
   const handleMapFocused = useCallback(() => setMapBuildingId(null), [])
+
+  const openVisitorParking = useCallback((buildingId) => {
+    setVisitorParking({ toId: buildingId })
+    navigateTo('suggest')
+  }, [navigateTo])
 
   const openEventFromMap = useCallback((eventId) => {
     setMapReturnEventId(null)
@@ -191,10 +199,19 @@ function App() {
             onOpenEvent={openEventFromMap}
             returnEventId={mapReturnEventId}
             onBackToEvent={openEventFromMap}
+            onVisitorParking={openVisitorParking}
           />
         )}
         {visibleScreen === 'parking' && <ParkingScreen key="parking" onNavigate={navigateTo} user={user} />}
-        {visibleScreen === 'suggest' && <SuggestedParkingScreen key="suggest" onNavigate={navigateTo} user={user} />}
+        {visibleScreen === 'suggest' && (
+          <SuggestedParkingScreen
+            key="suggest"
+            onNavigate={navigateTo}
+            user={user}
+            initialDestinationId={visitorParking?.toId ?? null}
+            initialVisitor={visitorParking != null}
+          />
+        )}
         {visibleScreen === 'schedule' && (
           <ScheduleScreen key="schedule" onNavigate={navigateTo} user={user} onUpload={uploadSchedule} onShowOnMap={showScheduleOnMap} />
         )}

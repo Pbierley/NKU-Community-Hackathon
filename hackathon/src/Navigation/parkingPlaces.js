@@ -11,6 +11,11 @@ export function isRecreationCenter(building) {
   return String(building?.name ?? '').trim().toLowerCase() === 'campus rec center'
 }
 
+// Arena, Kenton, and University garages are the visitor parking on the campus map.
+export function isVisitorGarage(building) {
+  return String(building?.permit ?? '').trim().toLowerCase() === 'visitor'
+}
+
 // Students are not offered faculty/staff lots. Everyone else can use any lot.
 export function lotSuggestedFor(campusRole, building) {
   if (campusRole === 'student' && String(building?.permit ?? '').trim().toLowerCase() === 'faculty/staff') {

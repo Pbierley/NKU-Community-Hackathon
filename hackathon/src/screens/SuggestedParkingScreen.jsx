@@ -5,25 +5,33 @@ import BuildingSearch from '../Navigation/BuildingSearch'
 import CampusMap from '../Navigation/CampusMap'
 import { closestParkingRoute, formatWalk } from '../Navigation/closestParking'
 import { campusRoleOf } from '../auth/accountTypes'
-import { getBuildingById, hasLocation, isParkingPlace, lotSuggestedFor, mapLabel, parkingPermitLabel, useBuildings } from '../Navigation/buildings'
+import { getBuildingById, hasLocation, isParkingPlace, isVisitorGarage, lotSuggestedFor, mapLabel, parkingPermitLabel, useBuildings } from '../Navigation/buildings'
 import { useUserLocation } from '../Navigation/useUserLocation'
 import { buildParkUrl, clearRouteHash, copyShareUrl, parseRouteHash } from '../Navigation/shareRoute'
 import { useWalkGraph } from '../Navigation/useWalkingRoute'
 
-export default function SuggestedParkingScreen({ onNavigate, user }) {
+export default function SuggestedParkingScreen({
+  onNavigate,
+  user,
+  initialDestinationId = null,
+  initialVisitor = false,
+}) {
   const { buildings, error: buildingsError } = useBuildings()
   const nodes = useWalkGraph()
   const { position, accuracy, heading, compassEnabled, enableCompass } = useUserLocation()
   const [follow, setFollow] = useState(false)
   const [notice, setNotice] = useState(null)
   const [selectedId, setSelectedId] = useState(() => {
+    if (initialDestinationId != null) return initialDestinationId
     const shared = parseRouteHash()
     return shared?.kind === 'park' ? shared.toId : null
   })
   const [pinnedLotId, setPinnedLotId] = useState(() => {
+    if (initialVisitor) return null
     const shared = parseRouteHash()
     return shared?.kind === 'park' ? shared.fromId : null
   })
+  const [visitor, setVisitor] = useState(initialVisitor && !user)
   const destinations = useMemo(
     () => buildings.filter((building) => !isParkingPlace(building) && hasLocation(building)),
     [buildings],
@@ -33,16 +41,21 @@ export default function SuggestedParkingScreen({ onNavigate, user }) {
     () => buildings.filter((building) => isParkingPlace(building) && hasLocation(building) && lotSuggestedFor(campusRole, building)),
     [buildings, campusRole],
   )
+  const choices = useMemo(
+    () => (visitor ? lots.filter(isVisitorGarage) : lots),
+    [lots, visitor],
+  )
   const destination = selectedId != null ? getBuildingById(buildings, selectedId) : null
   const pinnedLot = pinnedLotId != null ? getBuildingById(buildings, pinnedLotId) : null
   const suggestion = useMemo(() => {
     if (!destination || isParkingPlace(destination)) return null
-    if (pinnedLot && isParkingPlace(pinnedLot)) {
+    const keepPinned = pinnedLot && isParkingPlace(pinnedLot) && (!visitor || isVisitorGarage(pinnedLot))
+    if (keepPinned) {
       const shared = closestParkingRoute(nodes, [pinnedLot], destination)
       if (shared) return shared
     }
-    return closestParkingRoute(nodes, lots, destination)
-  }, [nodes, lots, destination, pinnedLot])
+    return closestParkingRoute(nodes, choices, destination)
+  }, [nodes, choices, destination, pinnedLot, visitor])
 
   function chooseBuilding(id) {
     const building = getBuildingById(buildings, id)
@@ -51,6 +64,14 @@ export default function SuggestedParkingScreen({ onNavigate, user }) {
     setSelectedId(id)
     setFollow(false)
     clearRouteHash()
+  }
+
+  function chooseVisitor(next) {
+    setVisitor(next)
+    if (next && pinnedLot && !isVisitorGarage(pinnedLot)) {
+      setPinnedLotId(null)
+      clearRouteHash()
+    }
   }
 
   function clearBuilding() {
@@ -78,11 +99,15 @@ export default function SuggestedParkingScreen({ onNavigate, user }) {
   let detail = 'Search for the building you need. The closest lot and the walk from it will show here.'
   if (buildingsError) detail = buildingsError
   else if (destination && !nodes) detail = 'Finding the closest lot…'
-  else if (destination && lots.length === 0) detail = 'No parking lots are on the map yet.'
+  else if (destination && choices.length === 0) {
+    detail = visitor ? 'No visitor garages are on the map yet.' : 'No parking lots are on the map yet.'
+  }
   else if (destination && !suggestion) {
-    detail = campusRole === 'student'
-      ? 'No lot open to students has a walking path to this building.'
-      : 'No walking path from a lot to this building.'
+    detail = visitor
+      ? 'No visitor garage has a walking path to this building.'
+      : campusRole === 'student'
+        ? 'No lot open to students has a walking path to this building.'
+        : 'No walking path from a lot to this building.'
   }
   else if (suggestion) {
     detail = `Walk to ${destination.name}. ${formatWalk(suggestion.meters)}.`
@@ -104,7 +129,7 @@ export default function SuggestedParkingScreen({ onNavigate, user }) {
           highlightIds={highlightIds}
           onSelect={chooseBuilding}
           route={route}
-          bottomInset={suggestion ? 176 : 128}
+          bottomInset={!user && destination ? (suggestion ? 220 : 160) : suggestion ? 176 : 128}
         />
         <BuildingSearch
           buildings={destinations}
@@ -120,6 +145,16 @@ export default function SuggestedParkingScreen({ onNavigate, user }) {
               : 'Suggested parking'}
           </p>
           <p className="mt-0.5 text-[13px] text-muted leading-[1.4]">{detail}</p>
+          {!user && destination && (
+            <label className="mt-2 flex items-center gap-2 text-[13px] font-semibold text-ink">
+              <input
+                type="checkbox"
+                checked={visitor}
+                onChange={(event) => chooseVisitor(event.target.checked)}
+              />
+              Visitor — park in a garage
+            </label>
+          )}
           {suggestion && (
             <button
               type="button"
