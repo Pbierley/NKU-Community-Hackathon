@@ -1,8 +1,9 @@
-import { categoryTint, eventCategory, eventWhen, useEvents } from '../Communication/useEvents'
+import { categoryTint, eventCategory, eventWhen, useEvents, isPastEvent, sortEventsByDate } from '../Communication/useEvents'
 
 export default function FeaturedEvents({ onNavigate }) {
   const { events } = useEvents()
-  const featured = events.slice(0, 4)
+  const upcomingEvents = sortEventsByDate(events.filter((event) => !isPastEvent(event)))
+  const featured = upcomingEvents.slice(0, 4)
 
   return (
     <section className="px-4 pt-4 pb-4 bg-white border-t border-line mt-4 text-left shrink-0 min-w-0 max-w-full md:mt-0 md:my-4 md:mr-4 md:min-h-0 md:overflow-y-auto md:rounded-xl md:border md:border-line" aria-label="Featured events">
