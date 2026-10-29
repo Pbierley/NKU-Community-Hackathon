@@ -12,7 +12,7 @@ import { useRecBusyness } from '../Navigation/useRecBusyness'
 import { useUserLocation } from '../Navigation/useUserLocation'
 import { useRecordedDestination } from '../Navigation/recordHeatPoint'
 import { buildGoUrl, clearRouteHash, copyShareUrl, parseRouteHash } from '../Navigation/shareRoute'
-import { useWalkingRoute } from '../Navigation/useWalkingRoute'
+import { useAvoidStairs, useWalkingRoute } from '../Navigation/useWalkingRoute'
 
 function todayKey() {
   const now = new Date()
@@ -53,10 +53,12 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
   const [mapFull, setMapFull] = useState(false)
   const [showTodayEvents, setShowTodayEvents] = useState(false)
   const todaySpots = useMemo(() => eventsOnMapToday(events, buildings), [events, buildings])
+  const [avoidStairs, setAvoidStairs] = useAvoidStairs()
   const destination = selectedId != null ? getBuildingById(buildings, selectedId) : null
+  const walkDestination = destination && !isParkingPlace(destination) && !isRecreationCenter(destination)
   const destPoint =
     destination && hasLocation(destination) ? [destination.Location.lat, destination.Location.lng] : null
-  const { route, error: routeError } = useWalkingRoute(position, destPoint)
+  const { route, error: routeError } = useWalkingRoute(position, destPoint, avoidStairs)
   useRecordedDestination(selectedId, position)
 
   const error = buildingsError ?? locationError ?? routeError
@@ -141,8 +143,10 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
           bottomInset={
             destination && (isParkingPlace(destination) || isRecreationCenter(destination))
               ? 176
-              : !user && destination
-                ? 112
+              : walkDestination
+                ? user
+                  ? 112
+                  : 148
                 : 0
           }
           eventSpots={showTodayEvents ? todaySpots : []}
@@ -202,17 +206,27 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
           onClear={clearPlace}
           onShare={destination ? sharePlace : undefined}
         />
-        {!user && destination && !isParkingPlace(destination) && !isRecreationCenter(destination) && (
+        {walkDestination && (
           <section className="absolute bottom-4 left-4 right-16 z-[1000] bg-white border border-line rounded-lg shadow-card p-3 text-left">
             <p className="text-[13px] font-bold text-ink leading-[1.4]">{destination.name}</p>
             <label className="mt-2 flex items-center gap-2 text-[13px] font-semibold text-ink">
               <input
                 type="checkbox"
-                checked={false}
-                onChange={() => onVisitorParking?.(destination.id)}
+                checked={avoidStairs}
+                onChange={(event) => setAvoidStairs(event.target.checked)}
               />
-              Visitor — park in a garage
+              Avoid stairs
             </label>
+            {!user && (
+              <label className="mt-2 flex items-center gap-2 text-[13px] font-semibold text-ink">
+                <input
+                  type="checkbox"
+                  checked={false}
+                  onChange={() => onVisitorParking?.(destination.id)}
+                />
+                Visitor — park in a garage
+              </label>
+            )}
           </section>
         )}
         {destination && isParkingPlace(destination) && (

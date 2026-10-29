@@ -9,7 +9,7 @@ import { getBuildingById, hasLocation, isParkingPlace, isVisitorGarage, lotSugge
 import { useUserLocation } from '../Navigation/useUserLocation'
 import { useRecordedDestination } from '../Navigation/recordHeatPoint'
 import { buildParkUrl, clearRouteHash, copyShareUrl, parseRouteHash } from '../Navigation/shareRoute'
-import { useWalkGraph } from '../Navigation/useWalkingRoute'
+import { useAvoidStairs, useWalkGraph } from '../Navigation/useWalkingRoute'
 
 export default function SuggestedParkingScreen({
   onNavigate,
@@ -18,7 +18,8 @@ export default function SuggestedParkingScreen({
   initialVisitor = false,
 }) {
   const { buildings, error: buildingsError } = useBuildings()
-  const nodes = useWalkGraph()
+  const [avoidStairs, setAvoidStairs] = useAvoidStairs()
+  const nodes = useWalkGraph(avoidStairs)
   const { position, accuracy, heading, compassEnabled, enableCompass } = useUserLocation()
   const [follow, setFollow] = useState(false)
   const [notice, setNotice] = useState(null)
@@ -106,10 +107,14 @@ export default function SuggestedParkingScreen({
   }
   else if (destination && !suggestion) {
     detail = visitor
-      ? 'No visitor garage has a walking path to this building.'
-      : campusRole === 'student'
-        ? 'No lot open to students has a walking path to this building.'
-        : 'No walking path from a lot to this building.'
+      ? avoidStairs
+        ? 'No visitor garage has a stair-free walking path to this building.'
+        : 'No visitor garage has a walking path to this building.'
+      : avoidStairs
+        ? 'No stair-free walking path from a lot to this building.'
+        : campusRole === 'student'
+          ? 'No lot open to students has a walking path to this building.'
+          : 'No walking path from a lot to this building.'
   }
   else if (suggestion) {
     detail = `Walk to ${destination.name}. ${formatWalk(suggestion.meters)}.`
@@ -131,7 +136,7 @@ export default function SuggestedParkingScreen({
           highlightIds={highlightIds}
           onSelect={chooseBuilding}
           route={route}
-          bottomInset={!user && destination ? (suggestion ? 220 : 160) : suggestion ? 176 : 128}
+          bottomInset={!user && destination ? (suggestion ? 256 : 196) : suggestion ? 212 : 164}
         />
         <BuildingSearch
           buildings={destinations}
@@ -147,6 +152,14 @@ export default function SuggestedParkingScreen({
               : 'Suggested parking'}
           </p>
           <p className="mt-0.5 text-[13px] text-muted leading-[1.4]">{detail}</p>
+          <label className="mt-2 flex items-center gap-2 text-[13px] font-semibold text-ink">
+            <input
+              type="checkbox"
+              checked={avoidStairs}
+              onChange={(event) => setAvoidStairs(event.target.checked)}
+            />
+            Avoid stairs
+          </label>
           {!user && destination && (
             <label className="mt-2 flex items-center gap-2 text-[13px] font-semibold text-ink">
               <input

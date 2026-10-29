@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { buildGraph, onCampus, shortestPath } from './walkGraph'
 
+const AVOID_STAIRS_KEY = 'nku-avoid-stairs'
+
 function pointKey(point) {
   if (!point) return ''
   return `${Math.round(point[0] * 1e5) / 1e5},${Math.round(point[1] * 1e5) / 1e5}`
@@ -11,24 +13,58 @@ function fromKey(key) {
   return key.split(',').map(Number)
 }
 
-export function useWalkGraph() {
-  const [nodes, setNodes] = useState(null)
+let graphsPromise = null
+
+function loadGraphs() {
+  if (!graphsPromise) {
+    graphsPromise = import('./campusWalkways.json').then((mod) => ({
+      normal: buildGraph(mod.default),
+      avoidStairs: buildGraph(mod.default, { avoidStairs: true }),
+    }))
+  }
+  return graphsPromise
+}
+
+export function useAvoidStairs() {
+  const [avoidStairs, setAvoidStairs] = useState(() => {
+    try {
+      return localStorage.getItem(AVOID_STAIRS_KEY) === '1'
+    } catch {
+      return false
+    }
+  })
+
+  function setAvoid(next) {
+    setAvoidStairs(next)
+    try {
+      localStorage.setItem(AVOID_STAIRS_KEY, next ? '1' : '0')
+    } catch {
+      /* the choice still applies for this visit */
+    }
+  }
+
+  return [avoidStairs, setAvoid]
+}
+
+export function useWalkGraph(avoidStairs = false) {
+  const [graphs, setGraphs] = useState(null)
 
   useEffect(() => {
     let cancelled = false
-    import('./campusWalkways.json').then((mod) => {
-      if (!cancelled) setNodes(buildGraph(mod.default))
+    loadGraphs().then((next) => {
+      if (!cancelled) setGraphs(next)
     })
     return () => {
       cancelled = true
     }
   }, [])
 
-  return nodes
+  if (!graphs) return null
+  return avoidStairs ? graphs.avoidStairs : graphs.normal
 }
 
-export function useWalkingRoute(from, to) {
-  const nodes = useWalkGraph()
+export function useWalkingRoute(from, to, avoidStairs = false) {
+  const nodes = useWalkGraph(avoidStairs)
   const startKey = pointKey(from)
   const endKey = pointKey(to)
 
@@ -40,7 +76,14 @@ export function useWalkingRoute(from, to) {
     if (!onCampus(start)) return { route: null, error: 'Walk onto campus to see a path.' }
     if (!onCampus(end)) return { route: null, error: 'That building is outside the walking map.' }
     const route = shortestPath(nodes, start, end)
-    if (!route) return { route: null, error: 'No walking path found between you and that building.' }
+    if (!route) {
+      return {
+        route: null,
+        error: avoidStairs
+          ? 'No stair-free walking path found between you and that building.'
+          : 'No walking path found between you and that building.',
+      }
+    }
     return { route, error: null }
-  }, [nodes, startKey, endKey])
+  }, [nodes, startKey, endKey, avoidStairs])
 }

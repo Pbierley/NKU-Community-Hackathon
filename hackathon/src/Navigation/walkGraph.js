@@ -37,7 +37,11 @@ function link(a, b, weight) {
   b.edges.push({ to: a.id, weight })
 }
 
-function stitchNearby(nodes) {
+function pairKey(a, b) {
+  return a < b ? `${a}|${b}` : `${b}|${a}`
+}
+
+function stitchNearby(nodes, blocked) {
   const cellDeg = STITCH_M / 111_000
   const grid = new Map()
   for (const node of nodes.values()) {
@@ -49,6 +53,7 @@ function stitchNearby(nodes) {
   for (const bucket of grid.values()) {
     for (let i = 0; i < bucket.length; i++) {
       for (let j = i + 1; j < bucket.length; j++) {
+        if (blocked?.has(pairKey(bucket[i].id, bucket[j].id))) continue
         const d = haversineMeters([bucket[i].lat, bucket[i].lng], [bucket[j].lat, bucket[j].lng])
         if (d > 0 && d <= STITCH_M) link(bucket[i], bucket[j], d)
       }
@@ -56,11 +61,18 @@ function stitchNearby(nodes) {
   }
 }
 
-export function buildGraph(ways) {
+export function buildGraph(ways, { avoidStairs = false } = {}) {
   const nodes = new Map()
+  const blocked = avoidStairs ? new Set() : null
   for (const way of ways) {
     const pts = way.geometry
     if (!pts || pts.length < 2) continue
+    if (avoidStairs && way.highway === 'steps') {
+      for (let i = 0; i < pts.length - 1; i++) {
+        blocked.add(pairKey(nodeId(pts[i][0], pts[i][1]), nodeId(pts[i + 1][0], pts[i + 1][1])))
+      }
+      continue
+    }
     const cost = way.highway === 'steps' ? 1.6 : 1
     for (let i = 0; i < pts.length - 1; i++) {
       const a = ensure(nodes, pts[i][0], pts[i][1])
@@ -68,7 +80,7 @@ export function buildGraph(ways) {
       link(a, b, haversineMeters([a.lat, a.lng], [b.lat, b.lng]) * cost)
     }
   }
-  stitchNearby(nodes)
+  stitchNearby(nodes, blocked)
   return nodes
 }
 
