@@ -1,4 +1,4 @@
-import { accountTypeLabel, canInviteAdmins } from '../auth/accountTypes'
+import { accountTypeLabel, canInviteAdmins, canViewHeatMap } from '../auth/accountTypes'
 import { useEvents } from '../Communication/useEvents'
 
 function initials(name) {
@@ -139,6 +139,24 @@ export default function NavDrawer({ open, user, onNavigate, onClose, onLogout })
                 </svg>
               </span>
               Admin
+              <span className="ml-auto text-faint">›</span>
+            </button>
+          )}
+
+          {canViewHeatMap(user) && (
+            <button
+              type="button"
+              onClick={() => onNavigate('heat')}
+              className="w-full flex items-center gap-4 px-4 h-12 rounded-lg hover:bg-canvas text-left font-semibold text-[15px] leading-[1.6]"
+            >
+              <span className="w-8 h-8 rounded-lg bg-wash flex items-center justify-center shrink-0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="2.2" />
+                  <circle cx="12" cy="12" r="5.2" />
+                  <circle cx="12" cy="12" r="8.4" />
+                </svg>
+              </span>
+              Heat map
               <span className="ml-auto text-faint">›</span>
             </button>
           )}

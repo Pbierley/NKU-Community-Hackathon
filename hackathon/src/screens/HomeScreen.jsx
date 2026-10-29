@@ -10,6 +10,7 @@ import { findBuildingForLocation, getBuildingById, hasLocation, isParkingPlace, 
 import { useParkingFullness } from '../Navigation/useParkingFullness'
 import { useRecBusyness } from '../Navigation/useRecBusyness'
 import { useUserLocation } from '../Navigation/useUserLocation'
+import { useRecordedDestination } from '../Navigation/recordHeatPoint'
 import { buildGoUrl, clearRouteHash, copyShareUrl, parseRouteHash } from '../Navigation/shareRoute'
 import { useWalkingRoute } from '../Navigation/useWalkingRoute'
 
@@ -56,6 +57,7 @@ export default function HomeScreen({ onNavigate, user, focusBuildingId, onMapFoc
   const destPoint =
     destination && hasLocation(destination) ? [destination.Location.lat, destination.Location.lng] : null
   const { route, error: routeError } = useWalkingRoute(position, destPoint)
+  useRecordedDestination(selectedId, position)
 
   const error = buildingsError ?? locationError ?? routeError
   const toast = notice ?? (error && error !== dismissedError ? error : null)

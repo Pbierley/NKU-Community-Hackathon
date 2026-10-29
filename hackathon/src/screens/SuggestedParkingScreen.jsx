@@ -7,6 +7,7 @@ import { closestParkingRoute, formatWalk } from '../Navigation/closestParking'
 import { campusRoleOf } from '../auth/accountTypes'
 import { getBuildingById, hasLocation, isParkingPlace, isVisitorGarage, lotSuggestedFor, mapLabel, parkingPermitLabel, useBuildings } from '../Navigation/buildings'
 import { useUserLocation } from '../Navigation/useUserLocation'
+import { useRecordedDestination } from '../Navigation/recordHeatPoint'
 import { buildParkUrl, clearRouteHash, copyShareUrl, parseRouteHash } from '../Navigation/shareRoute'
 import { useWalkGraph } from '../Navigation/useWalkingRoute'
 
@@ -92,6 +93,7 @@ export default function SuggestedParkingScreen({
   }
 
   const route = suggestion?.route ?? null
+  useRecordedDestination(selectedId != null && selectedId === initialDestinationId ? null : selectedId, position)
   const highlightIds = destination
     ? [destination.id, suggestion?.lot?.id].filter((id) => id != null)
     : undefined

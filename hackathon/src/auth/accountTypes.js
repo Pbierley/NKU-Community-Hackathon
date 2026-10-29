@@ -49,6 +49,11 @@ export function canInviteAdmins(user) {
   return isStaff(user)
 }
 
+// The campus heat map shows where people are and where they go.
+export function canViewHeatMap(user) {
+  return isStaff(user)
+}
+
 // Only a developer can grant developer or superadmin access.
 export function canGrantElevatedRoles(user) {
   return isDeveloper(user)

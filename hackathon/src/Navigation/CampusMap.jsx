@@ -343,6 +343,48 @@ function MapControls({ onLocate }) {
   )
 }
 
+function heatStyle(count, max, color) {
+  const strength = max > 0 ? count / max : 0
+  return {
+    color,
+    fillColor: color,
+    fillOpacity: 0.28 + strength * 0.45,
+    weight: 1,
+    opacity: 0.9,
+  }
+}
+
+function HeatLayer({ heat }) {
+  const locations = heat?.locations ?? []
+  const destinations = heat?.destinations ?? []
+  const locationMax = locations.reduce((max, point) => Math.max(max, point.count), 0)
+  const destinationMax = destinations.reduce((max, point) => Math.max(max, point.count), 0)
+  return (
+    <>
+      {locations.map((point) => (
+        <Circle
+          key={`start-${point.lat.toFixed(4)}-${point.lng.toFixed(4)}`}
+          center={[point.lat, point.lng]}
+          radius={14 + Math.min(point.count, 12) * 6}
+          pathOptions={heatStyle(point.count, locationMax, '#ea580c')}
+        >
+          <Popup>{point.count} {point.count === 1 ? 'person was here' : 'people were here'}</Popup>
+        </Circle>
+      ))}
+      {destinations.map((point) => (
+        <Circle
+          key={`dest-${point.id}`}
+          center={[point.lat, point.lng]}
+          radius={22 + Math.min(point.count, 16) * 8}
+          pathOptions={heatStyle(point.count, destinationMax, '#d97706')}
+        >
+          <Popup>{point.name} · {point.count} {point.count === 1 ? 'trip' : 'trips'}</Popup>
+        </Circle>
+      ))}
+    </>
+  )
+}
+
 export default function CampusMap({
   buildings,
   position,
@@ -359,6 +401,7 @@ export default function CampusMap({
   bottomInset = 0,
   eventSpots = [],
   onOpenEvent,
+  heat = null,
 }) {
   return (
     <MapContainer
@@ -398,6 +441,7 @@ export default function CampusMap({
         />
       )}
       {position && <UserArrow position={position} heading={heading} />}
+      {heat && <HeatLayer heat={heat} />}
       <FollowUser position={position} follow={follow} onUserPan={onUserPan} routeActive={route?.length > 1} />
       <MapControls onLocate={onLocate} />
     </MapContainer>

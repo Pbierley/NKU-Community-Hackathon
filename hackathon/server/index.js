@@ -5,7 +5,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
-import { accountTypeOf, campusRoleOf, canCreateEvents, canGrantElevatedRoles, canInviteAdmins, canManageLocations, canModerateEvents, canRemoveAdmins, isDeveloper, isNkuEmail } from '../src/auth/accountTypes.js'
+import { accountTypeOf, campusRoleOf, canCreateEvents, canGrantElevatedRoles, canInviteAdmins, canManageLocations, canModerateEvents, canRemoveAdmins, canViewHeatMap, isDeveloper, isNkuEmail } from '../src/auth/accountTypes.js'
 import { isParkingPlace, isRecreationCenter } from '../src/Navigation/parkingPlaces.js'
 import cron from 'node-cron'
 import { extractPdfText } from './extractPdfText.js'
@@ -41,6 +41,7 @@ let eventsColl = null
 let sessionsColl = null
 let adminInvitesColl = null
 let parkingRankings = null
+let heatMapColl = null
 
 if (MONGO_URI) {
   try {
@@ -57,6 +58,9 @@ if (MONGO_URI) {
     parkingRankings = db.collection('rankings')
     await parkingRankings.createIndex({ placeId: 1, userId: 1, date: 1 }, { unique: true })
     await parkingRankings.createIndex({ date: 1 })
+    heatMapColl = db.collection('heat map')
+    await heatMapColl.createIndex({ createdAt: -1 })
+    await heatMapColl.createIndex({ destinationId: 1 })
     console.log(`Connected to MongoDB (${dbName}).`)
   } catch (err) {
     console.error('MongoDB connect failed, falling back to JSON files:', err.message)
@@ -66,6 +70,7 @@ if (MONGO_URI) {
     sessionsColl = null
     adminInvitesColl = null
     parkingRankings = null
+    heatMapColl = null
   }
 } else {
   console.log('MongoURI is "KEYTIME" or unset — using local JSON files in server/data/.')
@@ -841,6 +846,105 @@ app.get('/api/buildings', async (req, res) => {
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Could not load buildings.' })
+  }
+})
+
+function finiteCoord(value, min, max) {
+  const number = Number(value)
+  return Number.isFinite(number) && number >= min && number <= max ? number : null
+}
+
+// Logged-out visitors are stored with a null user. The session supplies the
+// user id when someone is signed in; the client cannot choose it.
+app.post('/api/heat-map', async (req, res) => {
+  try {
+    if (!heatMapColl) {
+      res.status(503).json({ error: 'Heat map storage is not available.' })
+      return
+    }
+    const destinationId = Number(req.body.destinationId)
+    if (!Number.isInteger(destinationId)) {
+      res.status(400).json({ error: 'Choose a destination.' })
+      return
+    }
+    const destination = (await listBuildings()).find((building) => building.id === destinationId)
+    if (!destination) {
+      res.status(400).json({ error: 'Choose a destination.' })
+      return
+    }
+    const lat = req.body.lat == null ? null : finiteCoord(req.body.lat, -90, 90)
+    const lng = req.body.lng == null ? null : finiteCoord(req.body.lng, -180, 180)
+    if ((req.body.lat != null || req.body.lng != null) && (lat == null || lng == null)) {
+      res.status(400).json({ error: 'Location must be a latitude and longitude.' })
+      return
+    }
+    const user = await authUser(req)
+    await heatMapColl.insertOne({
+      userId: user?.id ?? null,
+      location: lat == null ? null : { lat, lng },
+      destinationId: destination.id,
+      destinationName: destination.name,
+      createdAt: new Date().toISOString(),
+    })
+    res.status(201).json({ ok: true })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Could not save that route.' })
+  }
+})
+
+app.get('/api/heat-map', async (req, res) => {
+  try {
+    if (!heatMapColl) {
+      res.status(503).json({ error: 'Heat map storage is not available.' })
+      return
+    }
+    const actor = await authUser(req)
+    if (!actor) {
+      res.status(401).json({ error: 'Sign in to view the heat map.' })
+      return
+    }
+    if (!canViewHeatMap(actor)) {
+      res.status(403).json({ error: 'Only an admin or developer can view the heat map.' })
+      return
+    }
+    const docs = await heatMapColl
+      .find({}, { projection: { _id: 0, location: 1, destinationId: 1, destinationName: 1 } })
+      .limit(20000)
+      .toArray()
+    const buildings = await listBuildings()
+    const byDestination = new Map()
+    const byStart = new Map()
+    for (const doc of docs) {
+      const destination = byDestination.get(doc.destinationId) ?? {
+        id: doc.destinationId,
+        name: doc.destinationName,
+        count: 0,
+      }
+      destination.count += 1
+      byDestination.set(doc.destinationId, destination)
+      if (Number.isFinite(doc.location?.lat) && Number.isFinite(doc.location?.lng)) {
+        const key = `${doc.location.lat.toFixed(4)},${doc.location.lng.toFixed(4)}`
+        const start = byStart.get(key) ?? { lat: doc.location.lat, lng: doc.location.lng, count: 0 }
+        start.count += 1
+        byStart.set(key, start)
+      }
+    }
+    const destinations = [...byDestination.values()].map((place) => {
+      const building = buildings.find((item) => item.id === place.id)
+      return {
+        ...place,
+        lat: building?.Location?.lat ?? null,
+        lng: building?.Location?.lng ?? null,
+      }
+    }).filter((place) => Number.isFinite(place.lat) && Number.isFinite(place.lng))
+    res.json({
+      locations: [...byStart.values()],
+      destinations,
+    })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Could not load the heat map.' })
   }
 })
 
