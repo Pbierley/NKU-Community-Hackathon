@@ -939,6 +939,7 @@ app.get('/api/heat-map', async (req, res) => {
       }
     }).filter((place) => Number.isFinite(place.lat) && Number.isFinite(place.lng))
     res.json({
+      total: docs.length,
       locations: [...byStart.values()],
       destinations,
     })

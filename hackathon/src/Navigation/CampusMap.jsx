@@ -343,12 +343,20 @@ function MapControls({ onLocate }) {
   )
 }
 
-function heatStyle(count, max, color) {
-  const strength = max > 0 ? count / max : 0
+// A circle that accounts for every recorded route is this wide. Every other
+// circle is that width times its share of the routes.
+const HEAT_FULL_METERS = 180
+
+function heatShare(count, total) {
+  return total > 0 ? count / total : 0
+}
+
+function heatStyle(count, total, color) {
+  const share = heatShare(count, total)
   return {
     color,
     fillColor: color,
-    fillOpacity: 0.28 + strength * 0.45,
+    fillOpacity: 0.22 + share * 0.55,
     weight: 1,
     opacity: 0.9,
   }
@@ -357,16 +365,16 @@ function heatStyle(count, max, color) {
 function HeatLayer({ heat }) {
   const locations = heat?.locations ?? []
   const destinations = heat?.destinations ?? []
-  const locationMax = locations.reduce((max, point) => Math.max(max, point.count), 0)
-  const destinationMax = destinations.reduce((max, point) => Math.max(max, point.count), 0)
+  const plotted = destinations.reduce((sum, point) => sum + point.count, 0)
+  const total = Number(heat?.total) > 0 ? Number(heat.total) : plotted
   return (
     <>
       {locations.map((point) => (
         <Circle
           key={`start-${point.lat.toFixed(4)}-${point.lng.toFixed(4)}`}
           center={[point.lat, point.lng]}
-          radius={14 + Math.min(point.count, 12) * 6}
-          pathOptions={heatStyle(point.count, locationMax, '#ea580c')}
+          radius={heatShare(point.count, total) * HEAT_FULL_METERS}
+          pathOptions={heatStyle(point.count, total, '#ea580c')}
         >
           <Popup>{point.count} {point.count === 1 ? 'person was here' : 'people were here'}</Popup>
         </Circle>
@@ -375,8 +383,8 @@ function HeatLayer({ heat }) {
         <Circle
           key={`dest-${point.id}`}
           center={[point.lat, point.lng]}
-          radius={22 + Math.min(point.count, 16) * 8}
-          pathOptions={heatStyle(point.count, destinationMax, '#d97706')}
+          radius={heatShare(point.count, total) * HEAT_FULL_METERS}
+          pathOptions={heatStyle(point.count, total, '#d97706')}
         >
           <Popup>{point.name} · {point.count} {point.count === 1 ? 'trip' : 'trips'}</Popup>
         </Circle>

@@ -52,7 +52,7 @@ export default function HeatMapScreen({ onNavigate }) {
           {empty && <p className="mt-0.5 text-[13px] text-muted leading-[1.4]">No routes have been saved yet.</p>}
           {heat && !empty && (
             <p className="mt-0.5 text-[13px] text-muted leading-[1.4]">
-              Orange is where people were. Amber is where they were going.
+              Orange is where people were. Amber is where they were going. A larger circle is a larger share of the recorded routes.
             </p>
           )}
         </section>
